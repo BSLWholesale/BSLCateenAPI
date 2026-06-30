@@ -136,6 +136,7 @@ namespace BSLCanteenAPI.DAL
                 SqlCommand cmd = new SqlCommand("USP_Canteen", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@EmpId", objReq.EmpId);
+                cmd.Parameters.AddWithValue("@QueryType", "FetchCouponID");
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
                 da.Fill(ds);
@@ -152,6 +153,7 @@ namespace BSLCanteenAPI.DAL
                         objItem.CouponIssueDate = Convert.ToString(ds.Tables[0].Rows[i]["CoupIssueDate"]);
                         objItem.CanteenId = Convert.ToString(ds.Tables[0].Rows[i]["CantId"]);
                         objItem.vErrorMsg = "Success";
+                        objItem.vErrorCode = 200;
                         objResp.Add(objItem);
                         i++;
                     }
@@ -160,6 +162,7 @@ namespace BSLCanteenAPI.DAL
                 {
                     var objItem = new clsCouponOrder();
                     objItem.vErrorMsg = "Coupon ID records are not Found.";
+                    objItem.vErrorCode = 400;
                     objResp.Add(objItem);
                 }
             }
@@ -168,6 +171,7 @@ namespace BSLCanteenAPI.DAL
                 Logger.WriteLog("Function Name : Fn_Fetch_EmpCouponId", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
                 var objItem = new clsCouponOrder();
                 objItem.vErrorMsg = exp.Message.ToString();
+                objItem.vErrorCode = 500;
                 objResp.Add(objItem);
             }
             finally
