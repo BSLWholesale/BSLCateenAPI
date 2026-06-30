@@ -39,17 +39,19 @@ namespace BSLCanteenAPI.Models
     public class clsCouponOrder
     {
         public Int64 CouponId { get; set; }
-        public string ItemCategory { get; set; }
         public Int32 EmpId { get; set; }
         public string CouponIssueDate { get; set; }
         public string OrderStatus { get; set; }
         public string OrderTakenDate { get; set; }
         public string CanteenId { get; set; }
+        public string ItemCategory { get; set; }
+        public List<clsCouponItem> Items { get; set; }
         public int CreatedBy { get; set; }
         public string CreatedOn { get; set; }
         public int ModifiedBy { get; set; }
         public string ModifiedOn { get; set; }
         public string vErrorMsg { get; set; }
+        public int vErrorCode { get; set; }
 
     }
 
@@ -66,21 +68,12 @@ namespace BSLCanteenAPI.Models
     }
 
 
-    public class clsEmployeeDetail
+    public class clsCouponItem
     {
-        public Int64 SrNo { get; set; }
-        public string Units { get; set; }
-        public string LineName { get; set; }
-        public Int64 Code { get; set; }
-        public string EmpName { get; set; }
-        public string Remarks { get; set; }
-        public int CreatedBy { get; set; }
-        public string CreatedOn { get; set; }
-        public int ModifiedBy { get; set; }
-        public string ModifiedOn { get; set; }
+        public string ItemCategory { get; set; }
+        public int Quantity { get; set; }
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
-        public string vQueryType { get; set; }
     }
 
 
