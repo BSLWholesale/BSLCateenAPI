@@ -65,5 +65,14 @@ namespace BSLCanteenAPI.Controllers
         }
 
 
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Employee/Fn_Fetch_All_Employee")]
+        public List<clsEmployee> Fn_Fetch_All_Employee(clsEmployee objReq)
+        {
+            var objResp = new List<clsEmployee>();
+            objResp = _DALEmployee.Fn_Fetch_All_Employee(objReq);
+            return objResp;
+        }
+
     }
 }
