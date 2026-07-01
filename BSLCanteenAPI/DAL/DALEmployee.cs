@@ -58,6 +58,7 @@ namespace BSLCanteenAPI.DAL
                         objResp.EmpMobile = Convert.ToString(ds.Tables[0].Rows[i]["EmpMobile"]);
                         objResp.Department = Convert.ToString(ds.Tables[0].Rows[i]["Department"]);
                         objResp.Location = Convert.ToString(ds.Tables[0].Rows[i]["Location"]);
+                        objResp.EmpRole = Convert.ToString(ds.Tables[0].Rows[i]["EmpRole"]);
 
                         objResp.vErrorMsg = "Success";
                     }
