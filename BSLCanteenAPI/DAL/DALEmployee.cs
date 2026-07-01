@@ -51,8 +51,6 @@ namespace BSLCanteenAPI.DAL
 
                     if (ds.Tables[0].Rows.Count > 0)
                     {
-                        string decryptPassword = Generic.DecryptText(Convert.ToString(ds.Tables[0].Rows[i]["EmpPassword"]));
-
                         objResp.EmpId = Convert.ToInt64(ds.Tables[0].Rows[i]["EmployeeId"]);
                         objResp.EmpName = Convert.ToString(ds.Tables[0].Rows[i]["Name"]);
                         objResp.EmpMobile = Convert.ToString(ds.Tables[0].Rows[i]["EmpMobile"]);
