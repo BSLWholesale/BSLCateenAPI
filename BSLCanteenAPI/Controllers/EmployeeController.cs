@@ -37,9 +37,9 @@ namespace BSLCanteenAPI.Controllers
 
         [System.Web.Http.HttpPost]
         [System.Web.Http.Route("api/Employee/Fn_Fetch_EmployeeDetails")]
-        public clsEmployee Fn_Fetch_EmployeeDetails(clsEmployee objReq)
+        public List<clsEmployee> Fn_Fetch_EmployeeDetails(clsEmployee objReq)
         {
-            var objResp = new clsEmployee();
+            var objResp = new List<clsEmployee>();
             objResp = _DALEmployee.Fn_Fetch_EmployeeDetails(objReq);
             return objResp;
         }

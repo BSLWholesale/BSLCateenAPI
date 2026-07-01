@@ -127,54 +127,56 @@ namespace BSLCanteenAPI.DAL
         }
 
 
-        public clsEmployee Fn_Fetch_EmployeeDetails(clsEmployee objReq)
+        public List<clsEmployee> Fn_Fetch_EmployeeDetails(clsEmployee objReq)
         {
-            var objResp = new clsEmployee();
+            var objResp = new List<clsEmployee>();
+            var obj = new clsEmployee();
             try
             {
-                if (objReq.EmpId == 0)
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_Employee", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@EmpId", objReq.EmpId);
+                cmd.Parameters.AddWithValue("@QueryType", "FetchEmpDetails");
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
                 {
-                    objResp.vErrorMsg = "Please Pass the Valid Employee ID";
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsEmployee();
+                        obj.EmpId = Convert.ToInt64(ds.Tables[0].Rows[i]["EmployeeId"]);
+                        obj.EmpName = Convert.ToString(ds.Tables[0].Rows[i]["Name"]);
+                        obj.EmpMobile = Convert.ToString(ds.Tables[0].Rows[i]["EmpMobile"]);
+                        obj.Department = Convert.ToString(ds.Tables[0].Rows[i]["Department"]);
+                        obj.Location = Convert.ToString(ds.Tables[0].Rows[i]["Location"]);
+
+                        obj.vErrorMsg = "Success";
+                        obj.vErrorCode = 200;
+                        objResp.Add(obj);
+                        i++;
+                    }
                 }
                 else
                 {
-                    if (Con.State == ConnectionState.Broken)
-                    { Con.Close(); }
-                    if (Con.State == ConnectionState.Closed)
-                    { Con.Open(); }
-
-                    SqlCommand cmd = new SqlCommand("USP_Employee", Con);
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@EmpId", objReq.EmpId);
-                    cmd.Parameters.AddWithValue("@QueryType", "FetchEmpDetails");
-
-                    SqlDataAdapter da = new SqlDataAdapter(cmd);
-                    DataSet ds = new DataSet();
-                    da.Fill(ds);
-                    int i = 0;
-                    if (ds.Tables[0].Rows.Count > 0)
-                    {
-                        objResp.EmpId = Convert.ToInt64(ds.Tables[0].Rows[i]["EmployeeId"]);
-                        objResp.EmpName = Convert.ToString(ds.Tables[0].Rows[i]["Name"]);
-                        objResp.EmpMobile = Convert.ToString(ds.Tables[0].Rows[i]["EmpMobile"]);
-                        objResp.Department = Convert.ToString(ds.Tables[0].Rows[i]["Department"]);
-                        objResp.Location = Convert.ToString(ds.Tables[0].Rows[i]["Location"]);
-
-                        objResp.vErrorMsg = "Success";
-                        objResp.vErrorCode = 200;
-                    }
-                    else
-                    {
-                        objResp.vErrorMsg = "Employee details are not found.";
-                        objResp.vErrorCode = 400;
-                    }
+                    obj.vErrorMsg = "Employee details are not found.";
+                    obj.vErrorCode = 400;
                 }
+                
             }
             catch (Exception exp)
             {
                 Logger.WriteLog("Function Name : Fn_Fetch_EmployeeDetails", " " + exp.Message.ToString(), new StackTrace(exp, true));
-                objResp.vErrorMsg = exp.Message.ToString();
-                objResp.vErrorCode = 500;
+                obj.vErrorMsg = exp.Message.ToString();
+                obj.vErrorCode = 500;
+                objResp.Add(obj);
             }
             finally
             {
