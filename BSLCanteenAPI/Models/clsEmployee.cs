@@ -14,6 +14,7 @@ namespace BSLCanteenAPI.Models
         public string EmpPassword { get; set; }
         public string EmpMobile { get; set; }
         public string Location { get; set; }
+        public string EmpRole { get; set; }
         public int CreatedBy { get; set; }
         public string CreatedOn { get; set; }
         public int ModifiedBy { get; set; }
