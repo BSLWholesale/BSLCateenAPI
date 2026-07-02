@@ -42,7 +42,7 @@ namespace BSLCanteenAPI.DAL
                     cmd.Parameters.AddWithValue("@EmpId", objReq.EmpId);
                     cmd.Parameters.AddWithValue("@EmpMobile", objReq.EmpMobile);
                     cmd.Parameters.AddWithValue("@EmpPassword", encryptPassword);
-                    cmd.Parameters.AddWithValue("@QueryType", "LogIn");
+                    cmd.Parameters.AddWithValue("@QueryType", "Login");
 
                     SqlDataAdapter da = new SqlDataAdapter(cmd);
                     DataSet ds = new DataSet();
@@ -55,7 +55,7 @@ namespace BSLCanteenAPI.DAL
                         objResp.EmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
                         objResp.EmpMobile = Convert.ToString(ds.Tables[0].Rows[i]["EmpMobile"]);
                         objResp.Department = Convert.ToString(ds.Tables[0].Rows[i]["Department"]);
-                        objResp.Location = Convert.ToString(ds.Tables[0].Rows[i]["Location"]);
+                        objResp.EmpLocation = Convert.ToString(ds.Tables[0].Rows[i]["EmpLocation"]);
                         objResp.EmpRole = Convert.ToString(ds.Tables[0].Rows[i]["EmpRole"]);
 
                         objResp.vErrorMsg = "Success";
@@ -92,12 +92,12 @@ namespace BSLCanteenAPI.DAL
                 SqlCommand cmd = new SqlCommand("USP_Employee", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@EmpId", objReq.EmpId);
-                cmd.Parameters.AddWithValue("@Name", objReq.EmpName);
+                cmd.Parameters.AddWithValue("@EmpName", objReq.EmpName);
                 cmd.Parameters.AddWithValue("@Department", objReq.Department);
                 cmd.Parameters.AddWithValue("@Salary", objReq.Salary);
                 cmd.Parameters.AddWithValue("@EmpPassword", objReq.EmpPassword);
                 cmd.Parameters.AddWithValue("@EmpMobile", objReq.EmpMobile);
-                cmd.Parameters.AddWithValue("@Location", objReq.Location);
+                cmd.Parameters.AddWithValue("@EmpLocation", objReq.EmpLocation);
                 cmd.Parameters.AddWithValue("@QueryType", "InsertEmployee");
 
                 int i = 0;
@@ -156,7 +156,7 @@ namespace BSLCanteenAPI.DAL
                         obj.EmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
                         obj.EmpMobile = Convert.ToString(ds.Tables[0].Rows[i]["EmpMobile"]);
                         obj.Department = Convert.ToString(ds.Tables[0].Rows[i]["Department"]);
-                        obj.Location = Convert.ToString(ds.Tables[0].Rows[i]["Location"]);
+                        obj.EmpLocation = Convert.ToString(ds.Tables[0].Rows[i]["EmpLocation"]);
                         obj.CanteenId = Convert.ToInt32(ds.Tables[0].Rows[i]["CanteenId"]);
                         obj.CanteenName = Convert.ToString(ds.Tables[0].Rows[i]["CanteenName"]);
                         obj.vErrorMsg = "Success";
@@ -170,7 +170,7 @@ namespace BSLCanteenAPI.DAL
                     obj.vErrorMsg = "Employee details are not found.";
                     obj.vErrorCode = 400;
                 }
-                
+
             }
             catch (Exception exp)
             {
@@ -199,13 +199,13 @@ namespace BSLCanteenAPI.DAL
 
                 SqlCommand cmd = new SqlCommand("USP_Employee", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@EmpId", objReq.EmpId);                
-                cmd.Parameters.AddWithValue("@Name", objReq.EmpName);
+                cmd.Parameters.AddWithValue("@EmpId", objReq.EmpId);
+                cmd.Parameters.AddWithValue("@EmpName", objReq.EmpName);
                 cmd.Parameters.AddWithValue("@Department", objReq.Department);
                 cmd.Parameters.AddWithValue("@Salary", objReq.Salary);
                 cmd.Parameters.AddWithValue("@EmpPassword", objReq.EmpPassword);
                 cmd.Parameters.AddWithValue("@EmpMobile", objReq.EmpMobile);
-                cmd.Parameters.AddWithValue("@Location", objReq.Location);
+                cmd.Parameters.AddWithValue("@EmpLocation", objReq.EmpLocation);
                 cmd.Parameters.AddWithValue("@QueryType", "UpdateEmpDetails");
 
                 int i = 0;
@@ -302,6 +302,7 @@ namespace BSLCanteenAPI.DAL
                     {
                         var objItem = new clsEmployee();
                         objItem.EmpId = Convert.ToInt64(ds.Tables[0].Rows[i][0]);
+                        objItem.EmpName = Convert.ToString(ds.Tables[0].Rows[i][0]);
                         objItem.vErrorMsg = "Success";
                         objResp.Add(objItem);
                         i++;
@@ -310,9 +311,9 @@ namespace BSLCanteenAPI.DAL
                 else
                 {
                     var objItem = new clsEmployee();
-                    objItem.vErrorMsg = "No Records found.";
+                    objItem.vErrorMsg = "No Employee Records found.";
                     objResp.Add(objItem);
-                }               
+                }
             }
             catch (Exception exp)
             {
