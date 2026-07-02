@@ -15,6 +15,8 @@ namespace BSLCanteenAPI.Models
         public string EmpMobile { get; set; }
         public string EmpLocation { get; set; }
         public string EmpRole { get; set; }
+        public int CanteenId { get; set; }
+        public string CanteenName { get; set; }
         public int CreatedBy { get; set; }
         public string CreatedOn { get; set; }
         public int ModifiedBy { get; set; }
@@ -77,5 +79,18 @@ namespace BSLCanteenAPI.Models
         public int vErrorCode { get; set; }
     }
 
-
+    public class clsRequestDropdown
+    {
+        public string vFieldName { get; set; }
+        public string vValueField { get; set; }
+        public string vTBLName { get; set; }
+        public string vCriteria { get; set; }
+        public string vErrorMsg { get; set; }
+    }
+    public class clsResponseDropdown
+    {
+        public string vFieldName { get; set; }
+        public string vValueField { get; set; }
+        public string vErrorMsg { get; set; }
+    }
 }
