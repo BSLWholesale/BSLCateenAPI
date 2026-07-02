@@ -35,5 +35,14 @@ namespace BSLCanteenAPI.Controllers
         }
 
 
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Canteen/Fn_Get_Coupon_Order")]
+        public List<clsCouponReport> Fn_Get_Coupon_Order(clsCouponReport objReq)
+        {
+            var objResp = new List<clsCouponReport>();
+            objResp = _DALCanteen.Fn_Get_Coupon_Order(objReq);
+            return objResp;
+        }
+
     }
 }

@@ -46,7 +46,7 @@ namespace BSLCanteenAPI.Models
         public string CouponIssueDate { get; set; }
         public string OrderStatus { get; set; }
         public string OrderTakenDate { get; set; }
-        public string CanteenId { get; set; }
+        public int CanteenId { get; set; }
         public string ItemCategory { get; set; }
         public List<clsCouponItem> Items { get; set; }
         public int CreatedBy { get; set; }
@@ -57,7 +57,7 @@ namespace BSLCanteenAPI.Models
         public int vErrorCode { get; set; }
 
     }
-
+   
 
     public class clsCanteen
     {
@@ -92,5 +92,22 @@ namespace BSLCanteenAPI.Models
         public string vFieldName { get; set; }
         public string vValueField { get; set; }
         public string vErrorMsg { get; set; }
+    }
+
+    public class clsCouponReport
+    {
+        public Int64 CouponId { get; set; }
+        public string ItemCategory { get; set; }
+        public string CouponIssueDate { get; set; }
+        public string OrderTakenDate { get; set; }
+        public string OrderStatus { get; set; }
+        public int CanteenId { get; set; }
+        public string CanteenName { get; set; }
+        public Int32 EmpId { get; set; }
+        public string EmpName { get; set; }
+        public int CreatedBy { get; set; }
+        public string CreatedOn { get; set; }       
+        public string vErrorMsg { get; set; }
+        public int vErrorCode { get; set; }
     }
 }

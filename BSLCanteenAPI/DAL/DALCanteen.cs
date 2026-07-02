@@ -26,7 +26,7 @@ namespace BSLCanteenAPI.DAL
                 {
                     objResp.vErrorMsg = "Please Select the Valid Employee ID";
                 }
-                else if (objReq.CanteenId == null || objReq.CanteenId == "0")
+                else if (objReq.CanteenId == null || objReq.CanteenId == 0)
                 {
                     objResp.vErrorMsg = "Please Select the Canteen ID";
                 }
@@ -55,7 +55,7 @@ namespace BSLCanteenAPI.DAL
                             cmd.Parameters.AddWithValue("@EmpId", objReq.EmpId);
                             cmd.Parameters.AddWithValue("@CanteenId", objReq.CanteenId);
                             cmd.Parameters.AddWithValue("@ItemCategory", item.ItemCategory);
-                            cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);                            
+                            cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
                             cmd.Parameters.AddWithValue("@OrderStatus", "Generated");
                             cmd.Parameters.AddWithValue("@QueryType", "InsertCouponId");
 
@@ -122,7 +122,7 @@ namespace BSLCanteenAPI.DAL
             return CouponID;
         }
 
-        
+
         public List<clsCouponOrder> Fn_Fetch_EmpCouponId(clsCouponOrder objReq)
         {
             var objResp = new List<clsCouponOrder>();
@@ -151,7 +151,7 @@ namespace BSLCanteenAPI.DAL
                         objItem.ItemCategory = Convert.ToString(ds.Tables[0].Rows[i]["ItemCategory"]);
                         objItem.EmpId = Convert.ToInt32(ds.Tables[0].Rows[i]["EmpId"]);
                         objItem.CouponIssueDate = Convert.ToString(ds.Tables[0].Rows[i]["CoupIssueDate"]);
-                        objItem.CanteenId = Convert.ToString(ds.Tables[0].Rows[i]["CantId"]);
+                        objItem.CanteenId = Convert.ToInt32(ds.Tables[0].Rows[i]["CantId"]);
                         objItem.vErrorMsg = "Success";
                         objItem.vErrorCode = 200;
                         objResp.Add(objItem);
@@ -182,6 +182,93 @@ namespace BSLCanteenAPI.DAL
         }
 
 
+        public List<clsCouponReport> Fn_Get_Coupon_Order(clsCouponReport objReq)
+        {
+            var objResp = new List<clsCouponReport>();
+            var obj = new clsCouponReport();
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string strSql = "SELECT CouponId, ItemCategory, CoupIssueDate, OrdTakenDate, OrdStatus, CanteenId, CanteenName, ";
+                strSql = strSql + " EmployeeId, EmpName, CreatedBy  FROM  vCouponOrder WHERE 1=1 ";
+                if (objReq.EmpId != 0 && objReq.EmpId != null)
+                {
+                    strSql = strSql + " AND EmployeeId = @EmpId ";
+                }
+                if (objReq.CouponId != 0 && objReq.CouponId != null)
+                {
+                    strSql = strSql + " AND CouponId = @CouponId ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.ItemCategory))
+                {
+                    strSql = strSql + " AND ItemCategory = @ItemCategory ";
+                }
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+                if (objReq.EmpId != 0 && objReq.EmpId != null)
+                {
+                    cmd.Parameters.AddWithValue("@EmpId", objReq.EmpId);
+                }
+                if (objReq.CouponId != 0 && objReq.CouponId != null)
+                {
+                    cmd.Parameters.AddWithValue("@CouponId", objReq.CouponId);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.ItemCategory))
+                {
+                    cmd.Parameters.AddWithValue("@ItemCategory", objReq.ItemCategory);
+                }
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsCouponReport();
+                        obj.CouponId = Convert.ToInt64(ds.Tables[0].Rows[i]["CouponId"]);
+                        obj.ItemCategory = Convert.ToString(ds.Tables[0].Rows[i]["ItemCategory"]);
+                        obj.CouponIssueDate = Convert.ToString(ds.Tables[0].Rows[i]["CoupIssueDate"]);
+                        obj.OrderTakenDate = Convert.ToString(ds.Tables[0].Rows[i]["OrdTakenDate"]);
+                        obj.OrderStatus = Convert.ToString(ds.Tables[0].Rows[i]["OrdStatus"]);
+                        obj.CanteenId = Convert.ToInt32(ds.Tables[0].Rows[i]["CanteenId"]);
+                        obj.CanteenName = Convert.ToString(ds.Tables[0].Rows[i]["CanteenName"]);
+                        obj.EmpId = Convert.ToInt32(ds.Tables[0].Rows[i]["EmployeeId"]);
+                        obj.EmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
+                        obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
+                        obj.vErrorMsg = "Success";
+                        obj.vErrorCode = 200;
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj = new clsCouponReport();
+                    obj.vErrorMsg = "No Record Found.";
+                    obj.vErrorCode = 400;
+                    objResp.Add(obj);
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Get_Coupon_Order", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj = new clsCouponReport();
+                obj.vErrorMsg = exp.Message.ToString();
+                obj.vErrorCode = 500;
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
 
     }
 }
