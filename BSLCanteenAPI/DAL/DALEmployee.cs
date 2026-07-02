@@ -157,7 +157,8 @@ namespace BSLCanteenAPI.DAL
                         obj.EmpMobile = Convert.ToString(ds.Tables[0].Rows[i]["EmpMobile"]);
                         obj.Department = Convert.ToString(ds.Tables[0].Rows[i]["Department"]);
                         obj.Location = Convert.ToString(ds.Tables[0].Rows[i]["Location"]);
-
+                        obj.CanteenId = Convert.ToInt32(ds.Tables[0].Rows[i]["CanteenId"]);
+                        obj.CanteenName = Convert.ToString(ds.Tables[0].Rows[i]["CanteenName"]);
                         obj.vErrorMsg = "Success";
                         obj.vErrorCode = 200;
                         objResp.Add(obj);
