@@ -328,6 +328,80 @@ namespace BSLCanteenAPI.DAL
             return objResp;
         }
 
+        public List<clsResponseDropdown> Fn_Fill_DropdownList(clsRequestDropdown objReq)
+        {
+            var objResp = new List<clsResponseDropdown>();
+            try
+            {
+                string strSql = "";
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                if (String.IsNullOrWhiteSpace(objReq.vValueField))
+                {
+                    strSql = "select Distinct " + objReq.vFieldName + " from " + objReq.vTBLName + " where 1=1";
+                    if (!String.IsNullOrWhiteSpace(objReq.vCriteria))
+                    {
+                        strSql = strSql + objReq.vCriteria;
+                    }
+                    strSql = strSql + " order by " + objReq.vFieldName + "";
+                }
+                else
+                {
+                    strSql = "select Distinct " + objReq.vValueField + ", " + objReq.vFieldName + " from " + objReq.vTBLName + " where 1=1";
+                    if (!String.IsNullOrWhiteSpace(objReq.vCriteria))
+                    {
+                        strSql = strSql + objReq.vCriteria;
+                    }
+                    strSql = strSql + " order by " + objReq.vValueField + "";
+                }
+
+                SqlDataAdapter da = new SqlDataAdapter(strSql, Con);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        var obj = new clsResponseDropdown();
+
+                        if (String.IsNullOrWhiteSpace(objReq.vValueField))
+                        {
+                            obj.vFieldName = Convert.ToString(ds.Tables[0].Rows[i][0]);
+                        }
+                        else
+                        {
+                            obj.vValueField = Convert.ToString(ds.Tables[0].Rows[i][0]);
+                            obj.vFieldName = Convert.ToString(ds.Tables[0].Rows[i][1]);
+                        }
+
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Fill_DropdownList", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                var obj = new clsResponseDropdown();
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
 
     }
 }
