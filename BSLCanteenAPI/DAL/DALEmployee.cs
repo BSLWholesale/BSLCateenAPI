@@ -52,7 +52,7 @@ namespace BSLCanteenAPI.DAL
                     if (ds.Tables[0].Rows.Count > 0)
                     {
                         objResp.EmpId = Convert.ToInt64(ds.Tables[0].Rows[i]["EmployeeId"]);
-                        objResp.EmpName = Convert.ToString(ds.Tables[0].Rows[i]["Name"]);
+                        objResp.EmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
                         objResp.EmpMobile = Convert.ToString(ds.Tables[0].Rows[i]["EmpMobile"]);
                         objResp.Department = Convert.ToString(ds.Tables[0].Rows[i]["Department"]);
                         objResp.Location = Convert.ToString(ds.Tables[0].Rows[i]["Location"]);
@@ -153,7 +153,7 @@ namespace BSLCanteenAPI.DAL
                     {
                         obj = new clsEmployee();
                         obj.EmpId = Convert.ToInt64(ds.Tables[0].Rows[i]["EmployeeId"]);
-                        obj.EmpName = Convert.ToString(ds.Tables[0].Rows[i]["Name"]);
+                        obj.EmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
                         obj.EmpMobile = Convert.ToString(ds.Tables[0].Rows[i]["EmpMobile"]);
                         obj.Department = Convert.ToString(ds.Tables[0].Rows[i]["Department"]);
                         obj.Location = Convert.ToString(ds.Tables[0].Rows[i]["Location"]);
