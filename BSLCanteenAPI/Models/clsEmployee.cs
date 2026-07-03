@@ -99,7 +99,9 @@ namespace BSLCanteenAPI.Models
         public Int64 CouponId { get; set; }
         public string ItemCategory { get; set; }
         public string CouponIssueDate { get; set; }
+        public string CouponIssueTime { get; set; }
         public string OrderTakenDate { get; set; }
+        public string OrderTakenTime { get; set; }
         public string OrderStatus { get; set; }
         public int CanteenId { get; set; }
         public string CanteenName { get; set; }

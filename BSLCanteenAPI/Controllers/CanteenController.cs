@@ -44,5 +44,14 @@ namespace BSLCanteenAPI.Controllers
             return objResp;
         }
 
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Canteen/Fn_ProcessCouponTransaction")]
+        public clsCouponReport Fn_ProcessCouponTransaction(clsCouponReport objReq)
+        {
+            var objResp = new clsCouponReport();
+            objResp = _DALCanteen.Fn_ProcessCouponTransaction(objReq);
+            return objResp;
+        }
+
     }
 }

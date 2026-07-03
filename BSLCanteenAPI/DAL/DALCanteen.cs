@@ -193,7 +193,7 @@ namespace BSLCanteenAPI.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT CouponId, ItemCategory, CoupIssueDate, OrdTakenDate, OrdStatus, CanteenId, CanteenName, ";
+                string strSql = "SELECT CouponId, ItemCategory, CoupIssueDate, CoupIssueTime, OrdTakenDate, OrdTakenTime, OrdStatus, CanteenId, CanteenName, ";
                 strSql = strSql + " EmployeeId, EmpName, CreatedBy  FROM  vCouponOrder WHERE 1=1 ";
                 if (objReq.EmpId != 0 && objReq.EmpId != null)
                 {
@@ -207,6 +207,15 @@ namespace BSLCanteenAPI.DAL
                 {
                     strSql = strSql + " AND ItemCategory = @ItemCategory ";
                 }
+                if (!String.IsNullOrWhiteSpace(objReq.OrderTakenDate))
+                {
+                    strSql = strSql + " AND OrdTakenDate = @OrderTakenDate ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.OrderStatus))
+                {
+                    strSql = strSql + " AND OrdStatus = @OrderStatus ";
+                }
+                strSql = strSql + " ORDER BY OrdTakenDate, CoupIssueDate DESC ";
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
                 if (objReq.EmpId != 0 && objReq.EmpId != null)
@@ -221,6 +230,14 @@ namespace BSLCanteenAPI.DAL
                 {
                     cmd.Parameters.AddWithValue("@ItemCategory", objReq.ItemCategory);
                 }
+                if (!String.IsNullOrWhiteSpace(objReq.OrderTakenDate))
+                {
+                    cmd.Parameters.AddWithValue("@OrderTakenDate", objReq.OrderTakenDate);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.OrderStatus))
+                {
+                    cmd.Parameters.AddWithValue("@OrderStatus", objReq.OrderStatus);
+                }
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
                 da.Fill(ds);
@@ -234,7 +251,9 @@ namespace BSLCanteenAPI.DAL
                         obj.CouponId = Convert.ToInt64(ds.Tables[0].Rows[i]["CouponId"]);
                         obj.ItemCategory = Convert.ToString(ds.Tables[0].Rows[i]["ItemCategory"]);
                         obj.CouponIssueDate = Convert.ToString(ds.Tables[0].Rows[i]["CoupIssueDate"]);
+                        obj.CouponIssueTime = Convert.ToString(ds.Tables[0].Rows[i]["CoupIssueTime"]);
                         obj.OrderTakenDate = Convert.ToString(ds.Tables[0].Rows[i]["OrdTakenDate"]);
+                        obj.OrderTakenTime = Convert.ToString(ds.Tables[0].Rows[i]["OrdTakenTime"]);
                         obj.OrderStatus = Convert.ToString(ds.Tables[0].Rows[i]["OrdStatus"]);
                         obj.CanteenId = Convert.ToInt32(ds.Tables[0].Rows[i]["CanteenId"]);
                         obj.CanteenName = Convert.ToString(ds.Tables[0].Rows[i]["CanteenName"]);
@@ -262,6 +281,85 @@ namespace BSLCanteenAPI.DAL
                 obj.vErrorMsg = exp.Message.ToString();
                 obj.vErrorCode = 500;
                 objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+        public clsCouponReport Fn_ProcessCouponTransaction(clsCouponReport objReq)
+        {
+            var objResp = new clsCouponReport();
+            var objCheck = new List<clsCouponReport>();
+            var obj = new clsCouponReport();
+            obj.CouponId = objReq.CouponId;
+            objCheck = Fn_Get_Coupon_Order(obj);
+            try
+            {
+                if (objReq.CouponId == null || objReq.CouponId == 0)
+                {
+                    objResp.vErrorMsg = "Please Send CouponId";
+                    objResp.vErrorCode = 400;
+                }
+               else if (objReq.CouponId != objCheck[0].CouponId)
+                {
+                    objResp.vErrorMsg = "Invalid CouponId";
+                    objResp.vErrorCode = 400;
+                }
+                else if (objReq.CanteenId != objCheck[0].CanteenId)
+                {
+                    objResp.vErrorMsg = "Wrong canteen";
+                    objResp.vErrorCode = 400;
+                }
+                else if (objReq.ItemCategory != objCheck[0].ItemCategory)
+                {
+                    objResp.vErrorMsg = "Please Select Correct ItemCategory";
+                    objResp.vErrorCode = 400;
+                }
+                else if (objCheck[0].OrderStatus == "Scanned")
+                {
+                    objResp.vErrorMsg = "Coupon already scanned";
+                    objResp.vErrorCode = 400;
+                }
+               else if (objCheck[0].OrderStatus == "Cancel")
+                {
+                    objResp.vErrorMsg = "Coupon cancelled";
+                    objResp.vErrorCode = 400;
+                }
+                else
+                {
+                    if (Con.State == ConnectionState.Broken)
+                    { Con.Close(); }
+                    if (Con.State == ConnectionState.Closed)
+                    { Con.Open(); }
+
+                    SqlCommand cmd = new SqlCommand("USP_Canteen", Con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@CouponId", objReq.CouponId);
+                    cmd.Parameters.AddWithValue("@ItemCategory", objReq.ItemCategory);
+                    cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                    cmd.Parameters.AddWithValue("@OrderStatus", "Scanned");
+                    cmd.Parameters.AddWithValue("@QueryType", "TransactionCouponId");
+                    int i = cmd.ExecuteNonQuery();
+                    if (i > 0)
+                    {
+                        objResp.vErrorMsg = "Success";
+                        objResp.vErrorCode = 200;
+                    }
+                    else
+                    {
+                        objResp.vErrorMsg = "Erorr in  coupon scanning";
+                        objResp.vErrorCode = 400;
+                    }
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_ProcessCouponTransaction", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+                objResp.vErrorCode = 500;
             }
             finally
             {
