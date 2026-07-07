@@ -53,5 +53,13 @@ namespace BSLCanteenAPI.Controllers
             return objResp;
         }
 
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Canteen/Fn_Get_Count_Record")]
+        public clsResponseDropdown Fn_Get_Count_Record(clsRequestDropdown objReq)
+        {
+            var objResp = new clsResponseDropdown();
+            objResp = _DALCanteen.Fn_Get_Count_Record(objReq);
+            return objResp;
+        }
     }
 }
