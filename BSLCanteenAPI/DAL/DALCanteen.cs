@@ -63,7 +63,7 @@ namespace BSLCanteenAPI.DAL
 
                             if (rows > 0)
                             {
-                                objResp.vErrorMsg = "Coupons Generated Successfully";
+                                objResp.vErrorMsg = "Success";
                                 objResp.vErrorCode = 200;
                             }
                             else
@@ -207,6 +207,10 @@ namespace BSLCanteenAPI.DAL
                 {
                     strSql = strSql + " AND ItemCategory = @ItemCategory ";
                 }
+                if (!String.IsNullOrWhiteSpace(objReq.CouponIssueDate))
+                {
+                    strSql = strSql + " AND CoupIssueDate = @CouponIssueDate ";
+                }
                 if (!String.IsNullOrWhiteSpace(objReq.OrderTakenDate))
                 {
                     strSql = strSql + " AND OrdTakenDate = @OrderTakenDate ";
@@ -229,6 +233,10 @@ namespace BSLCanteenAPI.DAL
                 if (!String.IsNullOrWhiteSpace(objReq.ItemCategory))
                 {
                     cmd.Parameters.AddWithValue("@ItemCategory", objReq.ItemCategory);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.CouponIssueDate))
+                {
+                    cmd.Parameters.AddWithValue("@CouponIssueDate", objReq.CouponIssueDate);
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.OrderTakenDate))
                 {
@@ -368,6 +376,52 @@ namespace BSLCanteenAPI.DAL
             return objResp;
         }
 
+        public clsResponseDropdown Fn_Get_Count_Record(clsRequestDropdown objReq)
+        {
+            var objResp = new clsResponseDropdown();
+            try
+            {
+                string strSql = "";
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                strSql = "Select " + objReq.vFieldName + " From " + objReq.vTBLName + " Where 1=1";
+                if (!String.IsNullOrWhiteSpace(objReq.vCriteria))
+                {
+                    strSql = strSql + objReq.vCriteria;
+                }
+
+
+                SqlDataAdapter da = new SqlDataAdapter(strSql, Con);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+
+                    objResp.vFieldName = Convert.ToString(ds.Tables[0].Rows[0][0]);
+                    objResp.vErrorMsg = "Success";
+
+                }
+                else
+                {
+                    objResp.vErrorMsg = "No Record Found.";
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Get_Count_Record", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
 
         public List<clsCouponReport> Fn_Fetch_EmpReportSummary(clsCouponReport objReq)
         {
