@@ -53,5 +53,16 @@ namespace BSLCanteenAPI.Controllers
             return objResp;
         }
 
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Canteen/Fn_Fetch_EmpReportSummary")]
+        public List<clsCouponReport> Fn_Fetch_EmpReportSummary(clsCouponReport objReq)
+        {
+            var objResp = new List<clsCouponReport>();
+            objResp = _DALCanteen.Fn_Fetch_EmpReportSummary(objReq);
+            return objResp;
+        }
+
+
     }
 }
