@@ -368,5 +368,65 @@ namespace BSLCanteenAPI.DAL
             return objResp;
         }
 
+
+        public List<clsCouponReport> Fn_Fetch_EmpReportSummary(clsCouponReport objReq)
+        {
+            var objResp = new List<clsCouponReport>();
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("", objReq.EmpId);
+                cmd.Parameters.AddWithValue("", "");
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        var objItem = new clsCouponReport();
+                        objItem.CouponId = Convert.ToInt64(ds.Tables[0].Rows[i][""]);
+                        objItem.CanteenId = Convert.ToInt32(ds.Tables[0].Rows[i][""]);
+                        objItem.CanteenName = Convert.ToString(ds.Tables[0].Rows[i][""]);
+                        objItem.EmpId = Convert.ToInt32(ds.Tables[0].Rows[i][""]);
+                        objItem.ItemCategory = Convert.ToString(ds.Tables[0].Rows[i][""]);
+                        objItem.vErrorMsg = "Success";
+                        objItem.vErrorCode = 200;
+                        objResp.Add(objItem);
+                        i++;
+                    }
+                }
+                else
+                {
+                    var objItem = new clsCouponReport();
+                    objItem.vErrorMsg = "Employee Summary is not found.";
+                    objItem.vErrorCode = 400;
+                    objResp.Add(objItem);
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Fetch_EmpReportSummary", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                var objItem = new clsCouponReport();
+                objItem.vErrorMsg = exp.Message.ToString();
+                objItem.vErrorCode = 500;
+                objResp.Add(objItem);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+
     }
 }
