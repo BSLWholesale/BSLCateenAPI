@@ -219,12 +219,11 @@ namespace BSLCanteenAPI.DAL
                 {
                     strSql = strSql + " AND OrdStatus = @OrderStatus ";
                 }
-                strSql = strSql + " ORDER BY OrdTakenDate DESC, CoupIssueDate DESC ";
                 if (objReq.ModifiedBy != 0 && objReq.ModifiedBy != null)
                 {
                     strSql = strSql + " AND ModifiedBy = @ModifiedBy";
                 }
-                strSql = strSql + " ORDER BY OrdTakenDate, CoupIssueDate DESC ";
+                strSql = strSql + " ORDER BY OrdTakenDate DESC, CoupIssueDate DESC ";
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
                 if (objReq.EmpId != 0 && objReq.EmpId != null)
