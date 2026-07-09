@@ -193,7 +193,7 @@ namespace BSLCanteenAPI.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT CouponId, ItemCategory, CoupIssueDate, CoupIssueTime, OrdTakenDate, OrdTakenTime, OrdStatus, CanteenId, CanteenName, ";
+                string strSql = "SELECT CouponId, ItemCategory, Price, CoupIssueDate, CoupIssueTime, OrdTakenDate, OrdTakenTime, OrdStatus, CanteenId, CanteenName, ";
                 strSql = strSql + " EmployeeId, EmpName, CreatedBy, ModifiedBy FROM vCouponOrder WHERE 1=1 ";
                 if (objReq.EmpId != 0 && objReq.EmpId != null)
                 {
@@ -276,6 +276,7 @@ namespace BSLCanteenAPI.DAL
                         obj.EmpId = Convert.ToInt32(ds.Tables[0].Rows[i]["EmployeeId"]);
                         obj.EmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
                         obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
+                        obj.Price = Convert.ToInt32(ds.Tables[0].Rows[i]["Price"]);
                         obj.vErrorMsg = "Success";
                         obj.vErrorCode = 200;
                         objResp.Add(obj);

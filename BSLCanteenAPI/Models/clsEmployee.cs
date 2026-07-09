@@ -109,6 +109,7 @@ namespace BSLCanteenAPI.Models
         public string CanteenName { get; set; }
         public Int32 EmpId { get; set; }
         public string EmpName { get; set; }
+        public decimal Price { get; set; }
         public int CreatedBy { get; set; }
         public string CreatedOn { get; set; }
         public int ModifiedBy { get; set; }
