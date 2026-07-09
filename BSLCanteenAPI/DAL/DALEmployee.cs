@@ -57,6 +57,7 @@ namespace BSLCanteenAPI.DAL
                         objResp.Department = Convert.ToString(ds.Tables[0].Rows[i]["Department"]);
                         objResp.EmpLocation = Convert.ToString(ds.Tables[0].Rows[i]["EmpLocation"]);
                         objResp.EmpRole = Convert.ToString(ds.Tables[0].Rows[i]["EmpRole"]);
+                        objResp.CanteenId = Convert.ToInt32(ds.Tables[0].Rows[i]["CanteenId"]);
 
                         objResp.vErrorMsg = "Success";
                     }

@@ -71,6 +71,22 @@ namespace BSLCanteenAPI.Controllers
             return objResp;
         }
 
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Canteen/Fn_Get_All_Category")]
+        public List<clsCouponItem> Fn_Get_All_Category(clsCouponItem objReq)
+        {
+            var objResp = new List<clsCouponItem>();
+            objResp = _DALCanteen.Fn_Get_All_Category(objReq);
+            return objResp;
+        }
 
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Canteen/Fn_Get_All_MenuItems")]
+        public List<clMenuItems> Fn_Get_All_MenuItems(clMenuItems objReq)
+        {
+            var objResp = new List<clMenuItems>();
+            objResp = _DALCanteen.Fn_Get_All_MenuItems(objReq);
+            return objResp;
+        }
     }
 }

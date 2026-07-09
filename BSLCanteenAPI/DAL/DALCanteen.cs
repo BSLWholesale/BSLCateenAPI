@@ -219,7 +219,7 @@ namespace BSLCanteenAPI.DAL
                 {
                     strSql = strSql + " AND OrdStatus = @OrderStatus ";
                 }
-                strSql = strSql + " ORDER BY OrdTakenDate, CoupIssueDate DESC ";
+                strSql = strSql + " ORDER BY OrdTakenDate DESC, CoupIssueDate DESC ";
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
                 if (objReq.EmpId != 0 && objReq.EmpId != null)
@@ -481,6 +481,116 @@ namespace BSLCanteenAPI.DAL
             return objResp;
         }
 
+        public List<clsCouponItem> Fn_Get_All_Category(clsCouponItem objReq)
+        {
+            var objResp = new List<clsCouponItem>();
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_GetMenu", Con);
+                cmd.CommandType = CommandType.StoredProcedure;;
+                cmd.Parameters.AddWithValue("@QueryType", "SelectCategory");
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        var objItem = new clsCouponItem();
+                        objItem.ItemCategory = Convert.ToString(ds.Tables[0].Rows[i]["Category"]);
+                        objItem.vErrorMsg = "Success";
+                        objItem.vErrorCode = 200;
+                        objResp.Add(objItem);
+                        i++;
+                    }
+                }
+                else
+                {
+                    var objItem = new clsCouponItem();
+                    objItem.vErrorMsg = "ItemCategory not found.";
+                    objItem.vErrorCode = 400;
+                    objResp.Add(objItem);
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Get_All_Category", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                var objItem = new clsCouponItem();
+                objItem.vErrorMsg = exp.Message.ToString();
+                objItem.vErrorCode = 500;
+                objResp.Add(objItem);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+        public List<clMenuItems> Fn_Get_All_MenuItems(clMenuItems objReq)
+        {
+            var objResp = new List<clMenuItems>();
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_GetMenu", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@Category", objReq.Category);
+                cmd.Parameters.AddWithValue("@QueryType", "Select_MenuItem");
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        var objItem = new clMenuItems();
+                        objItem.ItemId = Convert.ToInt32(ds.Tables[0].Rows[i]["ItemId"]);
+                        objItem.ItemName = Convert.ToString(ds.Tables[0].Rows[i]["ItemName"]);
+                        objItem.Category = Convert.ToString(ds.Tables[0].Rows[i]["Category"]);
+                        objItem.Price = Convert.ToDecimal(ds.Tables[0].Rows[i]["Price"]);
+                        objItem.Category = Convert.ToString(ds.Tables[0].Rows[i]["Category"]);
+                        objItem.vErrorMsg = "Success";
+                        objItem.vErrorCode = 200;
+                        objResp.Add(objItem);
+                        i++;
+                    }
+                }
+                else
+                {
+                    var objItem = new clMenuItems();
+                    objItem.vErrorMsg = "Menu item not found.";
+                    objItem.vErrorCode = 400;
+                    objResp.Add(objItem);
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Get_All_Category", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                var objItem = new clMenuItems();
+                objItem.vErrorMsg = exp.Message.ToString();
+                objItem.vErrorCode = 500;
+                objResp.Add(objItem);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
 
     }
 }
