@@ -311,6 +311,7 @@ namespace BSLCanteenAPI.DAL
             var objCheck = new List<clsCouponReport>();
             var obj = new clsCouponReport();
             obj.CouponId = objReq.CouponId;
+            obj.CanteenId = objReq.CanteenId;
             objCheck = Fn_Get_Coupon_Order(obj);
             try
             {
@@ -329,11 +330,11 @@ namespace BSLCanteenAPI.DAL
                     objResp.vErrorMsg = "Wrong canteen";
                     objResp.vErrorCode = 400;
                 }
-                else if (objReq.ItemCategory != objCheck[0].ItemCategory)
-                {
-                    objResp.vErrorMsg = "Please Select Correct ItemCategory";
-                    objResp.vErrorCode = 400;
-                }
+                //else if (objReq.ItemCategory != objCheck[0].ItemCategory)
+                //{
+                //    objResp.vErrorMsg = "Please Select Correct ItemCategory";
+                //    objResp.vErrorCode = 400;
+                //}
                 else if (objCheck[0].OrderStatus == "Scanned")
                 {
                     objResp.vErrorMsg = "Coupon already scanned";
@@ -355,7 +356,7 @@ namespace BSLCanteenAPI.DAL
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@CouponId", objReq.CouponId);
                     cmd.Parameters.AddWithValue("@ItemCategory", objReq.ItemCategory);
-                    cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                    cmd.Parameters.AddWithValue("@ModifiedBy", objReq.ModifiedBy);
                     cmd.Parameters.AddWithValue("@OrderStatus", "Scanned");
                     cmd.Parameters.AddWithValue("@QueryType", "TransactionCouponId");
                     int i = cmd.ExecuteNonQuery();
