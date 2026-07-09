@@ -29,13 +29,15 @@ namespace BSLCanteenAPI.Models
     public class clMenuItems
     {
         public Int32 ItemId { get; set; }
+        public string Category { get; set; }
         public string ItemName { get; set; }
-        public string Price { get; set; }
+        public decimal Price { get; set; }
         public int CreatedBy { get; set; }
         public string CreatedOn { get; set; }
         public int ModifiedBy { get; set; }
         public string ModifiedOn { get; set; }
         public string vErrorMsg { get; set; }
+        public int vErrorCode { get; set; }
     }
 
 
