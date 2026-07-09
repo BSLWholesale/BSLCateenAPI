@@ -194,7 +194,7 @@ namespace BSLCanteenAPI.DAL
                 { Con.Open(); }
 
                 string strSql = "SELECT CouponId, ItemCategory, CoupIssueDate, CoupIssueTime, OrdTakenDate, OrdTakenTime, OrdStatus, CanteenId, CanteenName, ";
-                strSql = strSql + " EmployeeId, EmpName, CreatedBy  FROM  vCouponOrder WHERE 1=1 ";
+                strSql = strSql + " EmployeeId, EmpName, CreatedBy, ModifiedBy FROM vCouponOrder WHERE 1=1 ";
                 if (objReq.EmpId != 0 && objReq.EmpId != null)
                 {
                     strSql = strSql + " AND EmployeeId = @EmpId ";
@@ -218,6 +218,10 @@ namespace BSLCanteenAPI.DAL
                 if (!String.IsNullOrWhiteSpace(objReq.OrderStatus))
                 {
                     strSql = strSql + " AND OrdStatus = @OrderStatus ";
+                }
+                if (objReq.ModifiedBy != 0 && objReq.ModifiedBy != null)
+                {
+                    strSql = strSql + " AND ModifiedBy = @ModifiedBy";
                 }
                 strSql = strSql + " ORDER BY OrdTakenDate, CoupIssueDate DESC ";
                 SqlCommand cmd = new SqlCommand(strSql, Con);
@@ -245,6 +249,10 @@ namespace BSLCanteenAPI.DAL
                 if (!String.IsNullOrWhiteSpace(objReq.OrderStatus))
                 {
                     cmd.Parameters.AddWithValue("@OrderStatus", objReq.OrderStatus);
+                }
+                if (objReq.ModifiedBy != 0 && objReq.ModifiedBy != null)
+                {
+                    cmd.Parameters.AddWithValue("@ModifiedBy", objReq.ModifiedBy);
                 }
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
