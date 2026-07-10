@@ -82,5 +82,41 @@ namespace BSLCanteenAPI.Controllers
             objResp = _DALEmployee.Fn_Fill_DropdownList(objReq);
             return objResp;
         }
+
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Employee/Fn_Upload_BulkEmployeeData")]
+        public List<clsEmployee> Fn_Upload_BulkEmployeeData(List<clsEmployee> emplist)
+        {
+            var objResp = new List<clsEmployee>();
+            int success = 0;
+            int failed = 0;
+
+            foreach (var emp in emplist)
+            {
+                var result = Fn_Upload_BulkEmployeeData_List(emp);
+                if (result.vErrorMsg == "Sucess")
+                {
+                    success++;
+                }
+                else
+                {
+                    failed++;
+                }
+            }
+            return objResp;
+        }
+
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Employee/Fn_Upload_BulkEmployeeData_List")]
+        public clsEmployee Fn_Upload_BulkEmployeeData_List(clsEmployee objReq)
+        {
+            var objResp = new clsEmployee();
+            objResp = _DALEmployee.Fn_Upload_BulkEmployeeData_List(objReq);
+            return objResp;
+        }
+
+
     }
 }
