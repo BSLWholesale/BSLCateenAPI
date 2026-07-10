@@ -405,5 +405,51 @@ namespace BSLCanteenAPI.DAL
             return objResp;
         }
 
+
+        public clsEmployee Fn_Upload_BulkEmployeeData_List(clsEmployee objReq)
+        {
+            var objResp = new clsEmployee();
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_BulkEmpDataImport", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@EmployeeId", objReq.EmpId);
+                cmd.Parameters.AddWithValue("@EmpName", objReq.EmpName);
+                cmd.Parameters.AddWithValue("@EmpLocation", objReq.EmpLocation);
+                cmd.Parameters.AddWithValue("@Department", objReq.Department);
+                cmd.Parameters.AddWithValue("@EmpRole", objReq.EmpRole);
+                cmd.Parameters.AddWithValue("@CateenId", objReq.CanteenId);
+                cmd.Parameters.AddWithValue("@EmpMobile", objReq.EmpMobile);
+
+                int i = 0;
+                i = cmd.ExecuteNonQuery();
+                if (i > 0)
+                {
+                    objResp.vErrorMsg = "Success";
+                }
+                else
+                {
+                    objResp.vErrorMsg = "Failed";
+                }                
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Upload_BulkEmployeeData_List", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+
+
     }
 }
