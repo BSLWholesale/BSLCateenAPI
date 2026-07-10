@@ -116,5 +116,15 @@ namespace BSLCanteenAPI.Models
         public string ModifiedOn { get; set; }
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
+        public string OrderByReport { get; set; }
+    }
+
+    public class clsReportReq
+    {
+        public int CanteenId { get; set; }
+        public Int32 EmpId { get; set; }
+        public string FromDate { get; set; }
+        public string ToDate { get; set; }
+        public string ItemCategory { get; set; }
     }
 }
