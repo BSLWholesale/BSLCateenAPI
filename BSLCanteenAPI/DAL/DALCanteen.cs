@@ -8,6 +8,7 @@ using System.Linq;
 using System.Web;
 using BSLCanteenAPI.DAL;
 using BSLCanteenAPI.Models;
+using Newtonsoft.Json;
 
 namespace BSLCanteenAPI.DAL
 {
@@ -20,6 +21,7 @@ namespace BSLCanteenAPI.DAL
         public clsCouponOrder Fn_Emp_CouponGeneration(clsCouponOrder objReq)
         {
             var objResp = new clsCouponOrder();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Emp_CouponGeneration");
             try
             {
                 if (objReq.EmpId == null || objReq.EmpId == 0)
@@ -85,6 +87,7 @@ namespace BSLCanteenAPI.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Emp_CouponGeneration");
             return objResp;
         }
 
@@ -126,6 +129,7 @@ namespace BSLCanteenAPI.DAL
         public List<clsCouponOrder> Fn_Fetch_EmpCouponId(clsCouponOrder objReq)
         {
             var objResp = new List<clsCouponOrder>();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Fetch_EmpCouponId");
             try
             {
                 if (Con.State == ConnectionState.Broken)
@@ -178,6 +182,7 @@ namespace BSLCanteenAPI.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Emp_CouponGeneration");
             return objResp;
         }
 
@@ -186,6 +191,7 @@ namespace BSLCanteenAPI.DAL
         {
             var objResp = new List<clsCouponReport>();
             var obj = new clsCouponReport();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_Coupon_Order");
             try
             {
                 if (Con.State == ConnectionState.Broken)
@@ -303,11 +309,13 @@ namespace BSLCanteenAPI.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_Coupon_Order");
             return objResp;
         }
 
         public clsCouponReport Fn_ProcessCouponTransaction(clsCouponReport objReq)
         {
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_ProcessCouponTransaction");
             var objResp = new clsCouponReport();
             var objCheck = new List<clsCouponReport>();
             var obj = new clsCouponReport();
@@ -383,12 +391,14 @@ namespace BSLCanteenAPI.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_ProcessCouponTransaction");
             return objResp;
         }
 
         public clsResponseDropdown Fn_Get_Count_Record(clsRequestDropdown objReq)
         {
             var objResp = new clsResponseDropdown();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_Count_Record");
             try
             {
                 string strSql = "";
@@ -430,12 +440,14 @@ namespace BSLCanteenAPI.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_Count_Record");
             return objResp;
         }
 
         public List<clsCouponReport> Fn_Fetch_EmpReportSummary(clsCouponReport objReq)
         {
             var objResp = new List<clsCouponReport>();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Fetch_EmpReportSummary");
             try
             {
                 if (Con.State == ConnectionState.Broken)
@@ -488,12 +500,14 @@ namespace BSLCanteenAPI.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Fetch_EmpReportSummary");
             return objResp;
         }
 
         public List<clsCouponItem> Fn_Get_All_Category(clsCouponItem objReq)
         {
             var objResp = new List<clsCouponItem>();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_All_Category");
             try
             {
                 if (Con.State == ConnectionState.Broken)
@@ -541,12 +555,14 @@ namespace BSLCanteenAPI.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_All_Category");
             return objResp;
         }
 
         public List<clMenuItems> Fn_Get_All_MenuItems(clMenuItems objReq)
         {
             var objResp = new List<clMenuItems>();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_All_MenuItems");
             try
             {
                 if (Con.State == ConnectionState.Broken)
@@ -599,6 +615,7 @@ namespace BSLCanteenAPI.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_All_MenuItems");
             return objResp;
         }
 
