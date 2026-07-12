@@ -119,12 +119,26 @@ namespace BSLCanteenAPI.Models
         public string OrderByReport { get; set; }
     }
 
-    public class clsReportReq
+    public class clsMonthlyReportReq
     {
         public int CanteenId { get; set; }
+        public string CanteenName { get; set; }
         public Int32 EmpId { get; set; }
         public string FromDate { get; set; }
         public string ToDate { get; set; }
+        public string OrderTakenDate { get; set; }
+        public string OrderStatus { get; set; }
         public string ItemCategory { get; set; }
+    }
+    public class clsMonthlyReportResp
+    {
+        public int CanteenId { get; set; }
+        public string CanteenName { get; set; }
+        public string ItemCategory { get; set; }
+        public string OrderTakenDate { get; set; }
+        public int TotalCoupons { get; set; }
+        public decimal TotalPrice { get; set; }
+        public string vErrorMsg { get; set; }
+        public int vErrorCode { get; set; }
     }
 }

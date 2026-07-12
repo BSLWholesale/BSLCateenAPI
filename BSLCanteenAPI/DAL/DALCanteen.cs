@@ -619,10 +619,11 @@ namespace BSLCanteenAPI.DAL
             return objResp;
         }
 
-        public List<clsCouponReport> Fn_Monthly_Report(clsReportReq objReq)
+        public List<clsMonthlyReportResp> Fn_Monthly_Report(clsMonthlyReportReq objReq)
         {
-            var objResp = new List<clsCouponReport>();
-            var obj = new clsCouponReport();
+            var objResp = new List<clsMonthlyReportResp>();
+            var obj = new clsMonthlyReportResp();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Request", "Fn_Monthly_Report");
             try
             {
                 if (Con.State == ConnectionState.Broken)
@@ -630,35 +631,41 @@ namespace BSLCanteenAPI.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT CouponId, ItemCategory, Price, CoupIssueDate, CoupIssueTime, OrdTakenDate, OrdTakenTime, OrdStatus, CanteenId, CanteenName, ";
-                strSql = strSql + " EmployeeId, EmpName, CreatedBy, ModifiedBy FROM vCouponOrder WHERE 1=1 ";
-                if (objReq.EmpId != 0 && objReq.EmpId != null)
-                {
-                    strSql = strSql + " AND EmployeeId = @EmpId ";
-                }
+                string strSql = "SELECT CanteenId, CanteenName, ItemCategory, OrdTakenDate, COUNT(CouponId) AS TotalCoupons, ";
+                strSql = strSql + " SUM(Price) AS TotalPrice FROM vCouponOrder WHERE 1=1 AND OrdStatus = 'Scanned' ";
+                
                 if (objReq.CanteenId != 0 && objReq.CanteenId != null)
                 {
                     strSql = strSql + " AND CanteenId = @CanteenId ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.CanteenName))
+                {
+                    strSql = strSql + " AND CanteenName = @CanteenName ";
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.ItemCategory))
                 {
                     strSql = strSql + " AND ItemCategory = @ItemCategory ";
                 }
+                if (!String.IsNullOrWhiteSpace(objReq.OrderTakenDate))
+                {
+                    strSql = strSql + " AND OrdTakenDate='" + objReq.OrderTakenDate + "'";
+                }
                 if (!String.IsNullOrWhiteSpace(objReq.FromDate) && !String.IsNullOrWhiteSpace(objReq.ToDate))
                 {
                     strSql = strSql + " AND OrdTakenDate BETWEEN '" + objReq.FromDate + "' AND '" + objReq.ToDate + "'";
                 }
-                
-                strSql = strSql + " ORDER BY OrdTakenDate DESC, CoupIssueDate DESC, CanteenName, ItemCategory ";
+                strSql = strSql + " GROUP BY  CanteenId, CanteenName, ItemCategory, OrdTakenDate ";
+                strSql = strSql + " ORDER BY  OrdTakenDate DESC, CanteenName, ItemCategory ";
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
-                if (objReq.EmpId != 0 && objReq.EmpId != null)
-                {
-                    cmd.Parameters.AddWithValue("@EmpId", objReq.EmpId);
-                }
+                
                 if (objReq.CanteenId != 0 && objReq.CanteenId != null)
                 {
                     cmd.Parameters.AddWithValue("@CanteenId", objReq.CanteenId);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.CanteenName))
+                {
+                    cmd.Parameters.AddWithValue("@CanteenName", objReq.CanteenName);
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.ItemCategory))
                 {
@@ -673,20 +680,14 @@ namespace BSLCanteenAPI.DAL
                 {
                     while (ds.Tables[0].Rows.Count > i)
                     {
-                        obj = new clsCouponReport();
-                        obj.CouponId = Convert.ToInt64(ds.Tables[0].Rows[i]["CouponId"]);
-                        obj.ItemCategory = Convert.ToString(ds.Tables[0].Rows[i]["ItemCategory"]);
-                        obj.CouponIssueDate = Convert.ToString(ds.Tables[0].Rows[i]["CoupIssueDate"]);
-                        obj.CouponIssueTime = Convert.ToString(ds.Tables[0].Rows[i]["CoupIssueTime"]);
-                        obj.OrderTakenDate = Convert.ToString(ds.Tables[0].Rows[i]["OrdTakenDate"]);
-                        obj.OrderTakenTime = Convert.ToString(ds.Tables[0].Rows[i]["OrdTakenTime"]);
-                        obj.OrderStatus = Convert.ToString(ds.Tables[0].Rows[i]["OrdStatus"]);
+                        obj = new clsMonthlyReportResp();
+
                         obj.CanteenId = Convert.ToInt32(ds.Tables[0].Rows[i]["CanteenId"]);
                         obj.CanteenName = Convert.ToString(ds.Tables[0].Rows[i]["CanteenName"]);
-                        obj.EmpId = Convert.ToInt32(ds.Tables[0].Rows[i]["EmployeeId"]);
-                        obj.EmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
-                        obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
-                        obj.Price = Convert.ToInt32(ds.Tables[0].Rows[i]["Price"]);
+                        obj.ItemCategory = Convert.ToString(ds.Tables[0].Rows[i]["ItemCategory"]);
+                        obj.OrderTakenDate = Convert.ToString(ds.Tables[0].Rows[i]["OrdTakenDate"]);
+                        obj.TotalCoupons = Convert.ToInt32(ds.Tables[0].Rows[i]["TotalCoupons"]);
+                        obj.TotalPrice = Convert.ToDecimal(ds.Tables[0].Rows[i]["TotalPrice"]);
                         obj.vErrorMsg = "Success";
                         obj.vErrorCode = 200;
                         objResp.Add(obj);
@@ -702,7 +703,7 @@ namespace BSLCanteenAPI.DAL
             }
             catch (Exception exp)
             {
-                Logger.WriteLog("Function Name : Fn_Get_All_Category", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                Logger.WriteLog("Function Name : Fn_Monthly_Report", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
                 
                 obj.vErrorMsg = exp.Message.ToString();
                 obj.vErrorCode = 500;

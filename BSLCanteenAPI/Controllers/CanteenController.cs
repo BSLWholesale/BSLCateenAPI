@@ -88,5 +88,14 @@ namespace BSLCanteenAPI.Controllers
             objResp = _DALCanteen.Fn_Get_All_MenuItems(objReq);
             return objResp;
         }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Canteen/Fn_Monthly_Report")]
+        public List<clsMonthlyReportResp> Fn_Monthly_Report(clsMonthlyReportReq objReq)
+        {
+            var objResp = new List<clsMonthlyReportResp>();
+            objResp = _DALCanteen.Fn_Monthly_Report(objReq);
+            return objResp;
+        }
     }
 }
