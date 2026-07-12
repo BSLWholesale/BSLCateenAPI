@@ -619,11 +619,11 @@ namespace BSLCanteenAPI.DAL
             return objResp;
         }
 
-        public List<clsMonthlyReportResp> Fn_Monthly_Report(clsMonthlyReportReq objReq)
+        public List<clsMonthlyReportResp> Fn_CanteenWise_Report(clsMonthlyReportReq objReq)
         {
             var objResp = new List<clsMonthlyReportResp>();
             var obj = new clsMonthlyReportResp();
-            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Request", "Fn_Monthly_Report");
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Request", "Fn_CanteenWise_Report");
             try
             {
                 if (Con.State == ConnectionState.Broken)
@@ -703,7 +703,7 @@ namespace BSLCanteenAPI.DAL
             }
             catch (Exception exp)
             {
-                Logger.WriteLog("Function Name : Fn_Monthly_Report", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                Logger.WriteLog("Function Name : Fn_CanteenWise_Report", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
                 
                 obj.vErrorMsg = exp.Message.ToString();
                 obj.vErrorCode = 500;
@@ -713,9 +713,108 @@ namespace BSLCanteenAPI.DAL
             {
                 Con.Close();
             }
-            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Monthly_Report");
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_CanteenWise_Report");
             return objResp;
         }
 
+        public List<clsMonthlyReportResp> Fn_EmployeeWise_Report(clsMonthlyReportReq objReq)
+        {
+            var objResp = new List<clsMonthlyReportResp>();
+            var obj = new clsMonthlyReportResp();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Request", "Fn_EmployeeWise_Report");
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string strSql = "SELECT EmployeeId, EmpName, CanteenId, CanteenName, ItemCategory, OrdTakenDate, COUNT(CouponId) AS TotalCoupons,  ";
+                strSql = strSql + " SUM(Price) AS TotalPrice FROM vCouponOrder WHERE 1=1 AND OrdStatus = 'Scanned' ";
+
+                if (objReq.CanteenId != 0 && objReq.CanteenId != null)
+                {
+                    strSql = strSql + " AND CanteenId = @CanteenId ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.CanteenName))
+                {
+                    strSql = strSql + " AND CanteenName = @CanteenName ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.ItemCategory))
+                {
+                    strSql = strSql + " AND ItemCategory = @ItemCategory ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.OrderTakenDate))
+                {
+                    strSql = strSql + " AND OrdTakenDate='" + objReq.OrderTakenDate + "'";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.FromDate) && !String.IsNullOrWhiteSpace(objReq.ToDate))
+                {
+                    strSql = strSql + " AND OrdTakenDate BETWEEN '" + objReq.FromDate + "' AND '" + objReq.ToDate + "'";
+                }
+                strSql = strSql + " GROUP BY EmployeeId, EmpName, CanteenId, CanteenName, ItemCategory, OrdTakenDate ";
+                strSql = strSql + " ORDER BY EmpName, CanteenName, ItemCategory , OrdTakenDate DESC ";
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+
+                if (objReq.CanteenId != 0 && objReq.CanteenId != null)
+                {
+                    cmd.Parameters.AddWithValue("@CanteenId", objReq.CanteenId);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.CanteenName))
+                {
+                    cmd.Parameters.AddWithValue("@CanteenName", objReq.CanteenName);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.ItemCategory))
+                {
+                    cmd.Parameters.AddWithValue("@ItemCategory", objReq.ItemCategory);
+                }
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsMonthlyReportResp();
+
+                        obj.CanteenId = Convert.ToInt32(ds.Tables[0].Rows[i]["CanteenId"]);
+                        obj.CanteenName = Convert.ToString(ds.Tables[0].Rows[i]["CanteenName"]);
+                        obj.EmpId = Convert.ToInt32(ds.Tables[0].Rows[i]["EmployeeId"]);
+                        obj.EmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
+                        obj.ItemCategory = Convert.ToString(ds.Tables[0].Rows[i]["ItemCategory"]);
+                        obj.OrderTakenDate = Convert.ToString(ds.Tables[0].Rows[i]["OrdTakenDate"]);
+                        obj.TotalCoupons = Convert.ToInt32(ds.Tables[0].Rows[i]["TotalCoupons"]);
+                        obj.TotalPrice = Convert.ToDecimal(ds.Tables[0].Rows[i]["TotalPrice"]);
+                        obj.vErrorMsg = "Success";
+                        obj.vErrorCode = 200;
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorMsg = "No Record Found.";
+                    obj.vErrorCode = 400;
+                    objResp.Add(obj);
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_EmployeeWise_Report", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+
+                obj.vErrorMsg = exp.Message.ToString();
+                obj.vErrorCode = 500;
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_EmployeeWise_Report");
+            return objResp;
+        }
     }
 }

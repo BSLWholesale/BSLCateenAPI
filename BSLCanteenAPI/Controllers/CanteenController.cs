@@ -90,11 +90,20 @@ namespace BSLCanteenAPI.Controllers
         }
 
         [System.Web.Http.HttpPost]
-        [System.Web.Http.Route("api/Canteen/Fn_Monthly_Report")]
-        public List<clsMonthlyReportResp> Fn_Monthly_Report(clsMonthlyReportReq objReq)
+        [System.Web.Http.Route("api/Canteen/Fn_CanteenWise_Report")]
+        public List<clsMonthlyReportResp> Fn_CanteenWise_Report(clsMonthlyReportReq objReq)
         {
             var objResp = new List<clsMonthlyReportResp>();
-            objResp = _DALCanteen.Fn_Monthly_Report(objReq);
+            objResp = _DALCanteen.Fn_CanteenWise_Report(objReq);
+            return objResp;
+        }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Canteen/Fn_EmployeeWise_Report")]
+        public List<clsMonthlyReportResp> Fn_EmployeeWise_Report(clsMonthlyReportReq objReq)
+        {
+            var objResp = new List<clsMonthlyReportResp>();
+            objResp = _DALCanteen.Fn_EmployeeWise_Report(objReq);
             return objResp;
         }
     }

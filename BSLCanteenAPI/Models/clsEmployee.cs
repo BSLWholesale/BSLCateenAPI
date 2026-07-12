@@ -134,6 +134,8 @@ namespace BSLCanteenAPI.Models
     {
         public int CanteenId { get; set; }
         public string CanteenName { get; set; }
+        public Int32 EmpId { get; set; }
+        public string EmpName { get; set; }
         public string ItemCategory { get; set; }
         public string OrderTakenDate { get; set; }
         public int TotalCoupons { get; set; }
