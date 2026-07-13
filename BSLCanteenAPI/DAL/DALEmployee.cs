@@ -90,15 +90,19 @@ namespace BSLCanteenAPI.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
+                string EncryptPassword = Generic.EncryptText(objReq.EmpPassword);
+
                 SqlCommand cmd = new SqlCommand("USP_Employee", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@EmpId", objReq.EmpId);
                 cmd.Parameters.AddWithValue("@EmpName", objReq.EmpName);
                 cmd.Parameters.AddWithValue("@Department", objReq.Department);
-                cmd.Parameters.AddWithValue("@Salary", objReq.Salary);
-                cmd.Parameters.AddWithValue("@EmpPassword", objReq.EmpPassword);
                 cmd.Parameters.AddWithValue("@EmpMobile", objReq.EmpMobile);
+                cmd.Parameters.AddWithValue("@EmpPassword", EncryptPassword);
+                cmd.Parameters.AddWithValue("@EmpRole", objReq.EmpRole);
                 cmd.Parameters.AddWithValue("@EmpLocation", objReq.EmpLocation);
+                cmd.Parameters.AddWithValue("@CanteenId", objReq.CanteenId);
+                cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
                 cmd.Parameters.AddWithValue("@QueryType", "InsertEmployee");
 
                 int i = 0;
@@ -111,7 +115,7 @@ namespace BSLCanteenAPI.DAL
                 else
                 {
                     objResp.vErrorCode = 400;
-                    objResp.vErrorMsg = "Employee Insertion failed";
+                    objResp.vErrorMsg = "Employee/Worker Insertion failed";
                 }
             }
             catch (Exception exp)
