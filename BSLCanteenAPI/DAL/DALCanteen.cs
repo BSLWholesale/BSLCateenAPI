@@ -339,11 +339,6 @@ namespace BSLCanteenAPI.DAL
                     objResp.vErrorMsg = "Wrong canteen";
                     objResp.vErrorCode = 400;
                 }
-                //else if (objReq.ItemCategory != objCheck[0].ItemCategory)
-                //{
-                //    objResp.vErrorMsg = "Please Select Correct ItemCategory";
-                //    objResp.vErrorCode = 400;
-                //}
                 else if (objCheck[0].OrderStatus == "Scanned")
                 {
                     objResp.vErrorMsg = "Coupon already scanned";
@@ -632,7 +627,7 @@ namespace BSLCanteenAPI.DAL
                 { Con.Open(); }
 
                 string strSql = "SELECT CanteenId, CanteenName, ItemCategory, OrdTakenDate, COUNT(CouponId) AS TotalCoupons, ";
-                strSql = strSql + " SUM(Price) AS TotalPrice FROM vCouponOrder WHERE 1=1 AND OrdStatus = 'Scanned' ";
+                strSql = strSql + " SUM(Price) AS TotalPrice, FORMAT(OrderDate, 'dd-MMM-yyyy') AS OrderDate FROM vCouponOrder WHERE 1=1 AND OrdStatus = 'Scanned' ";
                 
                 if (objReq.CanteenId != 0 && objReq.CanteenId != null)
                 {
@@ -652,9 +647,9 @@ namespace BSLCanteenAPI.DAL
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.FromDate) && !String.IsNullOrWhiteSpace(objReq.ToDate))
                 {
-                    strSql = strSql + " AND OrdTakenDate BETWEEN '" + objReq.FromDate + "' AND '" + objReq.ToDate + "'";
-                }
-                strSql = strSql + " GROUP BY  CanteenId, CanteenName, ItemCategory, OrdTakenDate ";
+                    strSql = strSql + " AND OrderDate BETWEEN '" + objReq.FromDate + "' AND '" + objReq.ToDate + "'";
+                }                
+                strSql = strSql + " GROUP BY  CanteenId, CanteenName, ItemCategory, OrdTakenDate, OrderDate ";
                 strSql = strSql + " ORDER BY  OrdTakenDate DESC, CanteenName, ItemCategory ";
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
@@ -751,7 +746,7 @@ namespace BSLCanteenAPI.DAL
                 if (!String.IsNullOrWhiteSpace(objReq.FromDate) && !String.IsNullOrWhiteSpace(objReq.ToDate))
                 {
                     strSql = strSql + " AND OrdTakenDate BETWEEN '" + objReq.FromDate + "' AND '" + objReq.ToDate + "'";
-                }
+                }                
                 strSql = strSql + " GROUP BY EmployeeId, EmpName, CanteenId, CanteenName, ItemCategory, OrdTakenDate ";
                 strSql = strSql + " ORDER BY EmpName, CanteenName, ItemCategory , OrdTakenDate DESC ";
                 SqlCommand cmd = new SqlCommand(strSql, Con);

@@ -129,6 +129,7 @@ namespace BSLCanteenAPI.Models
         public string OrderTakenDate { get; set; }
         public string OrderStatus { get; set; }
         public string ItemCategory { get; set; }
+        public string ReportType { get; set; }
     }
     public class clsMonthlyReportResp
     {
