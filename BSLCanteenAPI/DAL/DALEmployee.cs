@@ -295,7 +295,7 @@ namespace BSLCanteenAPI.DAL
 
                 SqlCommand cmd = new SqlCommand("USP_Employee", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@QueryType", "FetchEmployee");
+                cmd.Parameters.AddWithValue("@QueryType", "FetchAllEmployee");
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
                 da.Fill(ds);
@@ -306,8 +306,39 @@ namespace BSLCanteenAPI.DAL
                     while (ds.Tables[0].Rows.Count > i)
                     {
                         var objItem = new clsEmployee();
-                        objItem.EmpId = Convert.ToInt64(ds.Tables[0].Rows[i][0]);
-                        objItem.EmpName = Convert.ToString(ds.Tables[0].Rows[i][0]);
+                        objItem.EmpId = Convert.ToInt64(ds.Tables[0].Rows[i]["EmployeeId"]);
+                        objItem.EmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
+                        
+                        if (ds.Tables[0].Rows[i]["Department"] == null)
+                        {
+                            objItem.Department = string.Empty;
+                        }
+                        else
+                        {
+                            objItem.Department = Convert.ToString(ds.Tables[0].Rows[i]["Department"]);
+                        }                       
+
+                        if (ds.Tables[0].Rows[i]["EmpMobile"] == null)
+                        {
+                            objItem.EmpMobile = string.Empty;
+                        }
+                        else
+                        {
+                            objItem.EmpMobile = Convert.ToString(ds.Tables[0].Rows[i]["EmpMobile"]);
+                        }
+                        
+                        objItem.EmpLocation = Convert.ToString(ds.Tables[0].Rows[i]["EmpLocation"]);
+
+                        if (ds.Tables[0].Rows[i]["EmpRole"] == null)
+                        {
+                            objItem.EmpMobile = string.Empty;
+                        }
+                        else
+                        {
+                            objItem.EmpRole = Convert.ToString(ds.Tables[0].Rows[i]["EmpRole"]);
+                        }
+
+                        objItem.CanteenName = Convert.ToString(ds.Tables[0].Rows[i]["CanteenName"]);
                         objItem.vErrorMsg = "Success";
                         objResp.Add(objItem);
                         i++;
