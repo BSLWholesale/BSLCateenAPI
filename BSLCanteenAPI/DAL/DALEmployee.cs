@@ -176,11 +176,48 @@ namespace BSLCanteenAPI.DAL
                         obj = new clsEmployee();
                         obj.EmpId = Convert.ToInt64(ds.Tables[0].Rows[i]["EmployeeId"]);
                         obj.EmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
-                        obj.EmpMobile = Convert.ToString(ds.Tables[0].Rows[i]["EmpMobile"]);
-                        obj.Department = Convert.ToString(ds.Tables[0].Rows[i]["Department"]);
+                        
+                        if (ds.Tables[0].Rows[i]["EmpMobile"] == null)
+                        {
+                            obj.EmpMobile = string.Empty;
+                        }
+                        else
+                        {
+                            obj.EmpMobile = Convert.ToString(ds.Tables[0].Rows[i]["EmpMobile"]);
+                        }
+
+                        if (ds.Tables[0].Rows[i]["Department"] == null)
+                        {
+                            obj.Department = string.Empty;
+                        }
+                        else
+                        {
+                            obj.Department = Convert.ToString(ds.Tables[0].Rows[i]["Department"]);
+                        }
+
                         obj.EmpLocation = Convert.ToString(ds.Tables[0].Rows[i]["EmpLocation"]);
                         obj.CanteenId = Convert.ToInt32(ds.Tables[0].Rows[i]["CanteenId"]);
                         obj.CanteenName = Convert.ToString(ds.Tables[0].Rows[i]["CanteenName"]);
+
+                        if (ds.Tables[0].Rows[i]["EmpRole"] == null)
+                        {
+                            obj.EmpRole = string.Empty;
+                        }
+                        else
+                        {
+                            obj.EmpRole = Convert.ToString(ds.Tables[0].Rows[i]["EmpRole"]);
+                        }
+
+                        string decryptPassword = Generic.DecryptText(Convert.ToString(ds.Tables[0].Rows[i]["EmpPassword"]));
+                        if (ds.Tables[0].Rows[i]["EmpPassword"] == null)
+                        {
+                            obj.EmpPassword = string.Empty;
+                        }
+                        else
+                        {
+                            obj.EmpPassword = decryptPassword;
+                        }
+
                         obj.vErrorMsg = "Success";
                         obj.vErrorCode = 200;
                         objResp.Add(obj);
@@ -219,15 +256,19 @@ namespace BSLCanteenAPI.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
+                string EncryptPassword = Generic.EncryptText(objReq.EmpPassword);
+
                 SqlCommand cmd = new SqlCommand("USP_Employee", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@EmpId", objReq.EmpId);
                 cmd.Parameters.AddWithValue("@EmpName", objReq.EmpName);
                 cmd.Parameters.AddWithValue("@Department", objReq.Department);
-                cmd.Parameters.AddWithValue("@Salary", objReq.Salary);
-                cmd.Parameters.AddWithValue("@EmpPassword", objReq.EmpPassword);
-                cmd.Parameters.AddWithValue("@EmpMobile", objReq.EmpMobile);
+                cmd.Parameters.AddWithValue("@EmpMobile", objReq.EmpMobile);                
+                cmd.Parameters.AddWithValue("@EmpPassword", EncryptPassword);
+                cmd.Parameters.AddWithValue("@EmpRole", objReq.EmpRole);
                 cmd.Parameters.AddWithValue("@EmpLocation", objReq.EmpLocation);
+                cmd.Parameters.AddWithValue("@CanteenId", objReq.CanteenId);
+                cmd.Parameters.AddWithValue("@ModifiedBy", objReq.ModifiedBy);
                 cmd.Parameters.AddWithValue("@QueryType", "UpdateEmpDetails");
 
                 int i = 0;
