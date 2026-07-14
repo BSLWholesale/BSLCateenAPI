@@ -53,8 +53,25 @@ namespace BSLCanteenAPI.DAL
                     {
                         objResp.EmpId = Convert.ToInt64(ds.Tables[0].Rows[i]["EmployeeId"]);
                         objResp.EmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
-                        objResp.EmpMobile = Convert.ToString(ds.Tables[0].Rows[i]["EmpMobile"]);
-                        objResp.Department = Convert.ToString(ds.Tables[0].Rows[i]["Department"]);
+                        
+                        if (ds.Tables[0].Rows[i]["EmpMobile"] == null)
+                        {
+                            objResp.EmpMobile = string.Empty;
+                        }
+                        else
+                        {
+                            objResp.EmpMobile = Convert.ToString(ds.Tables[0].Rows[i]["EmpMobile"]);
+                        }
+
+                        if (ds.Tables[0].Rows[i]["Department"] == null)
+                        {
+                            objResp.Department = string.Empty;
+                        }
+                        else
+                        {
+                            objResp.Department = Convert.ToString(ds.Tables[0].Rows[i]["Department"]);
+                        }
+
                         objResp.EmpLocation = Convert.ToString(ds.Tables[0].Rows[i]["EmpLocation"]);
                         objResp.EmpRole = Convert.ToString(ds.Tables[0].Rows[i]["EmpRole"]);
                         objResp.CanteenId = Convert.ToInt32(ds.Tables[0].Rows[i]["CanteenId"]);
