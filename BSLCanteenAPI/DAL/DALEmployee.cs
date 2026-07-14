@@ -20,11 +20,19 @@ namespace BSLCanteenAPI.DAL
             var objResp = new clsEmployee();
             try
             {
-                if (objReq.EmpId == null || objReq.EmpId == 0 && objReq.EmpMobile == null || objReq.EmpMobile == "0")
+                if (objReq.EmpId == null || objReq.EmpId == 0) 
                 {
                     objResp.vErrorMsg = "Please Enter Employee ID";
                 }
-                else if (String.IsNullOrWhiteSpace(objReq.EmpPassword))
+                if (objReq.EmpMobile == null || objReq.EmpMobile == "0")
+                {
+                    objResp.vErrorMsg = "Please Enter Employee ID";
+                }
+                if (objReq.LoginID == null || objReq.LoginID == "0")
+                {
+                    objResp.vErrorMsg = "Please Enter Employee ID";
+                }
+                if (String.IsNullOrWhiteSpace(objReq.EmpPassword))
                 {
                     objResp.vErrorMsg = "Please Enter the Password";
                 }
@@ -39,10 +47,19 @@ namespace BSLCanteenAPI.DAL
 
                     SqlCommand cmd = new SqlCommand("USP_Employee", Con);
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@EmpId", objReq.EmpId);
-                    cmd.Parameters.AddWithValue("@EmpMobile", objReq.EmpMobile);
-                    cmd.Parameters.AddWithValue("@EmpPassword", encryptPassword);
-                    cmd.Parameters.AddWithValue("@QueryType", "Login");
+                    if (objReq.LoginID == null)
+                    {
+                        cmd.Parameters.AddWithValue("@EmpId", objReq.EmpId);
+                        cmd.Parameters.AddWithValue("@EmpMobile", objReq.EmpMobile);
+                        cmd.Parameters.AddWithValue("@EmpPassword", encryptPassword);
+                        cmd.Parameters.AddWithValue("@QueryType", "Login");
+                    }
+                    else
+                    {
+                        cmd.Parameters.AddWithValue("@LoginID", objReq.LoginID);
+                        cmd.Parameters.AddWithValue("@EmpPassword", encryptPassword);
+                        cmd.Parameters.AddWithValue("@QueryType", "LoginStaff");
+                    }
 
                     SqlDataAdapter da = new SqlDataAdapter(cmd);
                     DataSet ds = new DataSet();
@@ -53,7 +70,7 @@ namespace BSLCanteenAPI.DAL
                     {
                         objResp.EmpId = Convert.ToInt64(ds.Tables[0].Rows[i]["EmployeeId"]);
                         objResp.EmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
-                        
+
                         if (ds.Tables[0].Rows[i]["EmpMobile"] == null)
                         {
                             objResp.EmpMobile = string.Empty;
@@ -76,13 +93,23 @@ namespace BSLCanteenAPI.DAL
                         objResp.EmpRole = Convert.ToString(ds.Tables[0].Rows[i]["EmpRole"]);
                         objResp.CanteenId = Convert.ToInt32(ds.Tables[0].Rows[i]["CanteenId"]);
                         objResp.CanteenName = Convert.ToString(ds.Tables[0].Rows[i]["CanteenName"]);
+
+                        if (ds.Tables[0].Rows[i]["LoginID"] == null)
+                        {
+                            objResp.LoginID = string.Empty;
+                        }
+                        else
+                        {
+                            objResp.LoginID = Convert.ToString(ds.Tables[0].Rows[i]["LoginID"]);
+                        }
+
                         objResp.vErrorMsg = "Success";
                     }
                     else
                     {
                         objResp.vErrorMsg = "Entered Credentials has been invalid";
                     }
-                }
+                }                          
             }
             catch (Exception exp)
             {
