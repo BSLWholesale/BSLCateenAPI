@@ -106,5 +106,23 @@ namespace BSLCanteenAPI.Controllers
             objResp = _DALCanteen.Fn_EmployeeWise_Report(objReq);
             return objResp;
         }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Canteen/Fn_CanteenWise_Summery")]
+        public List<clsMonthlyReportResp> Fn_CanteenWise_Summery(clsMonthlyReportReq objReq)
+        {
+            var objResp = new List<clsMonthlyReportResp>();
+            objResp = _DALCanteen.Fn_CanteenWise_Summery(objReq);
+            return objResp;
+        }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Canteen/Fn_EmployeeWise_Summery")]
+        public List<clsMonthlyReportResp> Fn_EmployeeWise_Summery(clsMonthlyReportReq objReq)
+        {
+            var objResp = new List<clsMonthlyReportResp>();
+            objResp = _DALCanteen.Fn_EmployeeWise_Report(objReq);
+            return objResp;
+        }
     }
 }
