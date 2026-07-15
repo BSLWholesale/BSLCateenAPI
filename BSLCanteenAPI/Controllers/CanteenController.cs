@@ -121,7 +121,7 @@ namespace BSLCanteenAPI.Controllers
         public List<clsMonthlyReportResp> Fn_EmployeeWise_Summery(clsMonthlyReportReq objReq)
         {
             var objResp = new List<clsMonthlyReportResp>();
-            objResp = _DALCanteen.Fn_EmployeeWise_Report(objReq);
+            objResp = _DALCanteen.Fn_EmployeeWise_Summery(objReq);
             return objResp;
         }
     }

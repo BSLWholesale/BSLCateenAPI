@@ -926,7 +926,7 @@ namespace BSLCanteenAPI.DAL
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.FromDate) && !String.IsNullOrWhiteSpace(objReq.ToDate))
                 {
-                    strSql = strSql + " AND OrdTakenDate BETWEEN '" + objReq.FromDate + "' AND '" + objReq.ToDate + "'";
+                    strSql = strSql + " AND OrderDate BETWEEN '" + objReq.FromDate + "' AND '" + objReq.ToDate + "'";
                 }
                 strSql = strSql + " GROUP BY CanteenId, CanteenName, EmployeeId, EmpName ORDER BY EmpName, CanteenName ";
                 
