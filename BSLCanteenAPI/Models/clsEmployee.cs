@@ -52,6 +52,7 @@ namespace BSLCanteenAPI.Models
         public string OrderTakenDate { get; set; }
         public int CanteenId { get; set; }
         public string ItemCategory { get; set; }
+        public string EmpLocation { get; set; }
         public List<clsCouponItem> Items { get; set; }
         public int CreatedBy { get; set; }
         public string CreatedOn { get; set; }
