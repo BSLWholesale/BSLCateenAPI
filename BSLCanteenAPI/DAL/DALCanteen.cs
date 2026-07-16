@@ -209,7 +209,7 @@ namespace BSLCanteenAPI.DAL
                 { Con.Open(); }
 
                 string strSql = "SELECT CouponId, ItemCategory, Price, CoupIssueDate, CoupIssueTime, OrdTakenDate, OrdTakenTime, OrdStatus, CanteenId, CanteenName, ";
-                strSql = strSql + " EmployeeId, EmpName, CreatedBy, ModifiedBy FROM vCouponOrder WHERE 1=1 ";
+                strSql = strSql + " EmployeeId, EmpName, CreatedBy, CreatedOn, ModifiedBy, ModifiedOn FROM vCouponOrder WHERE 1=1 ";
                 if (objReq.EmpId != 0 && objReq.EmpId != null)
                 {
                     strSql = strSql + " AND EmployeeId = @EmpId ";
@@ -238,7 +238,7 @@ namespace BSLCanteenAPI.DAL
                 {
                     strSql = strSql + " AND ModifiedBy = @ModifiedBy";
                 }
-                strSql = strSql + " ORDER BY OrdTakenDate DESC, CoupIssueDate DESC ";
+                strSql = strSql + " ORDER BY ModifiedOn DESC  ";
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
                 if (objReq.EmpId != 0 && objReq.EmpId != null)
