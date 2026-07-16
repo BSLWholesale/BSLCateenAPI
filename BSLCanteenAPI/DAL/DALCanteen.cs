@@ -27,14 +27,22 @@ namespace BSLCanteenAPI.DAL
                 if (objReq.EmpId == null || objReq.EmpId == 0)
                 {
                     objResp.vErrorMsg = "Please Select the Valid Employee ID";
+                    objResp.vErrorCode = 400;
                 }
                 else if (objReq.CanteenId == null || objReq.CanteenId == 0)
                 {
                     objResp.vErrorMsg = "Please Select the Canteen ID";
+                    objResp.vErrorCode = 400;
+                }
+                else if (String.IsNullOrWhiteSpace(objReq.EmpLocation))
+                {
+                    objResp.vErrorMsg = "Please Select EmpLocation";
+                    objResp.vErrorCode = 400;
                 }
                 else if (objReq.Items == null || objReq.Items.Count == 0)
                 {
-                    objResp.vErrorMsg = "Please Select At Least One Item.";
+                    objResp.vErrorMsg = "Please Select At Least One Item";
+                    objResp.vErrorCode = 400;
                 }
                 else
                 {
@@ -56,6 +64,7 @@ namespace BSLCanteenAPI.DAL
                             cmd.Parameters.AddWithValue("@CouponId", CouponID);
                             cmd.Parameters.AddWithValue("@EmpId", objReq.EmpId);
                             cmd.Parameters.AddWithValue("@CanteenId", objReq.CanteenId);
+                            cmd.Parameters.AddWithValue("@EmpLocation", objReq.EmpLocation);
                             cmd.Parameters.AddWithValue("@ItemCategory", item.ItemCategory);
                             cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
                             cmd.Parameters.AddWithValue("@OrderStatus", "Generated");
