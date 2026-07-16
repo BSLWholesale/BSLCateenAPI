@@ -103,6 +103,8 @@ namespace BSLCanteenAPI.DAL
                             objResp.LoginID = Convert.ToString(ds.Tables[0].Rows[i]["LoginID"]);
                         }
 
+                        objResp.EmpStatus = Convert.ToBoolean(ds.Tables[0].Rows[i]["EmpStatus"]);
+
                         objResp.vErrorMsg = "Success";
                     }
                     else
@@ -225,7 +227,7 @@ namespace BSLCanteenAPI.DAL
                         obj.EmpLocation = Convert.ToString(ds.Tables[0].Rows[i]["EmpLocation"]);
                         obj.CanteenId = Convert.ToInt32(ds.Tables[0].Rows[i]["CanteenId"]);
                         obj.CanteenName = Convert.ToString(ds.Tables[0].Rows[i]["CanteenName"]);
-
+                        
                         if (ds.Tables[0].Rows[i]["EmpRole"] == null)
                         {
                             obj.EmpRole = string.Empty;
@@ -235,15 +237,15 @@ namespace BSLCanteenAPI.DAL
                             obj.EmpRole = Convert.ToString(ds.Tables[0].Rows[i]["EmpRole"]);
                         }
 
-                        string decryptPassword = Generic.DecryptText(Convert.ToString(ds.Tables[0].Rows[i]["EmpPassword"]));
-                        if (ds.Tables[0].Rows[i]["EmpPassword"] == null)
+                        string strEmpPassword = Convert.ToString(ds.Tables[0].Rows[i]["EmpPassword"]);
+                        string decryptPassword = "";
+                        if (!String.IsNullOrWhiteSpace(strEmpPassword))
                         {
-                            obj.EmpPassword = string.Empty;
-                        }
-                        else
-                        {
+                            decryptPassword = Generic.DecryptText(Convert.ToString(ds.Tables[0].Rows[i]["EmpPassword"]));
                             obj.EmpPassword = decryptPassword;
                         }
+
+                        obj.EmpStatus = Convert.ToBoolean(ds.Tables[0].Rows[i]["EmpStatus"]);
 
                         obj.vErrorMsg = "Success";
                         obj.vErrorCode = 200;
@@ -295,6 +297,7 @@ namespace BSLCanteenAPI.DAL
                 cmd.Parameters.AddWithValue("@EmpRole", objReq.EmpRole);
                 cmd.Parameters.AddWithValue("@EmpLocation", objReq.EmpLocation);
                 cmd.Parameters.AddWithValue("@CanteenId", objReq.CanteenId);
+                cmd.Parameters.AddWithValue("@EmpStatus", objReq.EmpStatus);
                 cmd.Parameters.AddWithValue("@ModifiedBy", objReq.ModifiedBy);
                 cmd.Parameters.AddWithValue("@QueryType", "UpdateEmpDetails");
 
