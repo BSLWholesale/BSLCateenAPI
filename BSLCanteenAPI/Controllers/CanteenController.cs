@@ -54,11 +54,11 @@ namespace BSLCanteenAPI.Controllers
         }
 
         [System.Web.Http.HttpPost]
-        [System.Web.Http.Route("api/Canteen/Fn_Get_Count_Record")]
-        public clsResponseDropdown Fn_Get_Count_Record(clsRequestDropdown objReq)
+        [System.Web.Http.Route("api/Canteen/Fn_Get_Count_ItemMenu")]
+        public List<clsCountMenuItem> Fn_Get_Count_ItemMenu(clsCountMenuItem objReq)
         {
-            var objResp = new clsResponseDropdown();
-            objResp = _DALCanteen.Fn_Get_Count_Record(objReq);
+            var objResp = new List<clsCountMenuItem>();
+            objResp = _DALCanteen.Fn_Get_Count_ItemMenu(objReq);
             return objResp;
         }
 

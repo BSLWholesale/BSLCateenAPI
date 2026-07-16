@@ -147,4 +147,14 @@ namespace BSLCanteenAPI.Models
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
     }
+
+    public class clsCountMenuItem
+    {
+        public int CountItem { get; set; }
+        public int CanteenId { get; set; }
+        public string ItemCategory { get; set; }
+        public string OrderTakenDate { get; set; }
+        public string vErrorMsg { get; set; }
+        public int vErrorCode { get; set; }
+    }
 }

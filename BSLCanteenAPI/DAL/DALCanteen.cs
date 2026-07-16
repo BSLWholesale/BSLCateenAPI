@@ -399,10 +399,11 @@ namespace BSLCanteenAPI.DAL
             return objResp;
         }
 
-        public clsResponseDropdown Fn_Get_Count_Record(clsRequestDropdown objReq)
+        public List<clsCountMenuItem> Fn_Get_Count_ItemMenu(clsCountMenuItem objReq)
         {
-            var objResp = new clsResponseDropdown();
-            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_Count_Record");
+            var objResp = new List<clsCountMenuItem>();
+            var obj = new clsCountMenuItem();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_Count_ItemMenu");
             try
             {
                 string strSql = "";
@@ -411,12 +412,15 @@ namespace BSLCanteenAPI.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                strSql = "Select " + objReq.vFieldName + " From " + objReq.vTBLName + " Where 1=1";
-                if (!String.IsNullOrWhiteSpace(objReq.vCriteria))
+                strSql = "Select RC, ItemCategory, OrdTakenDate, CanteenId from vCountItemMenu Where 1=1";
+                if (!String.IsNullOrWhiteSpace(objReq.OrderTakenDate))
                 {
-                    strSql = strSql + objReq.vCriteria;
+                    strSql = strSql + " AND OrdTakenDate='" + objReq.OrderTakenDate + "'";
                 }
-
+                if (objReq.CanteenId != null && objReq.CanteenId != 0)
+                {
+                    strSql = strSql + " AND CanteenId=" + objReq.CanteenId + "";
+                }
 
                 SqlDataAdapter da = new SqlDataAdapter(strSql, Con);
                 DataSet ds = new DataSet();
@@ -426,25 +430,38 @@ namespace BSLCanteenAPI.DAL
                 if (ds.Tables[0].Rows.Count > 0)
                 {
 
-                    objResp.vFieldName = Convert.ToString(ds.Tables[0].Rows[0][0]);
-                    objResp.vErrorMsg = "Success";
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsCountMenuItem();
+                        obj.CountItem = Convert.ToInt32(ds.Tables[0].Rows[i]["RC"]);
+                        obj.ItemCategory = Convert.ToString(ds.Tables[0].Rows[i]["ItemCategory"]);
+                        obj.OrderTakenDate = Convert.ToString(ds.Tables[0].Rows[i]["OrdTakenDate"]);
+                        obj.vErrorMsg = "Success";
+                        obj.vErrorCode = 200;
+                        objResp.Add(obj);
+                        i++;
+                    }
 
                 }
                 else
                 {
-                    objResp.vErrorMsg = "No Record Found.";
+                    obj.vErrorMsg = "No Record Found.";
+                    obj.vErrorCode = 400;
+                    objResp.Add(obj);
                 }
             }
             catch (Exception exp)
             {
-                Logger.WriteLog("Function Name : Fn_Get_Count_Record", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
-                objResp.vErrorMsg = exp.Message.ToString();
+                Logger.WriteLog("Function Name : Fn_Get_Count_ItemMenu", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                obj.vErrorCode = 500;
+                objResp.Add(obj);
             }
             finally
             {
                 Con.Close();
             }
-            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_Count_Record");
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_Count_ItemMenu");
             return objResp;
         }
 
