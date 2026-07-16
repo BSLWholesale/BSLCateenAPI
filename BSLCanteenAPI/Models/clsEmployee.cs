@@ -18,6 +18,7 @@ namespace BSLCanteenAPI.Models
         public int CanteenId { get; set; }
         public string CanteenName { get; set; }
         public string LoginID { get; set; }
+        public bool EmpStatus { get; set; }
         public int CreatedBy { get; set; }
         public string CreatedOn { get; set; }
         public int ModifiedBy { get; set; }
