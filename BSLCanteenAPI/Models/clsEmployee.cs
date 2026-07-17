@@ -47,6 +47,7 @@ namespace BSLCanteenAPI.Models
     {
         public Int64 CouponId { get; set; }
         public Int32 EmpId { get; set; }
+        public Int32 RowIndex { get; set; }
         public string CouponIssueDate { get; set; }
         public string OrderStatus { get; set; }
         public string OrderTakenDate { get; set; }
@@ -102,6 +103,7 @@ namespace BSLCanteenAPI.Models
     public class clsCouponReport
     {
         public Int64 CouponId { get; set; }
+        public Int32 RowIndex { get; set; }
         public string ItemCategory { get; set; }
         public string CouponIssueDate { get; set; }
         public string CouponIssueTime { get; set; }

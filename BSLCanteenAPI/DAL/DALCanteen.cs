@@ -17,7 +17,7 @@ namespace BSLCanteenAPI.DAL
 
         SqlConnection Con = new SqlConnection(ConfigurationManager.ConnectionStrings["BSL"].ConnectionString);
 
-        Int64 CouponID;
+        Int64 CouponID; int mxID;
         public clsCouponOrder Fn_Emp_CouponGeneration(clsCouponOrder objReq)
         {
             var objResp = new clsCouponOrder();
@@ -51,6 +51,9 @@ namespace BSLCanteenAPI.DAL
                     if (Con.State == ConnectionState.Closed)
                     { Con.Open(); }
 
+                    string strCriteria = " AND EmpId=" + objReq.EmpId + " AND FORMAT(CreatedOn, 'dd-MMM-yyyy')='" + objReq.CreatedOn + "'";
+                   objReq.RowIndex = Fn_Get_MXID("CouponOrder2026", "RowIndex", strCriteria);
+
                     foreach (var item in objReq.Items)
                     {
                         for (int i = 0; i < item.Quantity; i++)
@@ -67,6 +70,7 @@ namespace BSLCanteenAPI.DAL
                             cmd.Parameters.AddWithValue("@EmpLocation", objReq.EmpLocation);
                             cmd.Parameters.AddWithValue("@ItemCategory", item.ItemCategory);
                             cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                            cmd.Parameters.AddWithValue("@RowIndex", objReq.RowIndex);
                             cmd.Parameters.AddWithValue("@OrderStatus", "Generated");
                             cmd.Parameters.AddWithValue("@QueryType", "InsertCouponId");
 
@@ -75,6 +79,7 @@ namespace BSLCanteenAPI.DAL
                             if (rows > 0)
                             {
                                 objResp.vErrorMsg = "Success";
+                                objResp.RowIndex = objReq.RowIndex;
                                 objResp.vErrorCode = 200;
                             }
                             else
@@ -209,10 +214,14 @@ namespace BSLCanteenAPI.DAL
                 { Con.Open(); }
 
                 string strSql = "SELECT CouponId, ItemCategory, Price, CoupIssueDate, CoupIssueTime, OrdTakenDate, OrdTakenTime, OrdStatus, CanteenId, CanteenName, ";
-                strSql = strSql + " EmployeeId, EmpName, CreatedBy, CreatedOn, ModifiedBy, ModifiedOn FROM vCouponOrder WHERE 1=1 ";
+                strSql = strSql + " EmployeeId, EmpName, CreatedBy, CreatedOn, ModifiedBy, ModifiedOn, RowIndex FROM vCouponOrder WHERE 1=1 ";
                 if (objReq.EmpId != 0 && objReq.EmpId != null)
                 {
                     strSql = strSql + " AND EmployeeId = @EmpId ";
+                }
+                if (objReq.RowIndex != 0 )
+                {
+                    strSql = strSql + " AND RowIndex = @RowIndex ";
                 }
                 if (objReq.CouponId != 0 && objReq.CouponId != null)
                 {
@@ -238,12 +247,17 @@ namespace BSLCanteenAPI.DAL
                 {
                     strSql = strSql + " AND ModifiedBy = @ModifiedBy";
                 }
+
                 strSql = strSql + " ORDER BY ModifiedOn DESC  ";
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
                 if (objReq.EmpId != 0 && objReq.EmpId != null)
                 {
                     cmd.Parameters.AddWithValue("@EmpId", objReq.EmpId);
+                }
+                if (objReq.RowIndex != 0)
+                {
+                    cmd.Parameters.AddWithValue("@RowIndex", objReq.RowIndex);
                 }
                 if (objReq.CouponId != 0 && objReq.CouponId != null)
                 {
@@ -412,16 +426,19 @@ namespace BSLCanteenAPI.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                strSql = "Select RC, ItemCategory, OrdTakenDate, CanteenId from vCountItemMenu Where 1=1";
+                strSql = "SELECT C.ItemCategory, ISNULL(COUNT(O.CouponId), 0) AS RC ";
+                strSql = strSql + " FROM ( SELECT 'Tea' AS ItemCategory UNION ALL SELECT 'Breakfast' UNION ALL SELECT 'Thali' ";
+                strSql = strSql + " UNION ALL SELECT 'Mini Thali' ) C ";
+                strSql = strSql + " LEFT JOIN vCouponOrder O  ON O.ItemCategory = C.ItemCategory AND O.OrdStatus = 'Scanned' ";
                 if (!String.IsNullOrWhiteSpace(objReq.OrderTakenDate))
                 {
-                    strSql = strSql + " AND OrdTakenDate='" + objReq.OrderTakenDate + "'";
+                    strSql = strSql + " AND O.OrdTakenDate='" + objReq.OrderTakenDate + "'";
                 }
                 if (objReq.CanteenId != null && objReq.CanteenId != 0)
                 {
-                    strSql = strSql + " AND CanteenId=" + objReq.CanteenId + "";
+                    strSql = strSql + " AND O.CanteenId=" + objReq.CanteenId + "";
                 }
-
+                strSql = strSql + " GROUP BY  C.ItemCategory ";
                 SqlDataAdapter da = new SqlDataAdapter(strSql, Con);
                 DataSet ds = new DataSet();
                 da.Fill(ds);
@@ -435,7 +452,6 @@ namespace BSLCanteenAPI.DAL
                         obj = new clsCountMenuItem();
                         obj.CountItem = Convert.ToInt32(ds.Tables[0].Rows[i]["RC"]);
                         obj.ItemCategory = Convert.ToString(ds.Tables[0].Rows[i]["ItemCategory"]);
-                        obj.OrderTakenDate = Convert.ToString(ds.Tables[0].Rows[i]["OrdTakenDate"]);
                         obj.vErrorMsg = "Success";
                         obj.vErrorCode = 200;
                         objResp.Add(obj);
@@ -1010,6 +1026,55 @@ namespace BSLCanteenAPI.DAL
             }
             Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_EmployeeWise_Summery");
             return objResp;
+        }
+
+        public Int32 Fn_Get_MXID(string strTBLName, string strFieldName, string strCriteria)
+        {
+            try
+            {
+                //if (Con.State == ConnectionState.Broken)
+                //{ Con.Close(); }
+                //if (Con.State == ConnectionState.Closed)
+                //{ Con.Open(); }
+
+                string strSql = "SELECT MAX(" + strFieldName + ") AS ID FROM " + strTBLName + " WHERE 1=1";
+                if (!String.IsNullOrWhiteSpace(strCriteria))
+                {
+                    strSql = strSql + strCriteria;
+                }
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        string strMXID = Convert.ToString(ds.Tables[0].Rows[i]["ID"]);
+                        if (strMXID == "")
+                        {
+                            mxID = 1;
+                        }
+                        else
+                        {
+                            mxID = Convert.ToInt32(ds.Tables[0].Rows[i]["ID"]) + 1;
+                        }
+                        i++;
+                    }
+                }
+                else
+                {
+                    mxID = 1;
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Get_MXID", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                exp.Message.ToString();
+            }
+            return mxID;
         }
     }
 }
