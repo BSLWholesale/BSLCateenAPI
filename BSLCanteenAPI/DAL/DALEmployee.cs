@@ -1,4 +1,5 @@
 ﻿using BSLCanteenAPI.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -18,6 +19,7 @@ namespace BSLCanteenAPI.DAL
         public clsEmployee Fn_Login_Employee(clsEmployee objReq)
         {
             var objResp = new clsEmployee();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Login_Employee");
             try
             {
                 if (objReq.EmpId == null || objReq.EmpId == 0) 
@@ -122,6 +124,7 @@ namespace BSLCanteenAPI.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Login_Employee");
             return objResp;
         }
 
@@ -129,6 +132,7 @@ namespace BSLCanteenAPI.DAL
         public clsEmployee Fn_Insert_Employee(clsEmployee objReq)
         {
             var objResp = new clsEmployee();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Insert_Employee");
             try
             {
                 if (Con.State == ConnectionState.Broken)
@@ -136,7 +140,11 @@ namespace BSLCanteenAPI.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string EncryptPassword = Generic.EncryptText(objReq.EmpPassword);
+                string EncryptPassword = "";
+                if (!String.IsNullOrWhiteSpace(objReq.EmpPassword))
+                {
+                    EncryptPassword = Generic.EncryptText(objReq.EmpPassword);
+                }
 
                 SqlCommand cmd = new SqlCommand("USP_Employee", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -174,6 +182,7 @@ namespace BSLCanteenAPI.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Insert_Employee");
             return objResp;
         }
 
@@ -182,6 +191,7 @@ namespace BSLCanteenAPI.DAL
         {
             var objResp = new List<clsEmployee>();
             var obj = new clsEmployee();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Fetch_EmployeeDetails");
             try
             {
                 if (Con.State == ConnectionState.Broken)
@@ -271,6 +281,7 @@ namespace BSLCanteenAPI.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Fetch_EmployeeDetails");
             return objResp;
         }
 
@@ -278,6 +289,7 @@ namespace BSLCanteenAPI.DAL
         public clsEmployee Fn_Update_EmployeeDetails(clsEmployee objReq)
         {
             var objResp = new clsEmployee();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Update_EmployeeDetails");
             try
             {
                 if (Con.State == ConnectionState.Broken)
@@ -324,6 +336,7 @@ namespace BSLCanteenAPI.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Update_EmployeeDetails");
             return objResp;
         }
 
@@ -331,6 +344,7 @@ namespace BSLCanteenAPI.DAL
         public clsEmployee Fn_Delete_Employee(clsEmployee objReq)
         {
             var objResp = new clsEmployee();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Delete_Employee");
             try
             {
                 if (Con.State == ConnectionState.Broken)
@@ -366,6 +380,7 @@ namespace BSLCanteenAPI.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Delete_Employee");
             return objResp;
         }
 
@@ -374,6 +389,7 @@ namespace BSLCanteenAPI.DAL
         public List<clsEmployee> Fn_Fetch_All_Employee(clsEmployee objReq)
         {
             var objResp = new List<clsEmployee>();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Fetch_All_Employee");
             try
             {
                 if (Con.State == ConnectionState.Broken)
@@ -450,12 +466,14 @@ namespace BSLCanteenAPI.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Fetch_All_Employee");
             return objResp;
         }
 
         public List<clsResponseDropdown> Fn_Fill_DropdownList(clsRequestDropdown objReq)
         {
             var objResp = new List<clsResponseDropdown>();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Fill_DropdownList");
             try
             {
                 string strSql = "";
@@ -525,6 +543,7 @@ namespace BSLCanteenAPI.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Fill_DropdownList");
             return objResp;
         }
 
@@ -532,6 +551,7 @@ namespace BSLCanteenAPI.DAL
         public clsEmployee Fn_Upload_BulkEmployeeData_List(clsEmployee objReq)
         {
             var objResp = new clsEmployee();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Upload_BulkEmployeeData_List");
             try
             {
                 if (Con.State == ConnectionState.Broken)
@@ -569,6 +589,7 @@ namespace BSLCanteenAPI.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Upload_BulkEmployeeData_List");
             return objResp;
         }
 
