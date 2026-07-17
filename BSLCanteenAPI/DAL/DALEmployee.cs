@@ -399,6 +399,8 @@ namespace BSLCanteenAPI.DAL
 
                 SqlCommand cmd = new SqlCommand("USP_Employee", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@EmpId", objReq.EmpId);
+                cmd.Parameters.AddWithValue("@EmpLocation", objReq.EmpLocation);
                 cmd.Parameters.AddWithValue("@QueryType", "FetchAllEmployee");
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
