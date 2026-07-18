@@ -247,7 +247,10 @@ namespace BSLCanteenAPI.DAL
                 {
                     strSql = strSql + " AND ModifiedBy = @ModifiedBy";
                 }
-
+                if (!String.IsNullOrWhiteSpace(objReq.EmpLocation))
+                {
+                    strSql = strSql + " AND EmpLocation = @EmpLocation ";
+                }
                 strSql = strSql + " ORDER BY ModifiedOn DESC  ";
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
@@ -282,6 +285,10 @@ namespace BSLCanteenAPI.DAL
                 if (objReq.ModifiedBy != 0 && objReq.ModifiedBy != null)
                 {
                     cmd.Parameters.AddWithValue("@ModifiedBy", objReq.ModifiedBy);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.EmpLocation))
+                {
+                    cmd.Parameters.AddWithValue("@EmpLocation", objReq.EmpLocation);
                 }
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
@@ -433,6 +440,10 @@ namespace BSLCanteenAPI.DAL
                 if (!String.IsNullOrWhiteSpace(objReq.OrderTakenDate))
                 {
                     strSql = strSql + " AND O.OrdTakenDate='" + objReq.OrderTakenDate + "'";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.EmpLocation))
+                {
+                    strSql = strSql + " AND O.EmpLocation='" + objReq.EmpLocation + "'";
                 }
                 if (objReq.CanteenId != null && objReq.CanteenId != 0)
                 {
