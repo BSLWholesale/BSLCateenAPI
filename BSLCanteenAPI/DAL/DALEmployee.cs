@@ -596,6 +596,60 @@ namespace BSLCanteenAPI.DAL
         }
 
 
+        public clsEmployee Fn_Reset_Password(clsEmployee objReq)
+        {
+            var objResp = new clsEmployee();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Reset_Password");
+            try
+            {
+                if (objReq.EmpId == null || objReq.EmpId == 0)
+                {
+                    objResp.vErrorMsg = "Please Enter Employee ID";
+                }
+                else if (String.IsNullOrWhiteSpace(objReq.EmpPassword))
+                {
+                    objResp.vErrorMsg = "Please Enter Password";
+                }
+                else
+                {
+                    if (Con.State == ConnectionState.Broken)
+                    { Con.Close(); }
+                    if (Con.State == ConnectionState.Closed)
+                    { Con.Open(); }
+
+                    string EncryptPassword = Generic.EncryptText(objReq.EmpPassword);
+                    SqlCommand cmd = new SqlCommand("USP_Employee", Con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@EmpId", objReq.EmpId);
+                    cmd.Parameters.AddWithValue("@EmpPassword", EncryptPassword);
+                    cmd.Parameters.AddWithValue("@QueryType", "ResetPassword");
+
+                    int i = 0;
+                    i = cmd.ExecuteNonQuery();
+                    if (i > 0)
+                    {
+                        objResp.vErrorMsg = "Success";
+                    }
+                    else
+                    {
+                        objResp.vErrorMsg = "Failed";
+                    }
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Reset_Password", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Reset_Password");
+            return objResp;
+        }
+
+
 
     }
 }
