@@ -118,5 +118,15 @@ namespace BSLCanteenAPI.Controllers
         }
 
 
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Employee/Fn_Reset_Password")]
+        public clsEmployee Fn_Reset_Password(clsEmployee objReq)
+        {
+            var objResp = new clsEmployee();
+            objResp = _DALEmployee.Fn_Reset_Password(objReq);
+            return objResp;
+        }
+
+
     }
 }
