@@ -73,7 +73,7 @@ namespace BSLCanteenAPI.DAL
                         objResp.EmpId = Convert.ToInt64(ds.Tables[0].Rows[i]["EmployeeId"]);
                         objResp.EmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
 
-                        if (ds.Tables[0].Rows[i]["EmpMobile"] == null)
+                        if (ds.Tables[0].Rows[i]["EmpMobile"] == DBNull.Value)
                         {
                             objResp.EmpMobile = string.Empty;
                         }
@@ -82,7 +82,7 @@ namespace BSLCanteenAPI.DAL
                             objResp.EmpMobile = Convert.ToString(ds.Tables[0].Rows[i]["EmpMobile"]);
                         }
 
-                        if (ds.Tables[0].Rows[i]["Department"] == null)
+                        if (ds.Tables[0].Rows[i]["Department"] == DBNull.Value)
                         {
                             objResp.Department = string.Empty;
                         }
@@ -93,10 +93,16 @@ namespace BSLCanteenAPI.DAL
 
                         objResp.EmpLocation = Convert.ToString(ds.Tables[0].Rows[i]["EmpLocation"]);
                         objResp.EmpRole = Convert.ToString(ds.Tables[0].Rows[i]["EmpRole"]);
+                        if (objResp.EmpRole != "Admin" && objResp.EmpRole != "Staff" && objResp.EmpRole != "Supervisor")
+                        {
+                            objResp.vErrorMsg = "You are not a valid employee to access the portal.";
+                            return objResp;
+                        }
+
                         objResp.CanteenId = Convert.ToInt32(ds.Tables[0].Rows[i]["CanteenId"]);
                         objResp.CanteenName = Convert.ToString(ds.Tables[0].Rows[i]["CanteenName"]);
 
-                        if (ds.Tables[0].Rows[i]["LoginID"] == null)
+                        if (ds.Tables[0].Rows[i]["LoginID"] == DBNull.Value)
                         {
                             objResp.LoginID = string.Empty;
                         }
@@ -216,7 +222,7 @@ namespace BSLCanteenAPI.DAL
                         obj.EmpId = Convert.ToInt64(ds.Tables[0].Rows[i]["EmployeeId"]);
                         obj.EmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
                         
-                        if (ds.Tables[0].Rows[i]["EmpMobile"] == null)
+                        if (ds.Tables[0].Rows[i]["EmpMobile"] == DBNull.Value)
                         {
                             obj.EmpMobile = string.Empty;
                         }
@@ -225,7 +231,7 @@ namespace BSLCanteenAPI.DAL
                             obj.EmpMobile = Convert.ToString(ds.Tables[0].Rows[i]["EmpMobile"]);
                         }
 
-                        if (ds.Tables[0].Rows[i]["Department"] == null)
+                        if (ds.Tables[0].Rows[i]["Department"] == DBNull.Value)
                         {
                             obj.Department = string.Empty;
                         }
@@ -238,7 +244,7 @@ namespace BSLCanteenAPI.DAL
                         obj.CanteenId = Convert.ToInt32(ds.Tables[0].Rows[i]["CanteenId"]);
                         obj.CanteenName = Convert.ToString(ds.Tables[0].Rows[i]["CanteenName"]);
                         
-                        if (ds.Tables[0].Rows[i]["EmpRole"] == null)
+                        if (ds.Tables[0].Rows[i]["EmpRole"] == DBNull.Value)
                         {
                             obj.EmpRole = string.Empty;
                         }
@@ -415,7 +421,7 @@ namespace BSLCanteenAPI.DAL
                         objItem.EmpId = Convert.ToInt64(ds.Tables[0].Rows[i]["EmployeeId"]);
                         objItem.EmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
                         
-                        if (ds.Tables[0].Rows[i]["Department"] == null)
+                        if (ds.Tables[0].Rows[i]["Department"] == DBNull.Value)
                         {
                             objItem.Department = string.Empty;
                         }
@@ -424,7 +430,7 @@ namespace BSLCanteenAPI.DAL
                             objItem.Department = Convert.ToString(ds.Tables[0].Rows[i]["Department"]);
                         }                       
 
-                        if (ds.Tables[0].Rows[i]["EmpMobile"] == null)
+                        if (ds.Tables[0].Rows[i]["EmpMobile"] == DBNull.Value)
                         {
                             objItem.EmpMobile = string.Empty;
                         }
@@ -435,7 +441,7 @@ namespace BSLCanteenAPI.DAL
                         
                         objItem.EmpLocation = Convert.ToString(ds.Tables[0].Rows[i]["EmpLocation"]);
 
-                        if (ds.Tables[0].Rows[i]["EmpRole"] == null)
+                        if (ds.Tables[0].Rows[i]["EmpRole"] == DBNull.Value)
                         {
                             objItem.EmpMobile = string.Empty;
                         }
