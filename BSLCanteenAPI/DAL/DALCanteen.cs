@@ -680,7 +680,7 @@ namespace BSLCanteenAPI.DAL
                 { Con.Open(); }
 
                 string strSql = "SELECT CanteenId, CanteenName, ItemCategory, OrdTakenDate, COUNT(CouponId) AS TotalCoupons, ";
-                strSql = strSql + " SUM(Price) AS TotalPrice, FORMAT(OrderDate, 'dd-MMM-yyyy') AS OrderDate FROM vCouponOrder WHERE 1=1 AND OrdStatus = 'Scanned' ";
+                strSql = strSql + " SUM(Price) AS TotalPrice FROM vCouponOrder WHERE 1=1 AND OrdStatus = 'Scanned' ";
                 
                 if (objReq.CanteenId != 0 && objReq.CanteenId != null)
                 {
@@ -694,15 +694,19 @@ namespace BSLCanteenAPI.DAL
                 {
                     strSql = strSql + " AND ItemCategory = @ItemCategory ";
                 }
+                if (!String.IsNullOrWhiteSpace(objReq.EmpLocation))
+                {
+                    strSql = strSql + " AND EmpLocation = @EmpLocation ";
+                }
                 if (!String.IsNullOrWhiteSpace(objReq.OrderTakenDate))
                 {
                     strSql = strSql + " AND OrdTakenDate='" + objReq.OrderTakenDate + "'";
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.FromDate) && !String.IsNullOrWhiteSpace(objReq.ToDate))
                 {
-                    strSql = strSql + " AND OrderDate BETWEEN '" + objReq.FromDate + "' AND '" + objReq.ToDate + "'";
+                    strSql = strSql + " AND OrdTakenDate BETWEEN '" + objReq.FromDate + "' AND '" + objReq.ToDate + "'";
                 }                
-                strSql = strSql + " GROUP BY  CanteenId, CanteenName, ItemCategory, OrdTakenDate, OrderDate ";
+                strSql = strSql + " GROUP BY  CanteenId, CanteenName, ItemCategory, OrdTakenDate ";
                 strSql = strSql + " ORDER BY  OrdTakenDate DESC, CanteenName, ItemCategory ";
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
@@ -718,6 +722,10 @@ namespace BSLCanteenAPI.DAL
                 if (!String.IsNullOrWhiteSpace(objReq.ItemCategory))
                 {
                     cmd.Parameters.AddWithValue("@ItemCategory", objReq.ItemCategory);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.EmpLocation))
+                {
+                    cmd.Parameters.AddWithValue("@EmpLocation", objReq.EmpLocation);
                 }
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
@@ -792,6 +800,10 @@ namespace BSLCanteenAPI.DAL
                 {
                     strSql = strSql + " AND ItemCategory = @ItemCategory ";
                 }
+                if (!String.IsNullOrWhiteSpace(objReq.EmpLocation))
+                {
+                    strSql = strSql + " AND EmpLocation = @EmpLocation ";
+                }
                 if (!String.IsNullOrWhiteSpace(objReq.OrderTakenDate))
                 {
                     strSql = strSql + " AND OrdTakenDate='" + objReq.OrderTakenDate + "'";
@@ -816,6 +828,10 @@ namespace BSLCanteenAPI.DAL
                 if (!String.IsNullOrWhiteSpace(objReq.ItemCategory))
                 {
                     cmd.Parameters.AddWithValue("@ItemCategory", objReq.ItemCategory);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.EmpLocation))
+                {
+                    cmd.Parameters.AddWithValue("@EmpLocation", objReq.EmpLocation);
                 }
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
@@ -888,6 +904,10 @@ namespace BSLCanteenAPI.DAL
                 {
                     strSql = strSql + " AND CanteenName = @CanteenName ";
                 }
+                if (!String.IsNullOrWhiteSpace(objReq.EmpLocation))
+                {
+                    strSql = strSql + " AND EmpLocation = @EmpLocation ";
+                }
                 if (!String.IsNullOrWhiteSpace(objReq.OrderTakenDate))
                 {
                     strSql = strSql + " AND OrdTakenDate='" + objReq.OrderTakenDate + "'";
@@ -906,6 +926,10 @@ namespace BSLCanteenAPI.DAL
                 if (!String.IsNullOrWhiteSpace(objReq.CanteenName))
                 {
                     cmd.Parameters.AddWithValue("@CanteenName", objReq.CanteenName);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.EmpLocation))
+                {
+                    cmd.Parameters.AddWithValue("@EmpLocation", objReq.EmpLocation);
                 }
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
@@ -973,6 +997,10 @@ namespace BSLCanteenAPI.DAL
                 {
                     strSql = strSql + " AND CanteenName = @CanteenName ";
                 }
+                if (!String.IsNullOrWhiteSpace(objReq.EmpLocation))
+                {
+                    strSql = strSql + " AND EmpLocation = @EmpLocation ";
+                }
                 if (!String.IsNullOrWhiteSpace(objReq.OrderTakenDate))
                 {
                     strSql = strSql + " AND OrdTakenDate='" + objReq.OrderTakenDate + "'";
@@ -992,6 +1020,10 @@ namespace BSLCanteenAPI.DAL
                 if (!String.IsNullOrWhiteSpace(objReq.CanteenName))
                 {
                     cmd.Parameters.AddWithValue("@CanteenName", objReq.CanteenName);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.EmpLocation))
+                {
+                    cmd.Parameters.AddWithValue("@EmpLocation", objReq.EmpLocation);
                 }
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
