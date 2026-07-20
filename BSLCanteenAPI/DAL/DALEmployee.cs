@@ -49,6 +49,7 @@ namespace BSLCanteenAPI.DAL
 
                     SqlCommand cmd = new SqlCommand("USP_Employee", Con);
                     cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandTimeout = 60; // Optional
                     if (objReq.LoginID == null)
                     {
                         cmd.Parameters.AddWithValue("@EmpId", objReq.EmpId);
@@ -72,24 +73,26 @@ namespace BSLCanteenAPI.DAL
                     {
                         objResp.EmpId = Convert.ToInt64(ds.Tables[0].Rows[i]["EmployeeId"]);
                         objResp.EmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
+                        objResp.EmpMobile = Convert.ToString(ds.Tables[0].Rows[i]["EmpMobile"]);
+                        objResp.Department = Convert.ToString(ds.Tables[0].Rows[i]["Department"]);
 
-                        if (ds.Tables[0].Rows[i]["EmpMobile"] == DBNull.Value)
-                        {
-                            objResp.EmpMobile = string.Empty;
-                        }
-                        else
-                        {
-                            objResp.EmpMobile = Convert.ToString(ds.Tables[0].Rows[i]["EmpMobile"]);
-                        }
+                        //if (ds.Tables[0].Rows[i]["EmpMobile"] == DBNull.Value)
+                        //{
+                        //    objResp.EmpMobile = string.Empty;
+                        //}
+                        //else
+                        //{
+                        //    objResp.EmpMobile = Convert.ToString(ds.Tables[0].Rows[i]["EmpMobile"]);
+                        //}
 
-                        if (ds.Tables[0].Rows[i]["Department"] == DBNull.Value)
-                        {
-                            objResp.Department = string.Empty;
-                        }
-                        else
-                        {
-                            objResp.Department = Convert.ToString(ds.Tables[0].Rows[i]["Department"]);
-                        }
+                        //if (ds.Tables[0].Rows[i]["Department"] == DBNull.Value)
+                        //{
+                        //    objResp.Department = string.Empty;
+                        //}
+                        //else
+                        //{
+                        //    objResp.Department = Convert.ToString(ds.Tables[0].Rows[i]["Department"]);
+                        //}
 
                         objResp.EmpLocation = Convert.ToString(ds.Tables[0].Rows[i]["EmpLocation"]);
                         objResp.EmpRole = Convert.ToString(ds.Tables[0].Rows[i]["EmpRole"]);
@@ -102,15 +105,15 @@ namespace BSLCanteenAPI.DAL
                         objResp.CanteenId = Convert.ToInt32(ds.Tables[0].Rows[i]["CanteenId"]);
                         objResp.CanteenName = Convert.ToString(ds.Tables[0].Rows[i]["CanteenName"]);
 
-                        if (ds.Tables[0].Rows[i]["LoginID"] == DBNull.Value)
-                        {
-                            objResp.LoginID = string.Empty;
-                        }
-                        else
-                        {
-                            objResp.LoginID = Convert.ToString(ds.Tables[0].Rows[i]["LoginID"]);
-                        }
-
+                        //if (ds.Tables[0].Rows[i]["LoginID"] == DBNull.Value)
+                        //{
+                        //    objResp.LoginID = string.Empty;
+                        //}
+                        //else
+                        //{
+                        //    objResp.LoginID = Convert.ToString(ds.Tables[0].Rows[i]["LoginID"]);
+                        //}
+                        objResp.LoginID = Convert.ToString(ds.Tables[0].Rows[i]["LoginID"]);
                         objResp.EmpStatus = Convert.ToBoolean(ds.Tables[0].Rows[i]["EmpStatus"]);
 
                         objResp.vErrorMsg = "Success";
