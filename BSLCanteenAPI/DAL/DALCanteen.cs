@@ -59,7 +59,7 @@ namespace BSLCanteenAPI.DAL
                         for (int i = 0; i < item.Quantity; i++)
                         {
                             DALCanteen _DALCanteen = new DALCanteen();
-                            CouponID = _DALCanteen.Fn_Get_Max_CouponId(objReq);
+                            CouponID = Fn_Get_Max_CouponId(objReq);
 
                             SqlCommand cmd = new SqlCommand("USP_Canteen", Con);
                             cmd.CommandType = CommandType.StoredProcedure;
@@ -111,10 +111,10 @@ namespace BSLCanteenAPI.DAL
             var objResp = new clsCouponOrder();
             try
             {
-                //if (Con.State == ConnectionState.Broken)
-                //{ Con.Close(); }
-                if (Con.State == ConnectionState.Closed)
-                { Con.Open(); }
+                ////if (Con.State == ConnectionState.Broken)
+                ////{ Con.Close(); }
+                //if (Con.State == ConnectionState.Closed)
+                //{ Con.Open(); }
 
                 string strSql = "SELECT CONCAT(FORMAT(GETDATE(),'ddMMyyyy'),SUBSTRING(FORMAT(ISNULL(MAX(CouponId)+1,1),'00000000000000'),9,6)) FROM CouponOrder2026 WHERE CONVERT(DATE, CreatedOn)= CONVERT(DATE, GETDATE())";
 
@@ -129,7 +129,7 @@ namespace BSLCanteenAPI.DAL
                     {
                         CouponID = Convert.ToInt64(DateTime.Now.ToString("ddMMyyyy") + "000001");
                     }
-                    Con.Close();
+                    //Con.Close();
                 }
             }
             catch (Exception exp)
