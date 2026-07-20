@@ -113,8 +113,8 @@ namespace BSLCanteenAPI.DAL
             {
                 //if (Con.State == ConnectionState.Broken)
                 //{ Con.Close(); }
-                //if (Con.State == ConnectionState.Closed)
-                //{ Con.Open(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
 
                 string strSql = "SELECT CONCAT(FORMAT(GETDATE(),'ddMMyyyy'),SUBSTRING(FORMAT(ISNULL(MAX(CouponId)+1,1),'00000000000000'),9,6)) FROM CouponOrder2026 WHERE CONVERT(DATE, CreatedOn)= CONVERT(DATE, GETDATE())";
 
@@ -129,6 +129,7 @@ namespace BSLCanteenAPI.DAL
                     {
                         CouponID = Convert.ToInt64(DateTime.Now.ToString("ddMMyyyy") + "000001");
                     }
+                    Con.Close();
                 }
             }
             catch (Exception exp)
