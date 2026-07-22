@@ -377,7 +377,7 @@ namespace BSLCanteenAPI.DAL
                 }
                 else if (objCheck[0].OrderStatus == "Cancel")
                 {
-                    objResp.vErrorMsg = "Coupon cancelled";
+                    objResp.vErrorMsg = "Coupon already cancelled";
                     objResp.vErrorCode = 400;
                 }
                 else
@@ -705,7 +705,7 @@ namespace BSLCanteenAPI.DAL
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.FromDate) && !String.IsNullOrWhiteSpace(objReq.ToDate))
                 {
-                    strSql = strSql + " AND OrdTakenDate BETWEEN '" + objReq.FromDate + "' AND '" + objReq.ToDate + "'";
+                    strSql = strSql + " AND OrderDate BETWEEN '" + objReq.FromDate + "' AND '" + objReq.ToDate + "'";
                 }                
                 strSql = strSql + " GROUP BY  CanteenId, CanteenName, ItemCategory, OrdTakenDate ";
                 strSql = strSql + " ORDER BY  OrdTakenDate DESC, CanteenName, ItemCategory ";
@@ -1119,6 +1119,83 @@ namespace BSLCanteenAPI.DAL
                 exp.Message.ToString();
             }
             return mxID;
+        }
+
+        public clsCouponReport Fn_Cancel_CouponId(clsCouponReport objReq)
+        {
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Cancel_CouponId");
+            var objResp = new clsCouponReport();
+            var objCheck = new List<clsCouponReport>();
+            var obj = new clsCouponReport();
+            obj.CouponId = objReq.CouponId;
+            obj.CanteenId = objReq.CanteenId;
+            objCheck = Fn_Get_Coupon_Order(obj);
+            try
+            {
+                if (objReq.CouponId == null || objReq.CouponId == 0)
+                {
+                    objResp.vErrorMsg = "Please Send CouponId";
+                    objResp.vErrorCode = 400;
+                }
+                else if (objReq.CouponId != objCheck[0].CouponId)
+                {
+                    objResp.vErrorMsg = "Invalid CouponId";
+                    objResp.vErrorCode = 400;
+                }
+                else if (objReq.CanteenId != objCheck[0].CanteenId)
+                {
+                    objResp.vErrorMsg = "Wrong canteen";
+                    objResp.vErrorCode = 400;
+                }
+                //else if (objCheck[0].OrderStatus == "Scanned")
+                //{
+                //    objResp.vErrorMsg = "Coupon already scanned";
+                //    objResp.vErrorCode = 400;
+                //}
+                else if (objCheck[0].OrderStatus == "Cancel")
+                {
+                    objResp.vErrorMsg = "Coupon already cancelled";
+                    objResp.vErrorCode = 400;
+                }
+                else
+                {
+                    if (Con.State == ConnectionState.Broken)
+                    { Con.Close(); }
+                    if (Con.State == ConnectionState.Closed)
+                    { Con.Open(); }
+
+                    SqlCommand cmd = new SqlCommand("USP_Canteen", Con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@CouponId", objReq.CouponId);
+                    cmd.Parameters.AddWithValue("@ItemCategory", objReq.ItemCategory);
+                    cmd.Parameters.AddWithValue("@ModifiedBy", objReq.ModifiedBy);
+                    cmd.Parameters.AddWithValue("@OrderStatus", "Cancel");
+                    cmd.Parameters.AddWithValue("@QueryType", "CancelCouponId");
+                    int i = cmd.ExecuteNonQuery();
+                    if (i > 0)
+                    {
+                        objResp.vErrorMsg = "Success";
+                        objResp.vErrorCode = 200;
+                    }
+                    else
+                    {
+                        objResp.vErrorMsg = "Erorr in coupon canceling";
+                        objResp.vErrorCode = 400;
+                    }
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Cancel_CouponId", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+                objResp.vErrorCode = 500;
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Cancel_CouponId");
+            return objResp;
         }
     }
 }
