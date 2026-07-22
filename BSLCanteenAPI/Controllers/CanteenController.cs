@@ -124,5 +124,14 @@ namespace BSLCanteenAPI.Controllers
             objResp = _DALCanteen.Fn_EmployeeWise_Summery(objReq);
             return objResp;
         }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Canteen/Fn_Cancel_CouponId")]
+        public clsCouponReport Fn_Cancel_CouponId(clsCouponReport objReq)
+        {
+            var objResp = new clsCouponReport();
+            objResp = _DALCanteen.Fn_Cancel_CouponId(objReq);
+            return objResp;
+        }
     }
 }
