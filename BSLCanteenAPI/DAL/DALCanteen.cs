@@ -17,6 +17,7 @@ namespace BSLCanteenAPI.DAL
 
         SqlConnection Con = new SqlConnection(ConfigurationManager.ConnectionStrings["BSL"].ConnectionString);
 
+        int currentYear = DateTime.Now.Year;
         Int64 CouponID; int mxID;
         public clsCouponOrder Fn_Emp_CouponGeneration(clsCouponOrder objReq)
         {
@@ -52,7 +53,7 @@ namespace BSLCanteenAPI.DAL
                     { Con.Open(); }
 
                     string strCriteria = " AND EmpId=" + objReq.EmpId + " AND FORMAT(CreatedOn, 'dd-MMM-yyyy')='" + objReq.CreatedOn + "'";
-                   objReq.RowIndex = Fn_Get_MXID("CouponOrder2026", "RowIndex", strCriteria);
+                    objReq.RowIndex = Fn_Get_MXID("CouponOrder" + currentYear, "RowIndex", strCriteria);
 
                     foreach (var item in objReq.Items)
                     {
@@ -116,7 +117,7 @@ namespace BSLCanteenAPI.DAL
                 //if (Con.State == ConnectionState.Closed)
                 //{ Con.Open(); }
 
-                string strSql = "SELECT CONCAT(FORMAT(GETDATE(),'ddMMyyyy'),SUBSTRING(FORMAT(ISNULL(MAX(CouponId)+1,1),'00000000000000'),9,6)) FROM CouponOrder2026 WHERE CONVERT(DATE, CreatedOn)= CONVERT(DATE, GETDATE())";
+                string strSql = "SELECT CONCAT(FORMAT(GETDATE(),'ddMMyyyy'),SUBSTRING(FORMAT(ISNULL(MAX(CouponId)+1,1),'00000000000000'),9,6)) FROM CouponOrder" + currentYear + "  WHERE CONVERT(DATE, CreatedOn)= CONVERT(DATE, GETDATE())";
 
                 using (SqlCommand cmd = new SqlCommand(strSql, Con))
                 {
