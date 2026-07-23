@@ -96,7 +96,7 @@ namespace BSLCanteenAPI.DAL
 
                         objResp.EmpLocation = Convert.ToString(ds.Tables[0].Rows[i]["EmpLocation"]);
                         objResp.EmpRole = Convert.ToString(ds.Tables[0].Rows[i]["EmpRole"]);
-                        if (objResp.EmpRole != "Admin" && objResp.EmpRole != "Staff" && objResp.EmpRole != "Supervisor")
+                        if (objResp.EmpRole != "Admin" && objResp.EmpRole != "Staff" && objResp.EmpRole != "Supervisor" && objResp.EmpRole != "Superadmin")
                         {
                             objResp.vErrorMsg = "You are not a valid employee to access the portal.";
                             return objResp;
