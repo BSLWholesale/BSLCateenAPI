@@ -133,5 +133,27 @@ namespace BSLCanteenAPI.Controllers
             objResp = _DALCanteen.Fn_Cancel_CouponId(objReq);
             return objResp;
         }
+
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Cateen/Fn_DailyReport_ItemCategorywise")]
+        public List<clsCategoryReport> Fn_DailyReport_ItemCategorywise(clsCategoryReport objReq)
+        {
+            var objResp = new List<clsCategoryReport>();
+            objResp = _DALCanteen.Fn_DailyReport_ItemCategorywise(objReq);
+            return objResp;
+        }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Cateen/Fn_DailyReport_Canteenwise")]
+        public List<clsCategoryReport> Fn_DailyReport_Canteenwise(clsCategoryReport objReq)
+        {
+            var objResp = new List<clsCategoryReport>();
+            objResp = _DALCanteen.Fn_DailyReport_Canteenwise(objReq);
+            return objResp;
+        }
+
+
+
     }
 }
