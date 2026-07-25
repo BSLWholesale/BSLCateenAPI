@@ -162,4 +162,31 @@ namespace BSLCanteenAPI.Models
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
     }
+
+
+    public class clsCategoryReport
+    {
+        public int CanteenId { get; set; }
+        public string CanteenName { get; set; }
+        public string CurrentDate { get; set; }
+        public Int32 EmpId { get; set; }
+        public string Noofworkers { get; set; }
+        public string GeneratedCoupons { get; set; }
+        public string ScannedCoupons { get; set; }
+        public string GeneratedCouponTea { get; set; }
+        public string QRScannedTea { get; set; }
+        public string GeneratedCouponBreakfast { get; set; }
+        public string QRScannedBreakfast { get; set; }
+        public string GeneratedCouponThali { get; set; }
+        public string QRScannedThali { get; set; }
+        public string GeneratedCouponMiniThali { get; set; }
+        public string QRScannedMiniThali { get; set; }
+        public string ItemCategory { get; set; }
+        public string ReportType { get; set; }
+        public string EmpLocation { get; set; }
+        public int vErrorCode { get; set; }
+        public string vErrorMsg { get; set; }
+    }
+
+
 }
