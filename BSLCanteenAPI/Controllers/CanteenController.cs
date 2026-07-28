@@ -136,7 +136,7 @@ namespace BSLCanteenAPI.Controllers
 
 
         [System.Web.Http.HttpPost]
-        [System.Web.Http.Route("api/Cateen/Fn_DailyReport_ItemCategorywise")]
+        [System.Web.Http.Route("api/Canteen/Fn_DailyReport_ItemCategorywise")]
         public List<clsCategoryReport> Fn_DailyReport_ItemCategorywise(clsCategoryReport objReq)
         {
             var objResp = new List<clsCategoryReport>();
@@ -145,7 +145,7 @@ namespace BSLCanteenAPI.Controllers
         }
 
         [System.Web.Http.HttpPost]
-        [System.Web.Http.Route("api/Cateen/Fn_DailyReport_Canteenwise")]
+        [System.Web.Http.Route("api/Canteen/Fn_DailyReport_Canteenwise")]
         public List<clsCategoryReport> Fn_DailyReport_Canteenwise(clsCategoryReport objReq)
         {
             var objResp = new List<clsCategoryReport>();
