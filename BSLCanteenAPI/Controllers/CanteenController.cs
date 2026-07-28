@@ -154,6 +154,15 @@ namespace BSLCanteenAPI.Controllers
         }
 
 
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Canteen/Fn_DailyReport_Shiftwise")]
+        public List<clsShiftReport> Fn_DailyReport_Shiftwise(clsShiftReport objReq)
+        {
+            var objResp = new List<clsShiftReport>();
+            objResp = _DALCanteen.Fn_DailyReport_Shiftwise(objReq);
+            return objResp;
+        }
+
 
     }
 }
