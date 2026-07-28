@@ -1325,5 +1325,71 @@ namespace BSLCanteenAPI.DAL
         }
 
 
+        public List<clsShiftReport> Fn_DailyReport_Shiftwise(clsShiftReport objReq)
+        {
+            var objResp = new List<clsShiftReport>();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_DailyReport_Shiftwise");
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_DailyReportShiftWise", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        var objItem = new clsShiftReport();
+                        objItem.CanteenName = Convert.ToString(ds.Tables[0].Rows[i]["CanteenName"]);
+                        objItem.ShiftName = Convert.ToString(ds.Tables[0].Rows[i]["ShiftName"]);
+                        objItem.Noofworkers = Convert.ToString(ds.Tables[0].Rows[i]["No.Of Workers"]);
+                        objItem.GeneratedCouponTea = Convert.ToString(ds.Tables[0].Rows[i]["GeneratedCouponTea"]);
+                        objItem.QRScannedTea = Convert.ToString(ds.Tables[0].Rows[i]["QRScannedTea"]);
+                        objItem.GeneratedCouponBreakfast = Convert.ToString(ds.Tables[0].Rows[i]["GeneratedCouponBreakfast"]);
+                        objItem.QRScannedBreakfast = Convert.ToString(ds.Tables[0].Rows[i]["QRScannedBreakfast"]);
+                        objItem.GeneratedCouponThali = Convert.ToString(ds.Tables[0].Rows[i]["GeneratedCouponThali"]);
+                        objItem.QRScannedThali = Convert.ToString(ds.Tables[0].Rows[i]["QRScannedThali"]);
+                        objItem.GeneratedCouponMiniThali = Convert.ToString(ds.Tables[0].Rows[i]["GeneratedCouponMiniThali"]);
+                        objItem.QRScannedMiniThali = Convert.ToString(ds.Tables[0].Rows[i]["QRScannedMiniThali"]);
+
+                        objItem.vErrorMsg = "Success";
+                        objItem.vErrorCode = 200;
+                        objResp.Add(objItem);
+                        i++;
+                    }
+                }
+                else
+                {
+                    var objItem = new clsShiftReport();
+                    objItem.vErrorMsg = "Shift wise records report are not found.";
+                    objItem.vErrorCode = 400;
+                    objResp.Add(objItem);
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_DailyReport_Shiftwise", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                var objItem = new clsShiftReport();
+                objItem.vErrorMsg = exp.Message.ToString();
+                objItem.vErrorCode = 500;
+                objResp.Add(objItem);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_DailyReport_Shiftwise");
+            return objResp;
+        }
+
+
     }
 }
