@@ -1203,7 +1203,7 @@ namespace BSLCanteenAPI.DAL
         public List<clsCategoryReport> Fn_DailyReport_ItemCategorywise(clsCategoryReport objReq)
         {
             var objResp = new List<clsCategoryReport>();
-            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Response", "Fn_DailyReport_ItemCategorywise");
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_DailyReport_ItemCategorywise");
             try
             {
                 if (Con.State == ConnectionState.Broken)
@@ -1269,7 +1269,7 @@ namespace BSLCanteenAPI.DAL
         public List<clsCategoryReport> Fn_DailyReport_Canteenwise(clsCategoryReport objReq)
         {
             var objResp = new List<clsCategoryReport>();
-            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Response", "Fn_DailyReport_Canteenwise");
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_DailyReport_Canteenwise");
             try
             {
                 if (Con.State == ConnectionState.Broken)
