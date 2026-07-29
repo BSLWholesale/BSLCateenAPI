@@ -1213,6 +1213,7 @@ namespace BSLCanteenAPI.DAL
 
                 SqlCommand cmd = new SqlCommand("USP_DailyReportCategoryWise", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@TDate", objReq.CurrentDate);
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
                 da.Fill(ds);
@@ -1225,13 +1226,13 @@ namespace BSLCanteenAPI.DAL
                         var objItem = new clsCategoryReport();
                         objItem.CanteenName = Convert.ToString(ds.Tables[0].Rows[i]["CanteenName"]);
                         objItem.Noofworkers = Convert.ToString(ds.Tables[0].Rows[i]["No.Of Workers"]);
-                        objItem.GeneratedCouponTea = Convert.ToString(ds.Tables[0].Rows[i]["GeneratedCouponTea"]);
+                        //objItem.GeneratedCouponTea = Convert.ToString(ds.Tables[0].Rows[i]["GeneratedCouponTea"]);
                         objItem.QRScannedTea = Convert.ToString(ds.Tables[0].Rows[i]["QRScannedTea"]);
-                        objItem.GeneratedCouponBreakfast = Convert.ToString(ds.Tables[0].Rows[i]["GeneratedCouponBreakfast"]);
+                        //objItem.GeneratedCouponBreakfast = Convert.ToString(ds.Tables[0].Rows[i]["GeneratedCouponBreakfast"]);
                         objItem.QRScannedBreakfast = Convert.ToString(ds.Tables[0].Rows[i]["QRScannedBreakfast"]);
-                        objItem.GeneratedCouponThali = Convert.ToString(ds.Tables[0].Rows[i]["GeneratedCouponThali"]);
+                        //objItem.GeneratedCouponThali = Convert.ToString(ds.Tables[0].Rows[i]["GeneratedCouponThali"]);
                         objItem.QRScannedThali = Convert.ToString(ds.Tables[0].Rows[i]["QRScannedThali"]);
-                        objItem.GeneratedCouponMiniThali = Convert.ToString(ds.Tables[0].Rows[i]["GeneratedCouponMiniThali"]);
+                        //objItem.GeneratedCouponMiniThali = Convert.ToString(ds.Tables[0].Rows[i]["GeneratedCouponMiniThali"]);
                         objItem.QRScannedMiniThali = Convert.ToString(ds.Tables[0].Rows[i]["QRScannedMiniThali"]);
 
                         objItem.vErrorMsg = "Success";
@@ -1279,6 +1280,7 @@ namespace BSLCanteenAPI.DAL
 
                 SqlCommand cmd = new SqlCommand("USP_DailyReportAllCanteenSummary", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@TDate", objReq.CurrentDate);
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
                 da.Fill(ds);
@@ -1291,7 +1293,7 @@ namespace BSLCanteenAPI.DAL
                         var objItem = new clsCategoryReport();
                         objItem.CanteenName = Convert.ToString(ds.Tables[0].Rows[i]["CanteenName"]);
                         objItem.Noofworkers = Convert.ToString(ds.Tables[0].Rows[i]["No.Of Workers"]);
-                        objItem.GeneratedCoupons = Convert.ToString(ds.Tables[0].Rows[i]["Generated"]);
+                        //objItem.GeneratedCoupons = Convert.ToString(ds.Tables[0].Rows[i]["Generated"]);
                         objItem.ScannedCoupons = Convert.ToString(ds.Tables[0].Rows[i]["Scanned"]);
 
                         objItem.vErrorMsg = "Success";
@@ -1338,6 +1340,7 @@ namespace BSLCanteenAPI.DAL
 
                 SqlCommand cmd = new SqlCommand("USP_DailyReportShiftWise", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@TDate", objReq.CurrentDate);
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
                 da.Fill(ds);
@@ -1351,13 +1354,13 @@ namespace BSLCanteenAPI.DAL
                         objItem.CanteenName = Convert.ToString(ds.Tables[0].Rows[i]["CanteenName"]);
                         objItem.ShiftName = Convert.ToString(ds.Tables[0].Rows[i]["ShiftName"]);
                         objItem.Noofworkers = Convert.ToString(ds.Tables[0].Rows[i]["No.Of Workers"]);
-                        objItem.GeneratedCouponTea = Convert.ToString(ds.Tables[0].Rows[i]["GeneratedCouponTea"]);
+                        //objItem.GeneratedCouponTea = Convert.ToString(ds.Tables[0].Rows[i]["GeneratedCouponTea"]);
                         objItem.QRScannedTea = Convert.ToString(ds.Tables[0].Rows[i]["QRScannedTea"]);
-                        objItem.GeneratedCouponBreakfast = Convert.ToString(ds.Tables[0].Rows[i]["GeneratedCouponBreakfast"]);
+                        //objItem.GeneratedCouponBreakfast = Convert.ToString(ds.Tables[0].Rows[i]["GeneratedCouponBreakfast"]);
                         objItem.QRScannedBreakfast = Convert.ToString(ds.Tables[0].Rows[i]["QRScannedBreakfast"]);
-                        objItem.GeneratedCouponThali = Convert.ToString(ds.Tables[0].Rows[i]["GeneratedCouponThali"]);
+                        //objItem.GeneratedCouponThali = Convert.ToString(ds.Tables[0].Rows[i]["GeneratedCouponThali"]);
                         objItem.QRScannedThali = Convert.ToString(ds.Tables[0].Rows[i]["QRScannedThali"]);
-                        objItem.GeneratedCouponMiniThali = Convert.ToString(ds.Tables[0].Rows[i]["GeneratedCouponMiniThali"]);
+                        //objItem.GeneratedCouponMiniThali = Convert.ToString(ds.Tables[0].Rows[i]["GeneratedCouponMiniThali"]);
                         objItem.QRScannedMiniThali = Convert.ToString(ds.Tables[0].Rows[i]["QRScannedMiniThali"]);
 
                         objItem.vErrorMsg = "Success";
