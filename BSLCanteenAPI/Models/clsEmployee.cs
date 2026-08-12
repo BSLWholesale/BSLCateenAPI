@@ -212,4 +212,20 @@ namespace BSLCanteenAPI.Models
     }
 
 
+    public class clsDailyMonthlyAllEmpDetail
+    {
+        public Int32 EmpId { get; set; }
+        public string EmpName { get; set; }
+        public int CanteenId { get; set; }
+        public string CanteenName { get; set; }
+        public Int64 CouponId { get; set; }
+        public string ItemCatgeory { get; set; }
+        public string OrderTakenDate { get; set; }
+        public string CurrentDate { get; set; }
+        public int vErrorCode { get; set; }
+        public string vErrorMsg { get; set; }
+    }
+
+
+
 }
