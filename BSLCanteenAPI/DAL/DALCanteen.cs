@@ -1394,5 +1394,67 @@ namespace BSLCanteenAPI.DAL
         }
 
 
+        public List<clsDailyMonthlyAllEmpDetail> Fn_DailyMonthlyReport_EmpDetail(clsDailyMonthlyAllEmpDetail objReq)
+        {
+            var objResp = new List<clsDailyMonthlyAllEmpDetail>();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_DailyMonthlyReport_EmpDetail");
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_DailyMonthlyReportAllEmployeeDetail", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@TDate", objReq.CurrentDate);
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        var objItem = new clsDailyMonthlyAllEmpDetail();
+                        objItem.EmpId = Convert.ToInt32(ds.Tables[0].Rows[i]["EmpId"]);
+                        objItem.EmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
+                        objItem.CanteenName = Convert.ToString(ds.Tables[0].Rows[i]["CanteenName"]);
+                        objItem.CouponId = Convert.ToInt64(ds.Tables[0].Rows[i]["CouponId"]);
+                        objItem.ItemCatgeory = Convert.ToString(ds.Tables[0].Rows[i]["ItemCategory"]);
+                        objItem.OrderTakenDate = Convert.ToString(ds.Tables[0].Rows[i]["OrdTakenDate"]);
+
+                        objItem.vErrorMsg = "Success";
+                        objItem.vErrorCode = 200;
+                        objResp.Add(objItem);
+                        i++;
+                    }
+                }
+                else
+                {
+                    var objItem = new clsDailyMonthlyAllEmpDetail();
+                    objItem.vErrorMsg = "Daily Monthly records of all Employee detail report are not found.";
+                    objItem.vErrorCode = 400;
+                    objResp.Add(objItem);
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_DailyMonthlyReport_EmpDetail", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                var objItem = new clsDailyMonthlyAllEmpDetail();
+                objItem.vErrorMsg = exp.Message.ToString();
+                objItem.vErrorCode = 500;
+                objResp.Add(objItem);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_DailyMonthlyReport_EmpDetail");
+            return objResp;
+        }
+
+
     }
 }
