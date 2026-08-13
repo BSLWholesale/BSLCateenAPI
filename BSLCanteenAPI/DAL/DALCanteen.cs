@@ -1407,10 +1407,11 @@ namespace BSLCanteenAPI.DAL
 
                 SqlCommand cmd = new SqlCommand("USP_DailyMonthlyReportAllEmployeeDetail", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
-                //cmd.Parameters.AddWithValue("@TDate", objReq.CurrentDate);
-                cmd.Parameters.AddWithValue("@DPeriodType", objReq.PeriodType);
-                cmd.Parameters.AddWithValue("@Employee", objReq.EmpId);
+                cmd.Parameters.AddWithValue("@TDate", objReq.CurrentDate);
                 cmd.Parameters.AddWithValue("@CanteenId", objReq.CanteenId);
+                cmd.Parameters.AddWithValue("@Employee", objReq.EmpId);
+                cmd.Parameters.AddWithValue("@DPeriodType", objReq.PeriodType);
+
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
                 da.Fill(ds);
