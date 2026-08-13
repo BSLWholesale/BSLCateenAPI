@@ -222,6 +222,7 @@ namespace BSLCanteenAPI.Models
         public string ItemCatgeory { get; set; }
         public string OrderTakenDate { get; set; }
         public string CurrentDate { get; set; }
+        public string PeriodType { get; set; }
         public int vErrorCode { get; set; }
         public string vErrorMsg { get; set; }
     }
