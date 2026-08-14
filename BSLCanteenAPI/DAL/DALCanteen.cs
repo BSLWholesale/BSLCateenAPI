@@ -1394,9 +1394,10 @@ namespace BSLCanteenAPI.DAL
         }
 
 
-        public List<clsDailyMonthlyAllEmpDetail> Fn_DailyMonthlyReport_EmpDetail(clsDailyMonthlyAllEmpDetail objReq)
+        public List<clsDailyMonthlyAllEmpDetailResp> Fn_DailyMonthlyReport_EmpDetail(clsDailyMonthlyAllEmpDetailReq objReq)
         {
-            var objResp = new List<clsDailyMonthlyAllEmpDetail>();
+            var objResp = new List<clsDailyMonthlyAllEmpDetailResp>();
+            var obj = new clsDailyMonthlyAllEmpDetailResp();
             Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_DailyMonthlyReport_EmpDetail");
             try
             {
@@ -1409,8 +1410,11 @@ namespace BSLCanteenAPI.DAL
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@TDate", objReq.CurrentDate);
                 cmd.Parameters.AddWithValue("@CanteenId", objReq.CanteenId);
-                cmd.Parameters.AddWithValue("@Employee", objReq.EmpId);
+                cmd.Parameters.AddWithValue("@Employee", SqlDbType.Int).Value = 
+                    objReq.EmpId == 0 ? (object)DBNull.Value : objReq.EmpId;
                 cmd.Parameters.AddWithValue("@DPeriodType", objReq.PeriodType);
+                cmd.Parameters.AddWithValue("@PageNumber", objReq.PageNumber);
+                cmd.Parameters.AddWithValue("@PageSize", objReq.PageSize);
 
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
@@ -1421,35 +1425,34 @@ namespace BSLCanteenAPI.DAL
                 {
                     while (ds.Tables[0].Rows.Count > i)
                     {
-                        var objItem = new clsDailyMonthlyAllEmpDetail();
-                        objItem.EmpId = Convert.ToInt32(ds.Tables[0].Rows[i]["EmpId"]);
-                        objItem.EmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
-                        objItem.CanteenName = Convert.ToString(ds.Tables[0].Rows[i]["CanteenName"]);
-                        objItem.CouponId = Convert.ToInt64(ds.Tables[0].Rows[i]["CouponId"]);
-                        objItem.ItemCatgeory = Convert.ToString(ds.Tables[0].Rows[i]["ItemCategory"]);
-                        objItem.OrderTakenDate = Convert.ToString(ds.Tables[0].Rows[i]["OrdTakenDate"]);
+                        obj = new clsDailyMonthlyAllEmpDetailResp();
+                        obj.EmpId = Convert.ToInt32(ds.Tables[0].Rows[i]["EmpId"]);
+                        obj.EmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
+                        obj.CanteenName = Convert.ToString(ds.Tables[0].Rows[i]["CanteenName"]);
+                        obj.CouponId = Convert.ToInt64(ds.Tables[0].Rows[i]["CouponId"]);
+                        obj.ItemCatgeory = Convert.ToString(ds.Tables[0].Rows[i]["ItemCategory"]);
+                        obj.OrderTakenDate = Convert.ToString(ds.Tables[0].Rows[i]["OrdTakenDate"]);
+                        obj.TotalRows = Convert.ToInt64(ds.Tables[0].Rows[i]["TotalRows"]);
 
-                        objItem.vErrorMsg = "Success";
-                        objItem.vErrorCode = 200;
-                        objResp.Add(objItem);
+                        obj.vErrorMsg = "Success";
+                        obj.vErrorCode = 200;
+                        objResp.Add(obj);
                         i++;
                     }
                 }
                 else
                 {
-                    var objItem = new clsDailyMonthlyAllEmpDetail();
-                    objItem.vErrorMsg = "Daily Monthly records of all Employee detail report are not found.";
-                    objItem.vErrorCode = 400;
-                    objResp.Add(objItem);
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "Daily Monthly records of all Employee detail report are not found.";
+                    objResp.Add(obj);
                 }
             }
             catch (Exception exp)
             {
+                obj.vErrorCode = 500;
                 Logger.WriteLog("Function Name : Fn_DailyMonthlyReport_EmpDetail", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
-                var objItem = new clsDailyMonthlyAllEmpDetail();
-                objItem.vErrorMsg = exp.Message.ToString();
-                objItem.vErrorCode = 500;
-                objResp.Add(objItem);
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
             }
             finally
             {
