@@ -212,7 +212,7 @@ namespace BSLCanteenAPI.Models
     }
 
 
-    public class clsDailyMonthlyAllEmpDetail
+    public class clsDailyMonthlyAllEmpDetailReq
     {
         public Int32 EmpId { get; set; }
         public string EmpName { get; set; }
@@ -223,10 +223,30 @@ namespace BSLCanteenAPI.Models
         public string OrderTakenDate { get; set; }
         public string CurrentDate { get; set; }
         public string PeriodType { get; set; }
+        public int PageNumber { get; set; }
+        public int PageSize { get; set; }
+        public Int64 TotalRows { get; set; }
         public int vErrorCode { get; set; }
         public string vErrorMsg { get; set; }
     }
 
+    public class clsDailyMonthlyAllEmpDetailResp
+    {
+        public Int32 EmpId { get; set; }
+        public string EmpName { get; set; }
+        public int CanteenId { get; set; }
+        public string CanteenName { get; set; }
+        public Int64 CouponId { get; set; }
+        public string ItemCatgeory { get; set; }
+        public string OrderTakenDate { get; set; }
+        public string CurrentDate { get; set; }
+        public string PeriodType { get; set; }
+        public int PageNumber { get; set; }
+        public int PageSize { get; set; }
+        public Int64 TotalRows { get; set; }
+        public int vErrorCode { get; set; }
+        public string vErrorMsg { get; set; }
+    }
 
 
 }
