@@ -32,6 +32,7 @@ namespace BSLCanteenAPI.Models
     {
         public Int32 ItemId { get; set; }
         public string Category { get; set; }
+        public string CategoryIcon { get; set; }
         public string ItemName { get; set; }
         public decimal Price { get; set; }
         public int CreatedBy { get; set; }
@@ -54,6 +55,7 @@ namespace BSLCanteenAPI.Models
         public int CanteenId { get; set; }
         public string ItemCategory { get; set; }
         public string EmpLocation { get; set; }
+        public string CouponType { get; set; }
         public List<clsCouponItem> Items { get; set; }
         public int CreatedBy { get; set; }
         public string CreatedOn { get; set; }
@@ -104,6 +106,9 @@ namespace BSLCanteenAPI.Models
     {
         public Int64 CouponId { get; set; }
         public Int32 RowIndex { get; set; }
+        public string CouponType { get; set; }
+        public string Category { get; set; }
+        public string CategoryIcon { get; set; }
         public string ItemCategory { get; set; }
         public string CouponIssueDate { get; set; }
         public string CouponIssueTime { get; set; }
@@ -123,6 +128,7 @@ namespace BSLCanteenAPI.Models
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
         public string OrderByReport { get; set; }
+        public bool EmpStatus { get; set; }
     }
 
     public class clsMonthlyReportReq
@@ -144,6 +150,7 @@ namespace BSLCanteenAPI.Models
         public string CanteenName { get; set; }
         public Int32 EmpId { get; set; }
         public string EmpName { get; set; }
+        public string CategoryIcon { get; set; }
         public string ItemCategory { get; set; }
         public string OrderTakenDate { get; set; }
         public int TotalCoupons { get; set; }
@@ -157,6 +164,7 @@ namespace BSLCanteenAPI.Models
         public int CountItem { get; set; }
         public int CanteenId { get; set; }
         public string EmpLocation { get; set; }
+        public string CategoryIcon { get; set; }
         public string ItemCategory { get; set; }
         public string OrderTakenDate { get; set; }
         public string vErrorMsg { get; set; }

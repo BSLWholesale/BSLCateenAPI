@@ -72,6 +72,7 @@ namespace BSLCanteenAPI.DAL
                             cmd.Parameters.AddWithValue("@ItemCategory", item.ItemCategory);
                             cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
                             cmd.Parameters.AddWithValue("@RowIndex", objReq.RowIndex);
+                            cmd.Parameters.AddWithValue("@CouponType", objReq.CouponType);
                             cmd.Parameters.AddWithValue("@OrderStatus", "Generated");
                             cmd.Parameters.AddWithValue("@QueryType", "InsertCouponId");
 
@@ -215,8 +216,8 @@ namespace BSLCanteenAPI.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT CouponId, ItemCategory, Price, CoupIssueDate, CoupIssueTime, OrdTakenDate, OrdTakenTime, OrdStatus, CanteenId, CanteenName, ";
-                strSql = strSql + " EmployeeId, EmpName, CreatedBy, CreatedOn, ModifiedBy, ModifiedOn, RowIndex FROM vCouponOrder WHERE 1=1 ";
+                string strSql = "SELECT CouponId, ItemCategory, Category, Price, CoupIssueDate, CoupIssueTime, OrdTakenDate, OrdTakenTime, OrdStatus, CanteenId, CanteenName, ";
+                strSql = strSql + " EmployeeId, EmpName, CreatedBy, CreatedOn, ModifiedBy, ModifiedOn, RowIndex, CouponType, CategoryIcon, EmpStatus FROM vCouponOrder WHERE 1=1 ";
                 if (objReq.EmpId != 0 && objReq.EmpId != null)
                 {
                     strSql = strSql + " AND EmployeeId = @EmpId ";
@@ -303,6 +304,7 @@ namespace BSLCanteenAPI.DAL
                     {
                         obj = new clsCouponReport();
                         obj.CouponId = Convert.ToInt64(ds.Tables[0].Rows[i]["CouponId"]);
+                        obj.Category = Convert.ToString(ds.Tables[0].Rows[i]["Category"]);
                         obj.ItemCategory = Convert.ToString(ds.Tables[0].Rows[i]["ItemCategory"]);
                         obj.CouponIssueDate = Convert.ToString(ds.Tables[0].Rows[i]["CoupIssueDate"]);
                         obj.CouponIssueTime = Convert.ToString(ds.Tables[0].Rows[i]["CoupIssueTime"]);
@@ -315,6 +317,9 @@ namespace BSLCanteenAPI.DAL
                         obj.EmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
                         obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
                         obj.Price = Convert.ToInt32(ds.Tables[0].Rows[i]["Price"]);
+                        obj.CouponType = Convert.ToString(ds.Tables[0].Rows[i]["CouponType"]);
+                        obj.CategoryIcon = Convert.ToString(ds.Tables[0].Rows[i]["CategoryIcon"]);
+                        obj.EmpStatus = Convert.ToBoolean(ds.Tables[0].Rows[i]["EmpStatus"]);
                         obj.vErrorMsg = "Success";
                         obj.vErrorCode = 200;
                         objResp.Add(obj);
@@ -381,6 +386,11 @@ namespace BSLCanteenAPI.DAL
                     objResp.vErrorMsg = "Coupon already cancelled";
                     objResp.vErrorCode = 400;
                 }
+                else if (objCheck[0].EmpStatus == false)
+                {
+                    objResp.vErrorMsg = "Worker not active";
+                    objResp.vErrorCode = 400;
+                }
                 else
                 {
                     if (Con.State == ConnectionState.Broken)
@@ -435,10 +445,9 @@ namespace BSLCanteenAPI.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                strSql = "SELECT C.ItemCategory, ISNULL(COUNT(O.CouponId), 0) AS RC ";
-                strSql = strSql + " FROM ( SELECT 'Tea' AS ItemCategory UNION ALL SELECT 'Breakfast' UNION ALL SELECT 'Thali' ";
-                strSql = strSql + " UNION ALL SELECT 'Mini Thali' ) C ";
-                strSql = strSql + " LEFT JOIN vCouponOrder O  ON O.ItemCategory = C.ItemCategory AND O.OrdStatus = 'Scanned' ";
+                strSql = "SELECT C.Category, O.CategoryIcon, ISNULL(COUNT(O.CouponId), 0) AS RC ";
+                strSql = strSql + " FROM ( SELECT 'Drink' AS Category UNION ALL SELECT 'Breakfast' UNION ALL SELECT 'Thali' ) C  ";
+                strSql = strSql + " LEFT JOIN vCouponOrder O  ON O.Category = C.Category AND O.OrdStatus = 'Scanned' WHERE 1=1 ";
                 if (!String.IsNullOrWhiteSpace(objReq.OrderTakenDate))
                 {
                     strSql = strSql + " AND O.OrdTakenDate='" + objReq.OrderTakenDate + "'";
@@ -451,7 +460,7 @@ namespace BSLCanteenAPI.DAL
                 {
                     strSql = strSql + " AND O.CanteenId=" + objReq.CanteenId + "";
                 }
-                strSql = strSql + " GROUP BY  C.ItemCategory ";
+                strSql = strSql + " GROUP BY  C.Category, O.CategoryIcon ";
                 SqlDataAdapter da = new SqlDataAdapter(strSql, Con);
                 DataSet ds = new DataSet();
                 da.Fill(ds);
@@ -464,7 +473,8 @@ namespace BSLCanteenAPI.DAL
                     {
                         obj = new clsCountMenuItem();
                         obj.CountItem = Convert.ToInt32(ds.Tables[0].Rows[i]["RC"]);
-                        obj.ItemCategory = Convert.ToString(ds.Tables[0].Rows[i]["ItemCategory"]);
+                        obj.ItemCategory = Convert.ToString(ds.Tables[0].Rows[i]["Category"]);
+                        obj.CategoryIcon = Convert.ToString(ds.Tables[0].Rows[i]["CategoryIcon"]);
                         obj.vErrorMsg = "Success";
                         obj.vErrorCode = 200;
                         objResp.Add(obj);
@@ -639,6 +649,7 @@ namespace BSLCanteenAPI.DAL
                         objItem.Category = Convert.ToString(ds.Tables[0].Rows[i]["Category"]);
                         objItem.Price = Convert.ToDecimal(ds.Tables[0].Rows[i]["Price"]);
                         objItem.Category = Convert.ToString(ds.Tables[0].Rows[i]["Category"]);
+                        objItem.CategoryIcon = Convert.ToString(ds.Tables[0].Rows[i]["CategoryIcon"]);
                         objItem.vErrorMsg = "Success";
                         objItem.vErrorCode = 200;
                         objResp.Add(objItem);
@@ -681,7 +692,7 @@ namespace BSLCanteenAPI.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT CanteenId, CanteenName, ItemCategory, OrdTakenDate, COUNT(CouponId) AS TotalCoupons, ";
+                string strSql = "SELECT CanteenId, CanteenName, ItemCategory, CategoryIcon, OrdTakenDate, COUNT(CouponId) AS TotalCoupons, ";
                 strSql = strSql + " SUM(Price) AS TotalPrice FROM vCouponOrder WHERE 1=1 AND OrdStatus = 'Scanned' ";
                 
                 if (objReq.CanteenId != 0 && objReq.CanteenId != null)
@@ -708,7 +719,7 @@ namespace BSLCanteenAPI.DAL
                 {
                     strSql = strSql + " AND OrderDate BETWEEN '" + objReq.FromDate + "' AND '" + objReq.ToDate + "'";
                 }                
-                strSql = strSql + " GROUP BY  CanteenId, CanteenName, ItemCategory, OrdTakenDate ";
+                strSql = strSql + " GROUP BY  CanteenId, CanteenName, ItemCategory, CategoryIcon, OrdTakenDate ";
                 strSql = strSql + " ORDER BY  OrdTakenDate DESC, CanteenName, ItemCategory ";
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
@@ -746,6 +757,7 @@ namespace BSLCanteenAPI.DAL
                         obj.OrderTakenDate = Convert.ToString(ds.Tables[0].Rows[i]["OrdTakenDate"]);
                         obj.TotalCoupons = Convert.ToInt32(ds.Tables[0].Rows[i]["TotalCoupons"]);
                         obj.TotalPrice = Convert.ToDecimal(ds.Tables[0].Rows[i]["TotalPrice"]);
+                        obj.CategoryIcon = Convert.ToString(ds.Tables[0].Rows[i]["CategoryIcon"]);
                         obj.vErrorMsg = "Success";
                         obj.vErrorCode = 200;
                         objResp.Add(obj);
@@ -787,7 +799,7 @@ namespace BSLCanteenAPI.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT EmployeeId, EmpName, CanteenId, CanteenName, ItemCategory, OrdTakenDate, COUNT(CouponId) AS TotalCoupons,  ";
+                string strSql = "SELECT EmployeeId, EmpName, CanteenId, CanteenName, ItemCategory, CategoryIcon, OrdTakenDate, COUNT(CouponId) AS TotalCoupons,  ";
                 strSql = strSql + " SUM(Price) AS TotalPrice FROM vCouponOrder WHERE 1=1 AND OrdStatus = 'Scanned' ";
 
                 if (objReq.CanteenId != 0 && objReq.CanteenId != null)
@@ -814,7 +826,7 @@ namespace BSLCanteenAPI.DAL
                 {
                     strSql = strSql + " AND OrdTakenDate BETWEEN '" + objReq.FromDate + "' AND '" + objReq.ToDate + "'";
                 }                
-                strSql = strSql + " GROUP BY EmployeeId, EmpName, CanteenId, CanteenName, ItemCategory, OrdTakenDate ";
+                strSql = strSql + " GROUP BY EmployeeId, EmpName, CanteenId, CanteenName, ItemCategory, CategoryIcon, OrdTakenDate ";
                 strSql = strSql + " ORDER BY EmpName, CanteenName, ItemCategory , OrdTakenDate DESC ";
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
@@ -854,6 +866,7 @@ namespace BSLCanteenAPI.DAL
                         obj.OrderTakenDate = Convert.ToString(ds.Tables[0].Rows[i]["OrdTakenDate"]);
                         obj.TotalCoupons = Convert.ToInt32(ds.Tables[0].Rows[i]["TotalCoupons"]);
                         obj.TotalPrice = Convert.ToDecimal(ds.Tables[0].Rows[i]["TotalPrice"]);
+                        obj.CategoryIcon = Convert.ToString(ds.Tables[0].Rows[i]["CategoryIcon"]);
                         obj.vErrorMsg = "Success";
                         obj.vErrorCode = 200;
                         objResp.Add(obj);
