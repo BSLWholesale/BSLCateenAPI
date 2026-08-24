@@ -1483,5 +1483,73 @@ namespace BSLCanteenAPI.DAL
         }
 
 
+        public List<clsDailyMonthlyAllEmpSummaryResp> Fn_DailyMonthlyReport_EmpSummary(clsDailyMonthlyAllEmpSummaryReq objReq)
+        {
+            var objResp = new List<clsDailyMonthlyAllEmpSummaryResp>();
+            var obj = new clsDailyMonthlyAllEmpSummaryResp();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_DailyMonthlyReport_EmpSummary");
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("", objReq.CurrentDate);
+                cmd.Parameters.AddWithValue("", objReq.CanteenId);
+                cmd.Parameters.AddWithValue("", SqlDbType.Int).Value =
+                    objReq.EmpId == 0 ? (object)DBNull.Value : objReq.EmpId;
+                cmd.Parameters.AddWithValue("", objReq.PeriodType);
+                cmd.Parameters.AddWithValue("", objReq.PageNumber);
+                cmd.Parameters.AddWithValue("", objReq.PageSize);
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsDailyMonthlyAllEmpSummaryResp();
+                        obj.EmpId = Convert.ToInt32(ds.Tables[0].Rows[i][""]);
+                        obj.EmpName = Convert.ToString(ds.Tables[0].Rows[i][""]);
+                        obj.CanteenName = Convert.ToString(ds.Tables[0].Rows[i][""]);
+                        obj.TotalCoupon = Convert.ToString(ds.Tables[0].Rows[i][""]);
+                        obj.Amt = Convert.ToDecimal(ds.Tables[0].Rows[i][""]);
+                        obj.TotalRows = Convert.ToInt64(ds.Tables[0].Rows[i][""]);
+
+                        obj.vErrorMsg = "Success";
+                        obj.vErrorCode = 200;
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "Daily Monthly records of all Employee summary report are not found.";
+                    objResp.Add(obj);
+                }
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_DailyMonthlyReport_EmpSummary", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_DailyMonthlyReport_EmpSummary");
+            return objResp;
+        }
+
+
     }
 }
