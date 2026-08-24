@@ -361,6 +361,8 @@ namespace BSLCanteenAPI.DAL
             objCheck = Fn_Get_Coupon_Order(obj);
             try
             {
+                int CouponValidDays = Convert.ToInt32(ConfigurationManager.AppSettings["CouponValidDays"].ToString());
+                DateTime checkVaidDays = DateTime.Now.AddDays(-CouponValidDays);
                 if (objReq.CouponId == null || objReq.CouponId == 0)
                 {
                     objResp.vErrorMsg = "Please Send CouponId";
@@ -389,6 +391,11 @@ namespace BSLCanteenAPI.DAL
                 else if (objCheck[0].EmpStatus == false)
                 {
                     objResp.vErrorMsg = "Worker not active";
+                    objResp.vErrorCode = 400;
+                }
+                else if (Convert.ToDateTime(objCheck[0].CouponIssueDate) < checkVaidDays)
+                {
+                    objResp.vErrorMsg = "Expire your coupon, It's valid for " + CouponValidDays + " days.";
                     objResp.vErrorCode = 400;
                 }
                 else
