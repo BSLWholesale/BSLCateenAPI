@@ -1482,38 +1482,6 @@ namespace BSLCanteenAPI.DAL
             return objResp;
         }
 
-        #region Start Fn_Add_New_ItemCategory 25-AUG-2026
-
-        public clsAddMenu Fn_Add_New_ItemCategory(clsAddMenu objReq)
-        {
-            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Add_New_ItemCategory");
-            var objResp = new clsAddMenu();
-
-            try
-            {
-
-                if (String.IsNullOrWhiteSpace(objReq.Category))
-                {
-                    objResp.vErrorMsg = "Please Enter Category";
-                    objResp.vErrorCode = 400;
-                }
-                else if (String.IsNullOrWhiteSpace(objReq.ItemName))
-                {
-                    objResp.vErrorMsg = "Please Enter ItemName";
-                    objResp.vErrorCode = 400;
-                }
-                else if (objReq.Price == 0)
-                {
-                    objResp.vErrorMsg = "Please Enter Price";
-                    objResp.vErrorCode = 400;
-                }
-                else
-                {
-                    if (Con.State == ConnectionState.Broken)
-                    { Con.Close(); }
-                    if (Con.State == ConnectionState.Closed)
-                    { Con.Open(); }
-
         public List<clsDailyMonthlyAllEmpSummaryResp> Fn_DailyMonthlyReport_EmpSummary(clsDailyMonthlyAllEmpSummaryReq objReq)
         {
             var objResp = new List<clsDailyMonthlyAllEmpSummaryResp>();
@@ -1581,7 +1549,38 @@ namespace BSLCanteenAPI.DAL
             return objResp;
         }
 
+        #region Start Fn_Add_New_ItemCategory 25-AUG-2026
 
+        public clsAddMenu Fn_Add_New_ItemCategory(clsAddMenu objReq)
+        {
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Add_New_ItemCategory");
+            var objResp = new clsAddMenu();
+
+            try
+            {
+
+                if (String.IsNullOrWhiteSpace(objReq.Category))
+                {
+                    objResp.vErrorMsg = "Please Enter Category";
+                    objResp.vErrorCode = 400;
+                }
+                else if (String.IsNullOrWhiteSpace(objReq.ItemName))
+                {
+                    objResp.vErrorMsg = "Please Enter ItemName";
+                    objResp.vErrorCode = 400;
+                }
+                else if (objReq.Price == 0)
+                {
+                    objResp.vErrorMsg = "Please Enter Price";
+                    objResp.vErrorCode = 400;
+                }
+                else
+                {
+                    if (Con.State == ConnectionState.Broken)
+                    { Con.Close(); }
+                    if (Con.State == ConnectionState.Closed)
+                    { Con.Open(); }
+        
                     SqlCommand cmd = new SqlCommand("USP_GetMenu", Con);
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@ItemId", objReq.ItemId);

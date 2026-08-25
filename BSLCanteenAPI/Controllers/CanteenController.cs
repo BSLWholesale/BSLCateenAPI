@@ -174,15 +174,6 @@ namespace BSLCanteenAPI.Controllers
         }
 
         [System.Web.Http.HttpPost]
-        [System.Web.Http.Route("api/Canteen/Fn_Add_New_ItemCategory")]
-        public clsAddMenu Fn_Add_New_ItemCategory(clsAddMenu objReq)
-        {
-            var objResp = new clsAddMenu();
-            objResp = _DALCanteen.Fn_Add_New_ItemCategory(objReq);
-            return objResp;
-        }
-
-        [System.Web.Http.HttpPost]
         [System.Web.Http.Route("api/Canteen/Fn_DailyMonthlyReport_EmpSummary")]
         public List<clsDailyMonthlyAllEmpSummaryResp> Fn_DailyMonthlyReport_EmpSummary(clsDailyMonthlyAllEmpSummaryReq objReq)
         {
@@ -191,6 +182,15 @@ namespace BSLCanteenAPI.Controllers
             return objResp;
         }
 
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Canteen/Fn_Add_New_ItemCategory")]
+        public clsAddMenu Fn_Add_New_ItemCategory(clsAddMenu objReq)
+        {
+            var objResp = new clsAddMenu();
+            objResp = _DALCanteen.Fn_Add_New_ItemCategory(objReq);
+            return objResp;
+        }
+       
 
         [System.Web.Http.HttpPost]
         [System.Web.Http.Route("api/Canteen/Fn_Delete_ItemMenu")]
