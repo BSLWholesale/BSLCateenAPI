@@ -183,6 +183,16 @@ namespace BSLCanteenAPI.Controllers
         }
 
         [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Canteen/Fn_DailyMonthlyReport_EmpSummary")]
+        public List<clsDailyMonthlyAllEmpSummaryResp> Fn_DailyMonthlyReport_EmpSummary(clsDailyMonthlyAllEmpSummaryReq objReq)
+        {
+            var objResp = new List<clsDailyMonthlyAllEmpSummaryResp>();
+            objResp = _DALCanteen.Fn_DailyMonthlyReport_EmpSummary(objReq);
+            return objResp;
+        }
+
+
+        [System.Web.Http.HttpPost]
         [System.Web.Http.Route("api/Canteen/Fn_Delete_ItemMenu")]
         public clsAddMenu Fn_Delete_ItemMenu(clsAddMenu objReq)
         {
