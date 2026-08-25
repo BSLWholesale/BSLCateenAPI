@@ -222,7 +222,7 @@ namespace BSLCanteenAPI.DAL
                 {
                     strSql = strSql + " AND EmployeeId = @EmpId ";
                 }
-                if (objReq.RowIndex != 0 )
+                if (objReq.RowIndex != 0)
                 {
                     strSql = strSql + " AND RowIndex = @RowIndex ";
                 }
@@ -701,7 +701,7 @@ namespace BSLCanteenAPI.DAL
 
                 string strSql = "SELECT CanteenId, CanteenName, ItemCategory, CategoryIcon, OrdTakenDate, COUNT(CouponId) AS TotalCoupons, ";
                 strSql = strSql + " SUM(Price) AS TotalPrice FROM vCouponOrder WHERE 1=1 AND OrdStatus = 'Scanned' ";
-                
+
                 if (objReq.CanteenId != 0 && objReq.CanteenId != null)
                 {
                     strSql = strSql + " AND CanteenId = @CanteenId ";
@@ -725,12 +725,12 @@ namespace BSLCanteenAPI.DAL
                 if (!String.IsNullOrWhiteSpace(objReq.FromDate) && !String.IsNullOrWhiteSpace(objReq.ToDate))
                 {
                     strSql = strSql + " AND OrderDate BETWEEN '" + objReq.FromDate + "' AND '" + objReq.ToDate + "'";
-                }                
+                }
                 strSql = strSql + " GROUP BY  CanteenId, CanteenName, ItemCategory, CategoryIcon, OrdTakenDate ";
                 strSql = strSql + " ORDER BY  OrdTakenDate DESC, CanteenName, ItemCategory ";
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
-                
+
                 if (objReq.CanteenId != 0 && objReq.CanteenId != null)
                 {
                     cmd.Parameters.AddWithValue("@CanteenId", objReq.CanteenId);
@@ -781,7 +781,7 @@ namespace BSLCanteenAPI.DAL
             catch (Exception exp)
             {
                 Logger.WriteLog("Function Name : Fn_CanteenWise_Report", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
-                
+
                 obj.vErrorMsg = exp.Message.ToString();
                 obj.vErrorCode = 500;
                 objResp.Add(obj);
@@ -832,7 +832,7 @@ namespace BSLCanteenAPI.DAL
                 if (!String.IsNullOrWhiteSpace(objReq.FromDate) && !String.IsNullOrWhiteSpace(objReq.ToDate))
                 {
                     strSql = strSql + " AND OrdTakenDate BETWEEN '" + objReq.FromDate + "' AND '" + objReq.ToDate + "'";
-                }                
+                }
                 strSql = strSql + " GROUP BY EmployeeId, EmpName, CanteenId, CanteenName, ItemCategory, CategoryIcon, OrdTakenDate ";
                 strSql = strSql + " ORDER BY EmpName, CanteenName, ItemCategory , OrdTakenDate DESC ";
                 SqlCommand cmd = new SqlCommand(strSql, Con);
@@ -1032,7 +1032,7 @@ namespace BSLCanteenAPI.DAL
                     strSql = strSql + " AND OrderDate BETWEEN '" + objReq.FromDate + "' AND '" + objReq.ToDate + "'";
                 }
                 strSql = strSql + " GROUP BY CanteenId, CanteenName, EmployeeId, EmpName ORDER BY EmpName, CanteenName ";
-                
+
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
                 if (objReq.CanteenId != 0 && objReq.CanteenId != null)
@@ -1430,7 +1430,7 @@ namespace BSLCanteenAPI.DAL
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@TDate", objReq.CurrentDate);
                 cmd.Parameters.AddWithValue("@CanteenId", objReq.CanteenId);
-                cmd.Parameters.AddWithValue("@Employee", SqlDbType.Int).Value = 
+                cmd.Parameters.AddWithValue("@Employee", SqlDbType.Int).Value =
                     objReq.EmpId == 0 ? (object)DBNull.Value : objReq.EmpId;
                 cmd.Parameters.AddWithValue("@DPeriodType", objReq.PeriodType);
                 cmd.Parameters.AddWithValue("@PageNumber", objReq.PageNumber);
@@ -1482,6 +1482,131 @@ namespace BSLCanteenAPI.DAL
             return objResp;
         }
 
+        #region Start Fn_Add_New_ItemCategory 25-AUG-2026
 
+        public clsAddMenu Fn_Add_New_ItemCategory(clsAddMenu objReq)
+        {
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Add_New_ItemCategory");
+            var objResp = new clsAddMenu();
+
+            try
+            {
+
+                if (String.IsNullOrWhiteSpace(objReq.Category))
+                {
+                    objResp.vErrorMsg = "Please Enter Category";
+                    objResp.vErrorCode = 400;
+                }
+                else if (String.IsNullOrWhiteSpace(objReq.ItemName))
+                {
+                    objResp.vErrorMsg = "Please Enter ItemName";
+                    objResp.vErrorCode = 400;
+                }
+                else if (objReq.Price == 0)
+                {
+                    objResp.vErrorMsg = "Please Enter Price";
+                    objResp.vErrorCode = 400;
+                }
+                else
+                {
+                    if (Con.State == ConnectionState.Broken)
+                    { Con.Close(); }
+                    if (Con.State == ConnectionState.Closed)
+                    { Con.Open(); }
+
+                    SqlCommand cmd = new SqlCommand("USP_GetMenu", Con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@ItemId", objReq.ItemId);
+                    cmd.Parameters.AddWithValue("@Category", objReq.Category);
+                    cmd.Parameters.AddWithValue("@CategoryIcon", objReq.CategoryIcon);
+                    cmd.Parameters.AddWithValue("@ItemName", objReq.ItemName);
+                    cmd.Parameters.AddWithValue("@Price", objReq.Price);
+                    cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                    cmd.Parameters.AddWithValue("@QueryType", objReq.QueryType);
+                    int i = cmd.ExecuteNonQuery();
+                    if (i > 0)
+                    {
+                        objResp.vErrorMsg = "Success";
+                        objResp.vErrorCode = 200;
+                    }
+                    else
+                    {
+                        objResp.vErrorMsg = "Item inserting failed";
+                        objResp.vErrorCode = 400;
+                    }
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Add_New_ItemCategory", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+                objResp.vErrorCode = 500;
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Add_New_ItemCategory");
+            return objResp;
+        }
+
+        #endregion End Fn_Add_New_ItemCategory 25-AUG-2026
+
+
+        #region Start Fn_Delete_ItemMenu 25-AUG-2026
+        public clsAddMenu Fn_Delete_ItemMenu(clsAddMenu objReq)
+        {
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Delete_ItemMenu");
+            var objResp = new clsAddMenu();
+
+            try
+            {
+
+
+                if (objReq.ItemId == 0)
+                {
+                    objResp.vErrorMsg = "Please Send ItemId";
+                    objResp.vErrorCode = 400;
+                }
+                else
+                {
+                    if (Con.State == ConnectionState.Broken)
+                    { Con.Close(); }
+                    if (Con.State == ConnectionState.Closed)
+                    { Con.Open(); }
+
+                    SqlCommand cmd = new SqlCommand("USP_GetMenu", Con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@ItemId", objReq.ItemId);
+                    cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                    cmd.Parameters.AddWithValue("@QueryType", "Delete_ItemMenu");
+                    int i = cmd.ExecuteNonQuery();
+                    if (i > 0)
+                    {
+                        objResp.vErrorMsg = "Success";
+                        objResp.vErrorCode = 200;
+                    }
+                    else
+                    {
+                        objResp.vErrorMsg = "Item deleting failed";
+                        objResp.vErrorCode = 400;
+                    }
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Delete_ItemMenu", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+                objResp.vErrorCode = 500;
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Delete_ItemMenu");
+            return objResp;
+        }
+
+        #endregion End Fn_Delete_ItemMenu 25-AUG-2026
     }
 }

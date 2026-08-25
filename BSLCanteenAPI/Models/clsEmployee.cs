@@ -294,5 +294,21 @@ namespace BSLCanteenAPI.Models
         public string vErrorMsg { get; set; }
     }
 
+    public class clsAddMenu
+    {
+        public int ItemId { get; set; }
+        public string Category { get; set; }
+        public string ItemName { get; set; }
+        public decimal Price { get; set; }
+        public bool MActive { get; set; }
+        public string CategoryIcon { get; set; }
+        public int CreatedBy { get; set; }
+        public string CreatedOn { get; set; }
+        public int ModifiedBy { get; set; }
+        public string ModifiedOn { get; set; }
+        public string QueryType { get; set; }
+        public string vErrorMsg { get; set; }
+        public int vErrorCode { get; set; }
+    }
 
 }
