@@ -815,6 +815,10 @@ namespace BSLCanteenAPI.DAL
                 {
                     strSql = strSql + " AND CanteenId = @CanteenId ";
                 }
+                if (objReq.EmpId != 0 && objReq.EmpId != null)
+                {
+                    strSql = strSql + " AND EmployeeId = @EmpId ";
+                }
                 if (!String.IsNullOrWhiteSpace(objReq.CanteenName))
                 {
                     strSql = strSql + " AND CanteenName = @CanteenName ";
@@ -844,6 +848,10 @@ namespace BSLCanteenAPI.DAL
                 if (objReq.CanteenId != 0 && objReq.CanteenId != null)
                 {
                     cmd.Parameters.AddWithValue("@CanteenId", objReq.CanteenId);
+                }
+                if (objReq.EmpId != 0 && objReq.EmpId != null)
+                {
+                    cmd.Parameters.AddWithValue("@EmpId", objReq.EmpId);
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.CanteenName))
                 {
