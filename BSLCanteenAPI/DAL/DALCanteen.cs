@@ -217,7 +217,7 @@ namespace BSLCanteenAPI.DAL
                 { Con.Open(); }
 
                 string strSql = "SELECT CouponId, ItemCategory, Category, Price, CoupIssueDate, CoupIssueTime, OrdTakenDate, OrdTakenTime, OrdStatus, CanteenId, CanteenName, ";
-                strSql = strSql + " EmployeeId, EmpName, CreatedBy, CreatedOn, ModifiedBy, ModifiedOn, RowIndex, CouponType, CategoryIcon, EmpStatus FROM vCouponOrder WHERE 1=1 ";
+                strSql = strSql + " EmployeeId, EmpName, Department, CreatedBy, CreatedOn, ModifiedBy, ModifiedOn, RowIndex, CouponType, CategoryIcon, EmpStatus FROM vCouponOrder WHERE 1=1 ";
                 if (objReq.EmpId != 0 && objReq.EmpId != null)
                 {
                     strSql = strSql + " AND EmployeeId = @EmpId ";
@@ -315,6 +315,7 @@ namespace BSLCanteenAPI.DAL
                         obj.CanteenName = Convert.ToString(ds.Tables[0].Rows[i]["CanteenName"]);
                         obj.EmpId = Convert.ToInt32(ds.Tables[0].Rows[i]["EmployeeId"]);
                         obj.EmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
+                        obj.EmpDepartment = Convert.ToString(ds.Tables[0].Rows[i]["Department"]);
                         obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
                         obj.Price = Convert.ToInt32(ds.Tables[0].Rows[i]["Price"]);
                         obj.CouponType = Convert.ToString(ds.Tables[0].Rows[i]["CouponType"]);
@@ -724,7 +725,8 @@ namespace BSLCanteenAPI.DAL
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.FromDate) && !String.IsNullOrWhiteSpace(objReq.ToDate))
                 {
-                    strSql = strSql + " AND OrderDate BETWEEN '" + objReq.FromDate + "' AND '" + objReq.ToDate + "'";
+                    //strSql = strSql + " AND OrderDate BETWEEN '" + objReq.FromDate + "' AND '" + objReq.ToDate + "'";
+                    strSql = strSql + " AND CAST(OrderDate AS DATE) BETWEEN '" + objReq.FromDate + "' AND '" + objReq.ToDate + "'";
                 }
                 strSql = strSql + " GROUP BY  CanteenId, CanteenName, ItemCategory, CategoryIcon, OrdTakenDate ";
                 strSql = strSql + " ORDER BY  OrdTakenDate DESC, CanteenName, ItemCategory ";
@@ -806,7 +808,7 @@ namespace BSLCanteenAPI.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT EmployeeId, EmpName, CanteenId, CanteenName, ItemCategory, CategoryIcon, OrdTakenDate, COUNT(CouponId) AS TotalCoupons,  ";
+                string strSql = "SELECT EmployeeId, EmpName, Department, CouponType, CanteenId, CanteenName, ItemCategory, CategoryIcon, OrdTakenDate, COUNT(CouponId) AS TotalCoupons,  ";
                 strSql = strSql + " SUM(Price) AS TotalPrice FROM vCouponOrder WHERE 1=1 AND OrdStatus = 'Scanned' ";
 
                 if (objReq.CanteenId != 0 && objReq.CanteenId != null)
@@ -831,9 +833,10 @@ namespace BSLCanteenAPI.DAL
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.FromDate) && !String.IsNullOrWhiteSpace(objReq.ToDate))
                 {
-                    strSql = strSql + " AND OrdTakenDate BETWEEN '" + objReq.FromDate + "' AND '" + objReq.ToDate + "'";
+                    //strSql = strSql + " AND OrdTakenDate BETWEEN '" + objReq.FromDate + "' AND '" + objReq.ToDate + "'";
+                    strSql = strSql + " AND CAST(OrdTakenDate AS DATE) BETWEEN '" + objReq.FromDate + "' AND '" + objReq.ToDate + "'";
                 }
-                strSql = strSql + " GROUP BY EmployeeId, EmpName, CanteenId, CanteenName, ItemCategory, CategoryIcon, OrdTakenDate ";
+                strSql = strSql + " GROUP BY EmployeeId, EmpName, Department, CouponType, CanteenId, CanteenName, ItemCategory, CategoryIcon, OrdTakenDate ";
                 strSql = strSql + " ORDER BY EmpName, CanteenName, ItemCategory , OrdTakenDate DESC ";
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
@@ -869,6 +872,8 @@ namespace BSLCanteenAPI.DAL
                         obj.CanteenName = Convert.ToString(ds.Tables[0].Rows[i]["CanteenName"]);
                         obj.EmpId = Convert.ToInt32(ds.Tables[0].Rows[i]["EmployeeId"]);
                         obj.EmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
+                        obj.EmpDepartment = Convert.ToString(ds.Tables[0].Rows[i]["Department"]);
+                        obj.CouponType = Convert.ToString(ds.Tables[0].Rows[i]["CouponType"]);
                         obj.ItemCategory = Convert.ToString(ds.Tables[0].Rows[i]["ItemCategory"]);
                         obj.OrderTakenDate = Convert.ToString(ds.Tables[0].Rows[i]["OrdTakenDate"]);
                         obj.TotalCoupons = Convert.ToInt32(ds.Tables[0].Rows[i]["TotalCoupons"]);
@@ -936,7 +941,8 @@ namespace BSLCanteenAPI.DAL
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.FromDate) && !String.IsNullOrWhiteSpace(objReq.ToDate))
                 {
-                    strSql = strSql + " AND OrderDate BETWEEN '" + objReq.FromDate + "' AND '" + objReq.ToDate + "'";
+                    //strSql = strSql + " AND OrderDate BETWEEN '" + objReq.FromDate + "' AND '" + objReq.ToDate + "'";
+                    strSql = strSql + " AND CAST(OrderDate AS DATE) BETWEEN '" + objReq.FromDate + "' AND '" + objReq.ToDate + "'";
                 }
                 strSql = strSql + " GROUP BY CanteenId, CanteenName ORDER BY  CanteenName ";
                 SqlCommand cmd = new SqlCommand(strSql, Con);
@@ -1008,7 +1014,7 @@ namespace BSLCanteenAPI.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT CanteenId, CanteenName, EmployeeId, EmpName, COUNT(CouponId) AS TotalCoupons, ";
+                string strSql = "SELECT CanteenId, CanteenName, EmployeeId, EmpName, Department, CouponType, COUNT(CouponId) AS TotalCoupons, ";
                 strSql = strSql + " SUM(Price) AS TotalPrice FROM vCouponOrder WHERE 1=1 AND OrdStatus = 'Scanned' ";
 
                 if (objReq.CanteenId != 0 && objReq.CanteenId != null)
@@ -1029,9 +1035,10 @@ namespace BSLCanteenAPI.DAL
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.FromDate) && !String.IsNullOrWhiteSpace(objReq.ToDate))
                 {
-                    strSql = strSql + " AND OrderDate BETWEEN '" + objReq.FromDate + "' AND '" + objReq.ToDate + "'";
+                    //strSql = strSql + " AND FORMAT(OrderDate, 'dd-MMM-yyyy') BETWEEN '" + objReq.FromDate + "' AND '" + objReq.ToDate + "'";
+                    strSql = strSql + " AND CAST(OrderDate AS DATE) BETWEEN '" + objReq.FromDate + "' AND '" + objReq.ToDate + "'";
                 }
-                strSql = strSql + " GROUP BY CanteenId, CanteenName, EmployeeId, EmpName ORDER BY EmpName, CanteenName ";
+                strSql = strSql + " GROUP BY CanteenId, CanteenName, EmployeeId, EmpName, Department, CouponType ORDER BY EmpName, CanteenName ";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
@@ -1062,6 +1069,8 @@ namespace BSLCanteenAPI.DAL
                         obj.CanteenName = Convert.ToString(ds.Tables[0].Rows[i]["CanteenName"]);
                         obj.EmpId = Convert.ToInt32(ds.Tables[0].Rows[i]["EmployeeId"]);
                         obj.EmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
+                        obj.EmpDepartment = Convert.ToString(ds.Tables[0].Rows[i]["Department"]);
+                        obj.CouponType = Convert.ToString(ds.Tables[0].Rows[i]["CouponType"]);
                         obj.TotalCoupons = Convert.ToInt32(ds.Tables[0].Rows[i]["TotalCoupons"]);
                         obj.TotalPrice = Convert.ToDecimal(ds.Tables[0].Rows[i]["TotalPrice"]);
                         obj.vErrorMsg = "Success";
