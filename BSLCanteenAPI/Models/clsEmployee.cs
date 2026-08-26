@@ -237,6 +237,7 @@ namespace BSLCanteenAPI.Models
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
         public Int64 TotalRows { get; set; }
+        public string EmpDepartment { get; set; }
         public int vErrorCode { get; set; }
         public string vErrorMsg { get; set; }
     }
@@ -255,6 +256,7 @@ namespace BSLCanteenAPI.Models
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
         public Int64 TotalRows { get; set; }
+        public string EmpDepartment { get; set; }
         public int vErrorCode { get; set; }
         public string vErrorMsg { get; set; }
     }
@@ -274,6 +276,7 @@ namespace BSLCanteenAPI.Models
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
         public Int64 TotalRows { get; set; }
+        public string EmpDepartment { get; set; }
         public int vErrorCode { get; set; }
         public string vErrorMsg { get; set; }
     }
@@ -295,6 +298,7 @@ namespace BSLCanteenAPI.Models
         public Int64 TotalRows { get; set; }
         public string TotalCoupon { get; set; }
         public decimal Amt { get; set; }
+        public string EmpDepartment { get; set; }
         public int vErrorCode { get; set; }
         public string vErrorMsg { get; set; }
     }
