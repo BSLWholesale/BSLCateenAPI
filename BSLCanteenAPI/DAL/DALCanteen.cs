@@ -217,7 +217,7 @@ namespace BSLCanteenAPI.DAL
                 { Con.Open(); }
 
                 string strSql = "SELECT CouponId, ItemCategory, Category, Price, CoupIssueDate, CoupIssueTime, OrdTakenDate, OrdTakenTime, OrdStatus, CanteenId, CanteenName, ";
-                strSql = strSql + " EmployeeId, EmpName, Department, CreatedBy, CreatedOn, ModifiedBy, ModifiedOn, RowIndex, CouponType, CategoryIcon, EmpStatus FROM vCouponOrder WHERE 1=1 ";
+                strSql = strSql + " EmployeeId, EmpName, Department, CreatedBy, CreatedOn, ModifiedBy, ModifiedOn, RowIndex, CouponType, CategoryIcon, EmpStatus, ItemId FROM vCouponOrder WHERE 1=1 ";
                 if (objReq.EmpId != 0 && objReq.EmpId != null)
                 {
                     strSql = strSql + " AND EmployeeId = @EmpId ";
@@ -321,6 +321,8 @@ namespace BSLCanteenAPI.DAL
                         obj.CouponType = Convert.ToString(ds.Tables[0].Rows[i]["CouponType"]);
                         obj.CategoryIcon = Convert.ToString(ds.Tables[0].Rows[i]["CategoryIcon"]);
                         obj.EmpStatus = Convert.ToBoolean(ds.Tables[0].Rows[i]["EmpStatus"]);
+                        obj.ItemId = Convert.ToString(ds.Tables[0].Rows[i]["ItemId"]);
+
                         obj.vErrorMsg = "Success";
                         obj.vErrorCode = 200;
                         objResp.Add(obj);
