@@ -321,7 +321,7 @@ namespace BSLCanteenAPI.DAL
                         obj.CouponType = Convert.ToString(ds.Tables[0].Rows[i]["CouponType"]);
                         obj.CategoryIcon = Convert.ToString(ds.Tables[0].Rows[i]["CategoryIcon"]);
                         obj.EmpStatus = Convert.ToBoolean(ds.Tables[0].Rows[i]["EmpStatus"]);
-                        obj.ItemId = Convert.ToString(ds.Tables[0].Rows[i]["ItemId"]);
+                        obj.ItemId = Convert.ToInt32(ds.Tables[0].Rows[i]["ItemId"]);
 
                         obj.vErrorMsg = "Success";
                         obj.vErrorCode = 200;
