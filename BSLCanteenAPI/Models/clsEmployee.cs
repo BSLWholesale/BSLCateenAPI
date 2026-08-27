@@ -129,6 +129,7 @@ namespace BSLCanteenAPI.Models
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
         public string OrderByReport { get; set; }
+        public int ItemId { get; set; }
         public bool EmpStatus { get; set; }
     }
 
