@@ -69,7 +69,9 @@ namespace BSLCanteenAPI.DAL
                             cmd.Parameters.AddWithValue("@EmpId", objReq.EmpId);
                             cmd.Parameters.AddWithValue("@CanteenId", objReq.CanteenId);
                             cmd.Parameters.AddWithValue("@EmpLocation", objReq.EmpLocation);
+                            cmd.Parameters.AddWithValue("@ItemId", item.ItemId);
                             cmd.Parameters.AddWithValue("@ItemCategory", item.ItemCategory);
+                            cmd.Parameters.AddWithValue("@Price", item.Price);
                             cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
                             cmd.Parameters.AddWithValue("@RowIndex", objReq.RowIndex);
                             cmd.Parameters.AddWithValue("@CouponType", objReq.CouponType);
