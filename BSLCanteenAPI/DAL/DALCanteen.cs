@@ -705,7 +705,7 @@ namespace BSLCanteenAPI.DAL
                 { Con.Open(); }
 
                 string strSql = "SELECT CanteenId, CanteenName, ItemCategory, CategoryIcon, OrdTakenDate, COUNT(CouponId) AS TotalCoupons, ";
-                strSql = strSql + " SUM(Price) AS TotalPrice FROM vCouponOrder WHERE 1=1 AND OrdStatus = 'Scanned' ";
+                strSql = strSql + " SUM(Price) AS TotalPrice, COUNT(*) OVER() AS TotalRows FROM vCouponOrder WHERE 1=1 AND OrdStatus = 'Scanned' ";
 
                 if (objReq.CanteenId != 0 && objReq.CanteenId != null)
                 {
@@ -734,8 +734,13 @@ namespace BSLCanteenAPI.DAL
                 }
                 strSql = strSql + " GROUP BY  CanteenId, CanteenName, ItemCategory, CategoryIcon, OrdTakenDate ";
                 strSql = strSql + " ORDER BY  OrdTakenDate DESC, CanteenName, ItemCategory ";
+                strSql = strSql + " OFFSET (@PageNumber - 1) * @PageSize ROWS ";
+                strSql = strSql + " FETCH NEXT @PageSize ROWS ONLY ";
+
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
+                cmd.Parameters.AddWithValue("@PageNumber", objReq.PageNumber);
+                cmd.Parameters.AddWithValue("@PageSize", objReq.PageSize);
 
                 if (objReq.CanteenId != 0 && objReq.CanteenId != null)
                 {
@@ -771,6 +776,8 @@ namespace BSLCanteenAPI.DAL
                         obj.TotalCoupons = Convert.ToInt32(ds.Tables[0].Rows[i]["TotalCoupons"]);
                         obj.TotalPrice = Convert.ToDecimal(ds.Tables[0].Rows[i]["TotalPrice"]);
                         obj.CategoryIcon = Convert.ToString(ds.Tables[0].Rows[i]["CategoryIcon"]);
+                        obj.TotalRows = Convert.ToInt64(ds.Tables[0].Rows[i]["TotalRows"]);
+
                         obj.vErrorMsg = "Success";
                         obj.vErrorCode = 200;
                         objResp.Add(obj);
@@ -1051,6 +1058,8 @@ namespace BSLCanteenAPI.DAL
                     strSql = strSql + " AND CAST(OrderDate AS DATE) BETWEEN '" + objReq.FromDate + "' AND '" + objReq.ToDate + "'";
                 }
                 strSql = strSql + " GROUP BY CanteenId, CanteenName, EmployeeId, EmpName, Department, CouponType ORDER BY EmpName, CanteenName ";
+                strSql = strSql + " OFFSET (@PageNumber - 1) * @PageSize ROWS ";
+                strSql = strSql + " FETCH NEXT @PageSize ROWS ONLY ";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
@@ -1085,6 +1094,8 @@ namespace BSLCanteenAPI.DAL
                         obj.CouponType = Convert.ToString(ds.Tables[0].Rows[i]["CouponType"]);
                         obj.TotalCoupons = Convert.ToInt32(ds.Tables[0].Rows[i]["TotalCoupons"]);
                         obj.TotalPrice = Convert.ToDecimal(ds.Tables[0].Rows[i]["TotalPrice"]);
+                        obj.TotalRows = Convert.ToInt64(ds.Tables[0].Rows[i]["TotalRows"]);
+
                         obj.vErrorMsg = "Success";
                         obj.vErrorCode = 200;
                         objResp.Add(obj);
@@ -1601,7 +1612,7 @@ namespace BSLCanteenAPI.DAL
                     { Con.Close(); }
                     if (Con.State == ConnectionState.Closed)
                     { Con.Open(); }
-        
+
                     SqlCommand cmd = new SqlCommand("USP_GetMenu", Con);
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@ItemId", objReq.ItemId);
@@ -1646,11 +1657,8 @@ namespace BSLCanteenAPI.DAL
         {
             Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Delete_ItemMenu");
             var objResp = new clsAddMenu();
-
             try
             {
-
-
                 if (objReq.ItemId == 0)
                 {
                     objResp.vErrorMsg = "Please Send ItemId";
@@ -1696,5 +1704,76 @@ namespace BSLCanteenAPI.DAL
         }
 
         #endregion End Fn_Delete_ItemMenu 25-AUG-2026
+
+
+        #region Start Fn_DailyReport_ItemWise 01-AUG-2026
+
+        public List<clsItemWiseReport> Fn_DailyReport_ItemWise(clsItemWiseReport objReq)
+        {
+            var objResp = new List<clsItemWiseReport>();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_DailyReport_ItemWise");
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_DailyReportItemWise", Con);
+                cmd.Parameters.AddWithValue("@TDate", objReq.FromDate);
+                //cmd.Parameters.AddWithValue("@TDate", objReq.ToDate);
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        var objItem = new clsItemWiseReport();
+                        objItem.ItemName = Convert.ToString(ds.Tables[0].Rows[i]["Item Name"]);
+                        objItem.BFLWorker = Convert.ToString(ds.Tables[0].Rows[i]["BFL WORKER"]);
+                        objItem.BSLWorker = Convert.ToString(ds.Tables[0].Rows[i]["BSL WORKER"]);
+                        objItem.BTMWorker = Convert.ToString(ds.Tables[0].Rows[i]["BTM WORKER"]);
+                        objItem.BJFWorker = Convert.ToString(ds.Tables[0].Rows[i]["BJF WORKER"]);
+                        objItem.FoodTruckWorker = Convert.ToString(ds.Tables[0].Rows[i]["FOOD TRUCK WORKER"]);
+                        objItem.Mill7Worker = Convert.ToString(ds.Tables[0].Rows[i]["MILL7 WORKER"]);
+                        objItem.TPPWorker = Convert.ToString(ds.Tables[0].Rows[i]["TPP WORKER"]);
+                        objItem.Weaving4Worker = Convert.ToString(ds.Tables[0].Rows[i]["WEAVING-4 WORKER"]);
+                        objItem.Worsted1Worker = Convert.ToString(ds.Tables[0].Rows[i]["WORSTED1 WORKER"]);
+                        objItem.TotalCount = Convert.ToString(ds.Tables[0].Rows[i]["Total"]);
+
+                        objItem.vErrorMsg = "Success";
+                        objItem.vErrorCode = 200;
+                        objResp.Add(objItem);
+                        i++;
+                    }
+                }
+                else
+                {
+                    var objItem = new clsItemWiseReport();
+                    objItem.vErrorMsg = "Items wise report are not found.";
+                    objItem.vErrorCode = 400;
+                    objResp.Add(objItem);
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_DailyReport_ItemWise", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                var objItem = new clsItemWiseReport();
+                objItem.vErrorMsg = exp.Message.ToString();
+                objItem.vErrorCode = 500;
+                objResp.Add(objItem);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_DailyReport_ItemWise");
+            return objResp;
+        }
+
+        #endregion End Fn_DailyReport_ItemWise 01-AUG-2026
     }
 }
