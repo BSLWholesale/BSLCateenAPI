@@ -200,5 +200,17 @@ namespace BSLCanteenAPI.Controllers
             objResp = _DALCanteen.Fn_Delete_ItemMenu(objReq);
             return objResp;
         }
+
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Canteen/Fn_DailyReport_ItemWise")]
+        public List<clsItemWiseReport> Fn_DailyReport_ItemWise(clsItemWiseReport objReq)
+        {
+            var objResp = new List<clsItemWiseReport>();
+            objResp = _DALCanteen.Fn_DailyReport_ItemWise(objReq);
+            return objResp;
+        }
+
+
     }
 }
