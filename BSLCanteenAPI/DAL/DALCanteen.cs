@@ -1720,8 +1720,9 @@ namespace BSLCanteenAPI.DAL
                 { Con.Open(); }
 
                 SqlCommand cmd = new SqlCommand("USP_DailyReportItemWise", Con);
-                cmd.Parameters.AddWithValue("@TDate", objReq.FromDate);
-                //cmd.Parameters.AddWithValue("@TDate", objReq.ToDate);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@FDate", objReq.FromDate);
+                cmd.Parameters.AddWithValue("@TDate", objReq.ToDate);
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
                 da.Fill(ds);
