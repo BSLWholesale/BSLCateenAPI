@@ -328,4 +328,41 @@ namespace BSLCanteenAPI.Models
         public int vErrorCode { get; set; }
     }
 
+
+    public class clsItemWiseReport
+    {
+        public int CanteenId { get; set; }
+        public string CanteenName { get; set; }
+        public string CurrentDate { get; set; }
+        public string FromDate { get; set; }
+        public string ToDate { get; set; }
+        public Int32 EmpId { get; set; }
+        public string Noofworkers { get; set; }
+        public string BFLWorker { get; set; }
+        public string BSLWorker { get; set; }
+        public string BTMWorker { get; set; }
+        public string BJFWorker { get; set; }
+        public string FoodTruckWorker { get; set; }
+        public string Mill7Worker { get; set; }
+        public string TPPWorker { get; set; }
+        public string Weaving4Worker { get; set; }
+        public string Worsted1Worker { get; set; }
+        public string ItemName { get; set; }
+        public string Breakfast { get; set; }
+        public string FullThali { get; set; }
+        public string Kachodi { get; set; }
+        public string MiniThali { get; set; }
+        public string Poha { get; set; }
+        public string Sabji { get; set; }
+        public string Samosa { get; set; }
+        public string SpecialThali { get; set; }
+        public string Tea { get; set; }
+        public string Thali { get; set; }
+        public string ThumpsUp { get; set; }
+        public string TotalCount { get; set; }
+        public int vErrorCode { get; set; }
+        public string vErrorMsg { get; set; }
+    }
+
+
 }
