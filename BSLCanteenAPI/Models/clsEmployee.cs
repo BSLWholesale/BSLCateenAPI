@@ -187,6 +187,8 @@ namespace BSLCanteenAPI.Models
         public int CanteenId { get; set; }
         public string CanteenName { get; set; }
         public string CurrentDate { get; set; }
+        public string FromDate { get; set; }
+        public string ToDate { get; set; }
         public Int32 EmpId { get; set; }
         public string Noofworkers { get; set; }
         public string GeneratedCoupons { get; set; }
@@ -213,6 +215,8 @@ namespace BSLCanteenAPI.Models
         public string CanteenName { get; set; }
         public string ShiftName { get; set; }
         public string CurrentDate { get; set; }
+        public string FromDate { get; set; }
+        public string ToDate { get; set; }
         public Int32 EmpId { get; set; }
         public string Noofworkers { get; set; }
         public string GeneratedCouponTea { get; set; }
@@ -356,6 +360,7 @@ namespace BSLCanteenAPI.Models
         public string CurrentDate { get; set; }
         public string FromDate { get; set; }
         public string ToDate { get; set; }
+        public string CouponType { get; set; }
         public Int32 EmpId { get; set; }
         public string BFLWorker { get; set; }
         public string BSLWorker { get; set; }
@@ -366,7 +371,9 @@ namespace BSLCanteenAPI.Models
         public string TPPWorker { get; set; }
         public string Weaving4Worker { get; set; }
         public string Worsted1Worker { get; set; }
-
+        public string TotalCount { get; set; }
+        public int vErrorCode { get; set; }
+        public string vErrorMsg { get; set; }
     }
 
 
