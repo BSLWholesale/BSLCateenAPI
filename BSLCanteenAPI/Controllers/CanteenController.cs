@@ -212,5 +212,15 @@ namespace BSLCanteenAPI.Controllers
         }
 
 
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Canteen/Fn_DailyReport_CouponTypeWise")]
+        public List<clsCouponTypeReport> Fn_DailyReport_CouponTypeWise(clsCouponTypeReport objReq)
+        {
+            var objResp = new List<clsCouponTypeReport>();
+            objResp = _DALCanteen.Fn_DailyReport_CouponTypeWise(objReq);
+            return objResp;
+        }
+
+
     }
 }
