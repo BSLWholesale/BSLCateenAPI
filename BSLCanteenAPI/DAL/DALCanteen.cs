@@ -1265,7 +1265,8 @@ namespace BSLCanteenAPI.DAL
 
                 SqlCommand cmd = new SqlCommand("USP_DailyReportCategoryWise", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@TDate", objReq.CurrentDate);
+                cmd.Parameters.AddWithValue("@FDate", objReq.FromDate);
+                cmd.Parameters.AddWithValue("@TDate", objReq.ToDate);
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
                 da.Fill(ds);
@@ -1332,7 +1333,8 @@ namespace BSLCanteenAPI.DAL
 
                 SqlCommand cmd = new SqlCommand("USP_DailyReportAllCanteenSummary", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@TDate", objReq.CurrentDate);
+                cmd.Parameters.AddWithValue("@FDate", objReq.FromDate);
+                cmd.Parameters.AddWithValue("@TDate", objReq.ToDate);
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
                 da.Fill(ds);
@@ -1392,7 +1394,8 @@ namespace BSLCanteenAPI.DAL
 
                 SqlCommand cmd = new SqlCommand("USP_DailyReportShiftWise", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@TDate", objReq.CurrentDate);
+                cmd.Parameters.AddWithValue("@FDate", objReq.FromDate);
+                cmd.Parameters.AddWithValue("@TDate", objReq.ToDate);
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
                 da.Fill(ds);
@@ -1776,5 +1779,79 @@ namespace BSLCanteenAPI.DAL
         }
 
         #endregion End Fn_DailyReport_ItemWise 01-AUG-2026
+
+
+        #region Start Fn_DailyReport_CouponType 03-AUG-2026
+
+        public List<clsCouponTypeReport> Fn_DailyReport_CouponTypeWise(clsCouponTypeReport objReq)
+        {
+            var objResp = new List<clsCouponTypeReport>();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_DailyReport_CouponTypeWise");
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_DailyReportCouponTypeWise", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@FDate", objReq.FromDate);
+                cmd.Parameters.AddWithValue("@TDate", objReq.ToDate);
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        var objItem = new clsCouponTypeReport();
+                        objItem.CouponType = Convert.ToString(ds.Tables[0].Rows[i]["Coupon Type"]);
+                        objItem.BFLWorker = Convert.ToString(ds.Tables[0].Rows[i]["BFL WORKER"]);
+                        objItem.BSLWorker = Convert.ToString(ds.Tables[0].Rows[i]["BSL WORKER"]);
+                        objItem.BTMWorker = Convert.ToString(ds.Tables[0].Rows[i]["BTM WORKER"]);
+                        objItem.BJFWorker = Convert.ToString(ds.Tables[0].Rows[i]["BJF WORKER"]);
+                        objItem.FoodTruckWorker = Convert.ToString(ds.Tables[0].Rows[i]["FOOD TRUCK WORKER"]);
+                        objItem.Mill7Worker = Convert.ToString(ds.Tables[0].Rows[i]["MILL7 WORKER"]);
+                        objItem.TPPWorker = Convert.ToString(ds.Tables[0].Rows[i]["TPP WORKER"]);
+                        objItem.Weaving4Worker = Convert.ToString(ds.Tables[0].Rows[i]["WEAVING-4 WORKER"]);
+                        objItem.Worsted1Worker = Convert.ToString(ds.Tables[0].Rows[i]["WORSTED1 WORKER"]);
+                        objItem.TotalCount = Convert.ToString(ds.Tables[0].Rows[i]["Total"]);
+
+                        objItem.vErrorMsg = "Success";
+                        objItem.vErrorCode = 200;
+                        objResp.Add(objItem);
+                        i++;
+                    }
+                }
+                else
+                {
+                    var objItem = new clsCouponTypeReport();
+                    objItem.vErrorMsg = "Coupon Type wise report are not found.";
+                    objItem.vErrorCode = 400;
+                    objResp.Add(objItem);
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_DailyReport_CouponTypeWise", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                var objItem = new clsCouponTypeReport();
+                objItem.vErrorMsg = exp.Message.ToString();
+                objItem.vErrorCode = 500;
+                objResp.Add(objItem);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_DailyReport_CouponTypeWise");
+            return objResp;
+        }
+
+        #endregion End Fn_DailyReport_CouponType 03-AUG-2026
+
+
     }
 }
