@@ -405,7 +405,6 @@ namespace BSLCanteenAPI.Models
         public string LocationID { get; set; }
         public Int32 TotalQty { get; set; }
         public decimal TotalAmount { get; set; }
-        public Dictionary<string, decimal> DateWiseQty { get; set; }
         public string BFL { get; set; }
         public string BSL { get; set; }
         public string BTM { get; set; }
