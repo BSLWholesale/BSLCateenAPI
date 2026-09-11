@@ -222,5 +222,59 @@ namespace BSLCanteenAPI.Controllers
         }
 
 
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Canteen/Fn_Upload_UPIDataFile")]
+        public List<clsUPIDataUpload> Fn_Upload_UPIDataFile(List<clsUPIDataUpload> UPIDataList)
+        {
+            var objResp = new List<clsUPIDataUpload>();
+            int success = 0;
+            int failed = 0;
+
+            foreach (var UPIData in UPIDataList)
+            {
+                var result = Fn_Upload_UPIDataFileList(UPIData);
+                if (result.vErrorMsg == "Success")
+                {
+                    success++;
+                }
+                else
+                {
+                    failed++;
+                }
+            }
+            return objResp;
+        }
+
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Canteen/Fn_Upload_UPIDataFileList")]
+        public clsUPIDataUpload Fn_Upload_UPIDataFileList(clsUPIDataUpload objReq)
+        {
+            var objResp = new clsUPIDataUpload();
+            objResp = _DALCanteen.Fn_Upload_UPIDataFileList(objReq);
+            return objResp;
+        }
+
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Canteen/Fn_DailyReport_UPIDataCanteenWise")]
+        public List<clsUPIDataReport> Fn_DailyReport_UPIDataCanteenWise(clsUPIDataReport objReq)
+        {
+            var objResp = new List<clsUPIDataReport>();
+            objResp = _DALCanteen.Fn_DailyReport_UPIDataCanteenWise(objReq);
+            return objResp;
+        }
+
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Canteen/Fn_MonthlyReport_UPIDataCanteenWise")]
+        public List<clsUPIMonthlyReportResponse> Fn_MonthlyReport_UPIDataCanteenWise(clsUPIMonthlyReportRequest objReq)
+        {
+            var objResp = new List<clsUPIMonthlyReportResponse>();
+            objResp = _DALCanteen.Fn_MonthlyReport_UPIDataCanteenWise(objReq);
+            return objResp;
+        }
+
+
     }
 }
