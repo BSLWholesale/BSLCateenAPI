@@ -1852,6 +1852,204 @@ namespace BSLCanteenAPI.DAL
 
         #endregion End Fn_DailyReport_CouponType 03-AUG-2026
 
+        public clsUPIDataUpload Fn_Upload_UPIDataFileList(clsUPIDataUpload objReq)
+        {
+            var objResp = new clsUPIDataUpload();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Upload_UPIDataFileList");
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_UPIDataUpload", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@TransactionDate", objReq.TransactionDate);
+                cmd.Parameters.AddWithValue("@TransactionID", objReq.TransactionID);
+                cmd.Parameters.AddWithValue("@Amount", objReq.Amount);
+                cmd.Parameters.AddWithValue("@Rate", objReq.Rate);
+                cmd.Parameters.AddWithValue("@Qty", objReq.Qty);
+                cmd.Parameters.AddWithValue("@LocationID", objReq.LocationID);
+
+                int i = 0;
+                i = cmd.ExecuteNonQuery();
+                if (i > 0)
+                {
+                    objResp.vErrorCode = 200;
+                    objResp.vErrorMsg = "Success";
+                }
+                else
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "UPI Data list insertion failed.";
+                    return objResp;
+                }
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Upload_UPIDataFileList", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Upload_UPIDataFileList");
+            return objResp;
+        }
+
+
+        public List<clsUPIDataReport> Fn_DailyReport_UPIDataCanteenWise(clsUPIDataReport objReq)
+        {
+            var objResp = new List<clsUPIDataReport>();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_DailyReport_UPIDataCanteenWise");
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_UPICanteenWiseReport", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@FDate", objReq.FromDate);
+                cmd.Parameters.AddWithValue("@TDate", objReq.ToDate);
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        var objItem = new clsUPIDataReport();
+                        objItem.Rate = Convert.ToDecimal(ds.Tables[0].Rows[i]["Item"]);
+                        objItem.BFL = Convert.ToString(ds.Tables[0].Rows[i]["BFL"]);
+                        objItem.BSL = Convert.ToString(ds.Tables[0].Rows[i]["BSL"]);
+                        objItem.BTM = Convert.ToString(ds.Tables[0].Rows[i]["BTM"]);
+                        objItem.CKDININGBANSWARA = Convert.ToString(ds.Tables[0].Rows[i]["CK DINING BANSWARA"]);
+                        objItem.TPPDyeHouse = Convert.ToString(ds.Tables[0].Rows[i]["TPP/Dye-House"]);
+                        objItem.W04 = Convert.ToString(ds.Tables[0].Rows[i]["W-04"]);
+                        objItem.WEAVING7 = Convert.ToString(ds.Tables[0].Rows[i]["WEAVING-7"]);
+                        objItem.WorstedVan = Convert.ToString(ds.Tables[0].Rows[i]["Worsted Van"]);
+                        objItem.TotalQty = Convert.ToInt32(ds.Tables[0].Rows[i]["Total QTY"]);
+
+                        objItem.vErrorMsg = "Success";
+                        objItem.vErrorCode = 200;
+                        objResp.Add(objItem);
+                        i++;
+                    }
+                }
+                else
+                {
+                    var objItem = new clsUPIDataReport();
+                    objItem.vErrorMsg = "UPI Data records are not found.";
+                    objItem.vErrorCode = 400;
+                    objResp.Add(objItem);
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_DailyReport_UPIDataCanteenWise", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                var objItem = new clsUPIDataReport();
+                objItem.vErrorMsg = exp.Message.ToString();
+                objItem.vErrorCode = 500;
+                objResp.Add(objItem);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_DailyReport_UPIDataCanteenWise");
+            return objResp;
+        }
+
+
+        public List<clsUPIMonthlyReportResponse> Fn_MonthlyReport_UPIDataCanteenWise(clsUPIMonthlyReportRequest objReq)
+        {
+            var objResp = new List<clsUPIMonthlyReportResponse>();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_MonthlyReport_UPIDataCanteenWise");
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_UPIMonthlyReport", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@FDate", objReq.FromDate);
+                cmd.Parameters.AddWithValue("@TDate", objReq.ToDate);
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        var objItem = new clsUPIMonthlyReportResponse();
+
+                        objItem.LocationID = Convert.ToString(ds.Tables[0].Rows[i]["LocationID"]);
+                        objItem.Rate = Convert.ToDecimal(ds.Tables[0].Rows[i]["Rate"]);
+
+                        objItem.DateWiseQty = new Dictionary<string, decimal>();
+
+                        foreach (DataColumn column in ds.Tables[0].Columns)
+                        {
+                            string columnName = column.ColumnName;
+
+                            if (columnName == "LocationID" ||
+                                columnName == "Rate" ||
+                                columnName == "TotalQty" ||
+                                columnName == "TotalAmount")
+                            {
+                                continue;
+                            }
+
+                            if (ds.Tables[0].Rows[i][columnName] != DBNull.Value)
+                            {
+                                objItem.DateWiseQty[columnName] = Convert.ToDecimal(ds.Tables[0].Rows[i][columnName]);
+                            }
+                        }
+
+                        objItem.TotalQty = Convert.ToInt32(ds.Tables[0].Rows[i]["TotalQty"]);
+                        objItem.TotalAmount = Convert.ToDecimal(ds.Tables[0].Rows[i]["TotalAmount"]);
+
+                        objItem.vErrorMsg = "Success";
+                        objItem.vErrorCode = 200;
+                        objResp.Add(objItem);
+                        i++;
+                    }
+                }
+                else
+                {
+                    var objItem = new clsUPIMonthlyReportResponse();
+                    objItem.vErrorMsg = "UPI Monthly Data records are not found.";
+                    objItem.vErrorCode = 400;
+                    objResp.Add(objItem);
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_MonthlyReport_UPIDataCanteenWise", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                var objItem = new clsUPIMonthlyReportResponse();
+                objItem.vErrorMsg = exp.Message.ToString();
+                objItem.vErrorCode = 500;
+                objResp.Add(objItem);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_MonthlyReport_UPIDataCanteenWise");
+            return objResp;
+        }
+
 
     }
 }
