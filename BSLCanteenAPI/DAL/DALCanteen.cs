@@ -2011,10 +2011,13 @@ namespace BSLCanteenAPI.DAL
                                 continue;
                             }
 
+                            decimal qty = 0;
                             if (ds.Tables[0].Rows[i][columnName] != DBNull.Value)
                             {
-                                objItem.DateWiseQty[columnName] = Convert.ToDecimal(ds.Tables[0].Rows[i][columnName]);
+                                qty = Convert.ToDecimal(ds.Tables[0].Rows[i][columnName]);
                             }
+
+                            objItem.DateWiseQty[columnName] = qty;
                         }
 
                         objItem.TotalQty = Convert.ToInt32(ds.Tables[0].Rows[i]["TotalQty"]);
