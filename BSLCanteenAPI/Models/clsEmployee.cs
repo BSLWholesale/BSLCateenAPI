@@ -377,4 +377,72 @@ namespace BSLCanteenAPI.Models
     }
 
 
+    public class clsUPIDataUpload
+    {
+        public string TransactionDate { get; set; }
+        public string TransactionID { get; set; }
+        public decimal Amount { get; set; }
+        public decimal Rate { get; set; }
+        public Int32 Qty { get; set;}
+        public string LocationID { get; set; }
+        public int CreatedBy { get; set; }
+        public string CreatedOn { get; set; }
+        public int ModifiedBy { get; set; }
+        public string ModifiedOn { get; set; }
+        public int vErrorCode { get; set; }
+        public string vErrorMsg { get; set; }
+    }
+
+    public class clsUPIDataReport
+    {
+        public string FromDate { get; set; }
+        public string ToDate { get; set; }
+        public string TransactionDate { get; set; }
+        public string TrasactionID { get; set; }
+        public decimal Amount { get; set; }
+        public decimal Rate { get; set; }
+        public Int32 Qty { get; set; }
+        public string LocationID { get; set; }
+        public Int32 TotalQty { get; set; }
+        public decimal TotalAmount { get; set; }
+        public Dictionary<string, decimal> DateWiseQty { get; set; }
+        public string BFL { get; set; }
+        public string BSL { get; set; }
+        public string BTM { get; set; }
+        public string CKDININGBANSWARA { get; set; }
+        public string TPPDyeHouse { get; set; }
+        public string W04 { get; set; }
+        public string WEAVING7 { get; set; }
+        public string WorstedVan { get; set; }
+        public int CreatedBy { get; set; }
+        public string CreatedOn { get; set; }
+        public int ModifiedBy { get; set; }
+        public string ModifiedOn { get; set; }
+        public int vErrorCode { get; set; }
+        public string vErrorMsg { get; set; }
+    }
+
+
+
+    public class clsUPIMonthlyReportRequest
+    {
+        public string FromDate { get; set; }
+        public string ToDate { get; set; }
+    }
+
+
+    public class clsUPIMonthlyReportResponse
+    {
+        public decimal Amount { get; set; }
+        public decimal Rate { get; set; }
+        public Int32 Qty { get; set; }
+        public string LocationID { get; set; }
+        public Int32 TotalQty { get; set; }
+        public decimal TotalAmount { get; set; }
+        public Dictionary<string, decimal> DateWiseQty { get; set; }
+        public int vErrorCode { get; set; }
+        public string vErrorMsg { get; set; }
+    }
+
+
 }
