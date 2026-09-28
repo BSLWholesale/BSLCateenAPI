@@ -2054,5 +2054,75 @@ namespace BSLCanteenAPI.DAL
         }
 
 
+        public List<clsCanteenWiseReport> Fn_Fetch_CanteenWiseReport(clsCanteenWiseReport objReq)
+        {
+            var objResp = new List<clsCanteenWiseReport>();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Fetch_CanteenWiseReport");
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_CanteenWiseReport", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@PageNumber", objReq.PageNumber);
+                cmd.Parameters.AddWithValue("@PageSize", objReq.PageSize);
+                cmd.Parameters.AddWithValue("@FDate", objReq.FromDate);
+                cmd.Parameters.AddWithValue("@TDate", objReq.ToDate);
+                cmd.Parameters.AddWithValue("@CanteenID", objReq.CanteenId);
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        var obj = new clsCanteenWiseReport();
+                        obj.OrderTakenDate = Convert.ToString(ds.Tables[0].Rows[i]["OrdTakenDate"]);
+                        obj.CouponId = Convert.ToInt64(ds.Tables[0].Rows[i]["CouponId"]);
+                        obj.EmpId = Convert.ToInt32(ds.Tables[0].Rows[i]["EmpId"]);
+                        obj.EmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
+                        obj.CanteenName = Convert.ToString(ds.Tables[0].Rows[i]["CanteenName"]);
+                        obj.EmpDepartment = Convert.ToString(ds.Tables[0].Rows[i]["Department"]);
+                        obj.Item = Convert.ToString(ds.Tables[0].Rows[i]["ItemCategory"]);
+                        obj.Category = Convert.ToString(ds.Tables[0].Rows[i]["Category"]);
+                        obj.Price = Convert.ToDecimal(ds.Tables[0].Rows[i]["Price"]);
+                        obj.TotalRows = Convert.ToInt64(ds.Tables[0].Rows[i]["TotalRows"]);
+
+                        obj.vErrorMsg = "Success";
+                        obj.vErrorCode = 200;
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    var obj = new clsCanteenWiseReport();
+                    obj.vErrorMsg = "Canteen wise records are not found.";
+                    obj.vErrorCode = 400;
+                    objResp.Add(obj);
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Fetch_CanteenWiseReport", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                var obj = new clsCanteenWiseReport();
+                obj.vErrorMsg = exp.Message.ToString();
+                obj.vErrorCode = 500;
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Fetch_CanteenWiseReport");
+            return objResp;
+        }
+
+
     }
 }
