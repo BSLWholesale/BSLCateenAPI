@@ -276,5 +276,15 @@ namespace BSLCanteenAPI.Controllers
         }
 
 
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Canteen/Fn_Fetch_CanteenWiseReport")]
+        public List<clsCanteenWiseReport> Fn_Fetch_CanteenWiseReport(clsCanteenWiseReport objReq)
+        {
+            var objResp = new List<clsCanteenWiseReport>();
+            objResp = _DALCanteen.Fn_Fetch_CanteenWiseReport(objReq);
+            return objResp;
+        }
+
+
     }
 }
