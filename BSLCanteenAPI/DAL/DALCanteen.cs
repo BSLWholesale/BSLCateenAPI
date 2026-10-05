@@ -2124,5 +2124,125 @@ namespace BSLCanteenAPI.DAL
         }
 
 
+        // Start For Emergency Purpose 05-OCT-2026 Uppper Level and Management level
+        public clsCouponReport Fn_ScanCouponTransaction(clsCouponReport objReq)
+        {
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_ScanCouponTransaction");
+            var objResp = new clsCouponReport();
+            var objCheck = new List<clsCouponReport>();
+            var obj = new clsCouponReport();
+            obj.CouponId = objReq.CouponId;
+            //obj.CanteenId = objReq.CanteenId;
+            objCheck = Fn_Get_Coupon_Order(obj);
+            try
+            {
+                int CouponValidDays = Convert.ToInt32(ConfigurationManager.AppSettings["CouponValidDays"].ToString());
+                DateTime checkVaidDays = DateTime.Now.AddDays(-CouponValidDays);
+                if (objReq.CouponId == null || objReq.CouponId == 0)
+                {
+                    objResp.vErrorMsg = "Please Send Coupon ID";
+                    objResp.vErrorCode = 400;
+                }
+                else if (objReq.CouponId != objCheck[0].CouponId)
+                {
+                    objResp.vErrorMsg = "Invalid Coupon ID";
+                    objResp.vErrorCode = 400;
+                }
+                //else if (objReq.CanteenId != objCheck[0].CanteenId)
+                //{
+                //    objResp.vErrorMsg = "Wrong canteen";
+                //    objResp.vErrorCode = 400;
+                //}
+                else if (objCheck[0].OrderStatus == "Scanned")
+                {
+                    // Coupon is already scanned.
+                    // Only update RecoStatus = RecoDone.
+                    if (Con.State == ConnectionState.Broken)
+                    { Con.Close(); }
+                    if (Con.State == ConnectionState.Closed)
+                    { Con.Open(); }
+
+                    using (SqlCommand cmd = new SqlCommand("USP_Canteen", Con))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@CouponId", objReq.CouponId);
+                        cmd.Parameters.AddWithValue("@ItemCategory", objReq.ItemCategory);
+                        cmd.Parameters.AddWithValue("@ModifiedBy", objReq.ModifiedBy);
+                        cmd.Parameters.AddWithValue("@OrderStatus", "Scanned");
+                        cmd.Parameters.AddWithValue("@RecoStatus", "RecoDone");
+                        cmd.Parameters.AddWithValue("@QueryType", "RecoScanCouponId");
+
+                        int i = cmd.ExecuteNonQuery();
+                        if (i > 0)
+                        {
+                            objResp.vErrorMsg = "Coupon ID already Scanned";
+                            objResp.vErrorCode = 400;
+                        }
+                        else
+                        {
+                            objResp.vErrorMsg = "Coupon ID already Scanned, but Reco Status update failed";
+                            objResp.vErrorCode = 400;
+                        }
+                    }
+                }
+                else if (objCheck[0].OrderStatus == "Cancel")
+                {
+                    objResp.vErrorMsg = "Coupon Already Cancelled";
+                    objResp.vErrorCode = 400;
+                }
+                else if (objCheck[0].EmpStatus == false)
+                {
+                    objResp.vErrorMsg = "Worker not active";
+                    objResp.vErrorCode = 400;
+                }
+                else if (Convert.ToDateTime(objCheck[0].CouponIssueDate) < checkVaidDays)
+                {
+                    objResp.vErrorMsg = "Expire your coupon, It's valid for " + CouponValidDays + " days.";
+                    objResp.vErrorCode = 400;
+                }
+                else
+                {
+                    if (Con.State == ConnectionState.Broken)
+                    { Con.Close(); }
+                    if (Con.State == ConnectionState.Closed)
+                    { Con.Open(); }
+
+                    SqlCommand cmd = new SqlCommand("USP_Canteen", Con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@CouponId", objReq.CouponId);
+                    cmd.Parameters.AddWithValue("@ItemCategory", objReq.ItemCategory);
+                    cmd.Parameters.AddWithValue("@ModifiedBy", objReq.ModifiedBy);
+                    cmd.Parameters.AddWithValue("@OrderStatus", "Scanned");
+                    cmd.Parameters.AddWithValue("@RecoStatus", "RecoScanned");
+                    cmd.Parameters.AddWithValue("@QueryType", "RecoScanCouponId");
+                    int i = cmd.ExecuteNonQuery();
+                    if (i > 0)
+                    {
+                        objResp.vErrorMsg = "Success";
+                        objResp.vErrorCode = 200;
+                    }
+                    else
+                    {
+                        objResp.vErrorMsg = "Error in Coupon Scanning";
+                        objResp.vErrorCode = 400;
+                    }
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_ScanCouponTransaction", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+                objResp.vErrorCode = 500;
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_ScanCouponTransaction");
+            return objResp;
+        }
+        // End For Emergency Purpose 05-OCT-2026 Uppper Level and Management level
+
+
     }
 }
