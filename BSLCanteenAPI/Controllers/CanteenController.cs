@@ -285,6 +285,17 @@ namespace BSLCanteenAPI.Controllers
             return objResp;
         }
 
+        // Start For Emergency Purpose 05-OCT-2026 Uppper Level and Management level
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Canteen/Fn_ScanCouponTransaction")]
+        public clsCouponReport Fn_ScanCouponTransaction(clsCouponReport objReq)
+        {
+            var objResp = new clsCouponReport();
+            objResp = _DALCanteen.Fn_ScanCouponTransaction(objReq);
+            return objResp;
+        }
+        // End For Emergency Purpose 05-OCT-2026 Uppper Level and Management level
+
 
     }
 }
