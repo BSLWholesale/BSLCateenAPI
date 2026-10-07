@@ -133,6 +133,15 @@ namespace BSLCanteenAPI.Models
         public string OrderByReport { get; set; }
         public int ItemId { get; set; }
         public bool EmpStatus { get; set; }
+        public string Item { get; set; }
+        public int RecoModifiedBy { get; set; }
+        public string RecoModifiedOn { get; set; }
+        public int PageNumber { get; set; }
+        public int PageSize { get; set; }
+        public Int64 TotalRows { get; set; }
+        public string FromDate { get; set; }
+        public string ToDate { get; set; }
+        public string RecoStatus { get; set; }
     }
 
     public class clsMonthlyReportReq
