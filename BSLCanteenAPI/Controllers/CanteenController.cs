@@ -297,5 +297,27 @@ namespace BSLCanteenAPI.Controllers
         // End For Emergency Purpose 05-OCT-2026 Uppper Level and Management level
 
 
+        // Start For Emergency Purpose 05-OCT-2026 Uppper Level and Management level
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Canteen/Fn_Get_Reco_Coupon_Order")]
+        public List<clsCouponReport> Fn_Get_Reco_Coupon_Order(clsCouponReport objReq)
+        {
+            var objResp = new List<clsCouponReport>();
+            objResp = _DALCanteen.Fn_Get_Reco_Coupon_Order(objReq);
+            return objResp;
+        }
+        // End For Emergency Purpose 05-OCT-2026 Uppper Level and Management level
+
+        // Start For Emergency Purpose 07-OCT-2026 Reco Report Upper and Management level
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Canteen/Fn_Fetch_RecoCouponOrderReport")]
+        public List<clsCouponReport> Fn_Fetch_RecoCouponOrderReport(clsCouponReport objReq)
+        {
+            var objResp = new List<clsCouponReport>();
+            objResp = _DALCanteen.Fn_Fetch_RecoCouponOrderReport(objReq);
+            return objResp;
+        }
+        // End For Emergency Purpose 07-OCT-2026 Reco Report Upper and Management level
+
     }
 }
