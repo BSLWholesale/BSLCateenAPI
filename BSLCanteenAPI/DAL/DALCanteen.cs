@@ -2133,7 +2133,7 @@ namespace BSLCanteenAPI.DAL
             var obj = new clsCouponReport();
             obj.CouponId = objReq.CouponId;
             //obj.CanteenId = objReq.CanteenId;
-            objCheck = Fn_Get_Coupon_Order(obj);
+            objCheck = Fn_Get_Reco_Coupon_Order(obj);
             try
             {
                 int CouponValidDays = Convert.ToInt32(ConfigurationManager.AppSettings["CouponValidDays"].ToString());
@@ -2143,20 +2143,23 @@ namespace BSLCanteenAPI.DAL
                     objResp.vErrorMsg = "Please Send Coupon ID";
                     objResp.vErrorCode = 400;
                 }
-                else if (objReq.CouponId != objCheck[0].CouponId)
-                {
-                    objResp.vErrorMsg = "Invalid Coupon ID";
-                    objResp.vErrorCode = 400;
-                }
+                //else if (objReq.CouponId != objCheck[0].CouponId)
+                //{
+                //    objResp.vErrorMsg = "Invalid Coupon ID";
+                //    objResp.vErrorCode = 400;
+                //}
                 //else if (objReq.CanteenId != objCheck[0].CanteenId)
                 //{
                 //    objResp.vErrorMsg = "Wrong canteen";
                 //    objResp.vErrorCode = 400;
                 //}
+                else if (objCheck[0].OrderStatus == "Generated")
+                {
+                    objResp.vErrorMsg = "Coupon should be scan from Respective Canteen";
+                    objResp.vErrorCode = 400;
+                }
                 else if (objCheck[0].OrderStatus == "Scanned")
                 {
-                    // Coupon is already scanned.
-                    // Only update RecoStatus = RecoDone.
                     if (Con.State == ConnectionState.Broken)
                     { Con.Close(); }
                     if (Con.State == ConnectionState.Closed)
@@ -2166,9 +2169,7 @@ namespace BSLCanteenAPI.DAL
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.Parameters.AddWithValue("@CouponId", objReq.CouponId);
-                        cmd.Parameters.AddWithValue("@ItemCategory", objReq.ItemCategory);
-                        cmd.Parameters.AddWithValue("@ModifiedBy", objReq.ModifiedBy);
-                        cmd.Parameters.AddWithValue("@OrderStatus", "Scanned");
+                        cmd.Parameters.AddWithValue("@RecoModifiedBy", objReq.RecoModifiedBy);
                         cmd.Parameters.AddWithValue("@RecoStatus", "RecoDone");
                         cmd.Parameters.AddWithValue("@QueryType", "RecoScanCouponId");
 
@@ -2202,30 +2203,7 @@ namespace BSLCanteenAPI.DAL
                 }
                 else
                 {
-                    if (Con.State == ConnectionState.Broken)
-                    { Con.Close(); }
-                    if (Con.State == ConnectionState.Closed)
-                    { Con.Open(); }
 
-                    SqlCommand cmd = new SqlCommand("USP_Canteen", Con);
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@CouponId", objReq.CouponId);
-                    cmd.Parameters.AddWithValue("@ItemCategory", objReq.ItemCategory);
-                    cmd.Parameters.AddWithValue("@ModifiedBy", objReq.ModifiedBy);
-                    cmd.Parameters.AddWithValue("@OrderStatus", "Scanned");
-                    cmd.Parameters.AddWithValue("@RecoStatus", "RecoScanned");
-                    cmd.Parameters.AddWithValue("@QueryType", "RecoScanCouponId");
-                    int i = cmd.ExecuteNonQuery();
-                    if (i > 0)
-                    {
-                        objResp.vErrorMsg = "Success";
-                        objResp.vErrorCode = 200;
-                    }
-                    else
-                    {
-                        objResp.vErrorMsg = "Error in Coupon Scanning";
-                        objResp.vErrorCode = 400;
-                    }
                 }
             }
             catch (Exception exp)
@@ -2242,6 +2220,250 @@ namespace BSLCanteenAPI.DAL
             return objResp;
         }
         // End For Emergency Purpose 05-OCT-2026 Uppper Level and Management level
+
+
+        // Start
+        public List<clsCouponReport> Fn_Get_Reco_Coupon_Order(clsCouponReport objReq)
+        {
+            var objResp = new List<clsCouponReport>();
+            var obj = new clsCouponReport();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_Reco_Coupon_Order");
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string strSql = "SELECT CouponId, ItemCategory, Category, Price, CoupIssueDate, CoupIssueTime, OrdTakenDate, OrdTakenTime, OrdStatus, CanteenId, CanteenName, ";
+                strSql = strSql + " EmployeeId, EmpName, Department, CreatedBy, CreatedOn, ModifiedBy, ModifiedOn, RowIndex, CouponType, CategoryIcon, EmpStatus, ItemId, RecoModifiedBy, RecoModifiedOn FROM vRecoCouponOrder WHERE 1=1 ";
+                //if (objReq.EmpId != 0 && objReq.EmpId != null)
+                //{
+                //    strSql = strSql + " AND EmployeeId = @EmpId ";
+                //}
+                //if (objReq.RowIndex != 0)
+                //{
+                //    strSql = strSql + " AND RowIndex = @RowIndex ";
+                //}
+                if (objReq.CouponId != 0 && objReq.CouponId != null)
+                {
+                    strSql = strSql + " AND CouponId = @CouponId ";
+                }
+                //if (!String.IsNullOrWhiteSpace(objReq.ItemCategory))
+                //{
+                //    strSql = strSql + " AND ItemCategory = @ItemCategory ";
+                //}
+                //if (!String.IsNullOrWhiteSpace(objReq.CouponIssueDate))
+                //{
+                //    strSql = strSql + " AND CoupIssueDate = @CouponIssueDate ";
+                //}
+                //if (!String.IsNullOrWhiteSpace(objReq.OrderTakenDate))
+                //{
+                //    strSql = strSql + " AND OrdTakenDate = @OrderTakenDate ";
+                //}
+                //if (!String.IsNullOrWhiteSpace(objReq.OrderStatus))
+                //{
+                //    strSql = strSql + " AND OrdStatus = @OrderStatus ";
+                //}
+                //if (objReq.ModifiedBy != 0 && objReq.ModifiedBy != null)
+                //{
+                //    strSql = strSql + " AND ModifiedBy = @ModifiedBy";
+                //}
+                //if (!String.IsNullOrWhiteSpace(objReq.EmpLocation))
+                //{
+                //    strSql = strSql + " AND EmpLocation = @EmpLocation ";
+                //}
+                if (objReq.RecoModifiedBy != 0 && objReq.RecoModifiedBy != null)
+                {
+                    strSql = strSql + " AND RecoModifiedBy = @RecoModifiedBy ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.RecoModifiedOn))
+                {
+                    strSql = strSql + " AND CONVERT(DATE, RecoModifiedOn) = @RecoModifiedOn ";
+                }
+                strSql = strSql + " ORDER BY RecoModifiedOn DESC";
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+                //if (objReq.EmpId != 0 && objReq.EmpId != null)
+                //{
+                //    cmd.Parameters.AddWithValue("@EmpId", objReq.EmpId);
+                //}
+                //if (objReq.RowIndex != 0)
+                //{
+                //    cmd.Parameters.AddWithValue("@RowIndex", objReq.RowIndex);
+                //}
+                if (objReq.CouponId != 0 && objReq.CouponId != null)
+                {
+                    cmd.Parameters.AddWithValue("@CouponId", objReq.CouponId);
+                }
+                //if (!String.IsNullOrWhiteSpace(objReq.ItemCategory))
+                //{
+                //    cmd.Parameters.AddWithValue("@ItemCategory", objReq.ItemCategory);
+                //}
+                //if (!String.IsNullOrWhiteSpace(objReq.CouponIssueDate))
+                //{
+                //    cmd.Parameters.AddWithValue("@CouponIssueDate", objReq.CouponIssueDate);
+                //}
+                //if (!String.IsNullOrWhiteSpace(objReq.OrderTakenDate))
+                //{
+                //    cmd.Parameters.AddWithValue("@OrderTakenDate", objReq.OrderTakenDate);
+                //}
+                //if (!String.IsNullOrWhiteSpace(objReq.OrderStatus))
+                //{
+                //    cmd.Parameters.AddWithValue("@OrderStatus", objReq.OrderStatus);
+                //}
+                //if (objReq.ModifiedBy != 0 && objReq.ModifiedBy != null)
+                //{
+                //    cmd.Parameters.AddWithValue("@ModifiedBy", objReq.ModifiedBy);
+                //}
+                //if (!String.IsNullOrWhiteSpace(objReq.EmpLocation))
+                //{
+                //    cmd.Parameters.AddWithValue("@EmpLocation", objReq.EmpLocation);
+                //}
+                if (objReq.RecoModifiedBy != 0 && objReq.RecoModifiedBy != null)
+                {
+                    cmd.Parameters.AddWithValue("@RecoModifiedBy", objReq.RecoModifiedBy);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.RecoModifiedOn))
+                {
+                    cmd.Parameters.AddWithValue("@RecoModifiedOn", objReq.RecoModifiedOn);
+                }
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsCouponReport();
+                        obj.CouponId = Convert.ToInt64(ds.Tables[0].Rows[i]["CouponId"]);
+                        obj.Category = Convert.ToString(ds.Tables[0].Rows[i]["Category"]);
+                        obj.ItemCategory = Convert.ToString(ds.Tables[0].Rows[i]["ItemCategory"]);
+                        obj.CouponIssueDate = Convert.ToString(ds.Tables[0].Rows[i]["CoupIssueDate"]);
+                        obj.CouponIssueTime = Convert.ToString(ds.Tables[0].Rows[i]["CoupIssueTime"]);
+                        obj.OrderTakenDate = Convert.ToString(ds.Tables[0].Rows[i]["OrdTakenDate"]);
+                        obj.OrderTakenTime = Convert.ToString(ds.Tables[0].Rows[i]["OrdTakenTime"]);
+                        obj.OrderStatus = Convert.ToString(ds.Tables[0].Rows[i]["OrdStatus"]);
+                        obj.CanteenId = Convert.ToInt32(ds.Tables[0].Rows[i]["CanteenId"]);
+                        obj.CanteenName = Convert.ToString(ds.Tables[0].Rows[i]["CanteenName"]);
+                        obj.EmpId = Convert.ToInt32(ds.Tables[0].Rows[i]["EmployeeId"]);
+                        obj.EmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
+                        obj.EmpDepartment = Convert.ToString(ds.Tables[0].Rows[i]["Department"]);
+                        obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
+                        obj.Price = Convert.ToInt32(ds.Tables[0].Rows[i]["Price"]);
+                        obj.CouponType = Convert.ToString(ds.Tables[0].Rows[i]["CouponType"]);
+                        obj.CategoryIcon = Convert.ToString(ds.Tables[0].Rows[i]["CategoryIcon"]);
+                        obj.EmpStatus = Convert.ToBoolean(ds.Tables[0].Rows[i]["EmpStatus"]);
+                        obj.ItemId = Convert.ToInt32(ds.Tables[0].Rows[i]["ItemId"]);
+                        obj.RecoModifiedOn = Convert.ToString(ds.Tables[0].Rows[i]["RecoModifiedOn"]);
+
+                        obj.vErrorMsg = "Success";
+                        obj.vErrorCode = 200;
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj = new clsCouponReport();
+                    obj.vErrorMsg = "No Record Found.";
+                    obj.vErrorCode = 400;
+                    objResp.Add(obj);
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Get_Reco_Coupon_Order", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj = new clsCouponReport();
+                obj.vErrorMsg = exp.Message.ToString();
+                obj.vErrorCode = 500;
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_Reco_Coupon_Order");
+            return objResp;
+        }
+
+        // End 
+
+
+        // Start For Emergency Purpose 07-OCT-2026 Reco Report Upper and Management level
+        public List<clsCouponReport> Fn_Fetch_RecoCouponOrderReport(clsCouponReport objReq)
+        {
+            var objResp = new List<clsCouponReport>();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Fetch_RecoCouponOrderReport");
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_RecoStatusWiseReport", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@PageNumber", objReq.PageNumber);
+                cmd.Parameters.AddWithValue("@PageSize", objReq.PageSize);
+                cmd.Parameters.AddWithValue("@FDate", objReq.FromDate);
+                cmd.Parameters.AddWithValue("@TDate", objReq.ToDate);
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        var obj = new clsCouponReport();
+                        obj.OrderTakenDate = Convert.ToString(ds.Tables[0].Rows[i]["OrdTakenDate"]);
+                        obj.CouponId = Convert.ToInt64(ds.Tables[0].Rows[i]["CouponId"]);
+                        obj.EmpId = Convert.ToInt32(ds.Tables[0].Rows[i]["EmpId"]);
+                        obj.EmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
+                        obj.CanteenName = Convert.ToString(ds.Tables[0].Rows[i]["CanteenName"]);
+                        obj.EmpDepartment = Convert.ToString(ds.Tables[0].Rows[i]["Department"]);
+                        obj.Item = Convert.ToString(ds.Tables[0].Rows[i]["ItemCategory"]);
+                        obj.Category = Convert.ToString(ds.Tables[0].Rows[i]["Category"]);
+                        obj.Price = Convert.ToDecimal(ds.Tables[0].Rows[i]["Price"]);
+                        obj.RecoModifiedOn = Convert.ToString(ds.Tables[0].Rows[i]["RecoModifiedOn"]);
+                        obj.RecoStatus = Convert.ToString(ds.Tables[0].Rows[i]["RecoStatus"]);
+                        obj.TotalRows = Convert.ToInt64(ds.Tables[0].Rows[i]["TotalRows"]);
+
+                        obj.vErrorMsg = "Success";
+                        obj.vErrorCode = 200;
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    var obj = new clsCouponReport();
+                    obj.vErrorMsg = "Reco Status wise records are not found.";
+                    obj.vErrorCode = 400;
+                    objResp.Add(obj);
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Fetch_RecoCouponOrderReport", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                var obj = new clsCouponReport();
+                obj.vErrorMsg = exp.Message.ToString();
+                obj.vErrorCode = 500;
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Fetch_RecoCouponOrderReport");
+            return objResp;
+        }
+        // End For Emergency Purpose 07-OCT-2026 Reco Report Upper and Management level
+
 
 
     }
