@@ -256,6 +256,10 @@ namespace BSLCanteenAPI.DAL
                 {
                     strSql = strSql + " AND EmpLocation = @EmpLocation ";
                 }
+                if (!String.IsNullOrWhiteSpace(objReq.CouponType))
+                {
+                    strSql = strSql + " AND CouponType = @CouponType ";
+                }
                 strSql = strSql + " ORDER BY ModifiedOn DESC  ";
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
@@ -294,6 +298,10 @@ namespace BSLCanteenAPI.DAL
                 if (!String.IsNullOrWhiteSpace(objReq.EmpLocation))
                 {
                     cmd.Parameters.AddWithValue("@EmpLocation", objReq.EmpLocation);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.CouponType))
+                {
+                    cmd.Parameters.AddWithValue("@CouponType", objReq.CouponType);
                 }
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
