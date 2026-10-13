@@ -242,7 +242,10 @@ namespace BSLCanteenAPI.DAL
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.OrderTakenDate))
                 {
-                    strSql = strSql + " AND OrdTakenDate = @OrderTakenDate ";
+                    //strSql = strSql + " AND OrdTakenDate = @OrderTakenDate ";
+
+                    strSql = strSql + " AND OrderDateTime >= DATEADD(HOUR, 7, CAST(CAST(@OrderTakenDate AS DATE) AS DATETIME))";
+                    strSql = strSql + " AND OrderDateTime < DATEADD(HOUR, 7, DATEADD(DAY, 1, CAST(CAST(@OrderTakenDate AS DATE) AS DATETIME))) ";
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.OrderStatus))
                 {
