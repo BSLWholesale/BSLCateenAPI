@@ -465,23 +465,27 @@ namespace BSLCanteenAPI.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                strSql = "SELECT C.Category, O.CategoryIcon, ISNULL(COUNT(O.CouponId), 0) AS RC ";
-                strSql = strSql + " FROM ( SELECT 'Drink' AS Category UNION ALL SELECT 'Breakfast' UNION ALL SELECT 'Thali' ) C  ";
-                strSql = strSql + " LEFT JOIN vCouponOrder O  ON O.Category = C.Category AND O.OrdStatus = 'Scanned' WHERE 1=1 ";
-                if (!String.IsNullOrWhiteSpace(objReq.OrderTakenDate))
-                {
-                    strSql = strSql + " AND O.OrdTakenDate='" + objReq.OrderTakenDate + "'";
-                }
-                if (!String.IsNullOrWhiteSpace(objReq.EmpLocation))
-                {
-                    strSql = strSql + " AND O.EmpLocation='" + objReq.EmpLocation + "'";
-                }
-                if (objReq.CanteenId != null && objReq.CanteenId != 0)
-                {
-                    strSql = strSql + " AND O.CanteenId=" + objReq.CanteenId + "";
-                }
-                strSql = strSql + " GROUP BY  C.Category, O.CategoryIcon ";
-                SqlDataAdapter da = new SqlDataAdapter(strSql, Con);
+                //strSql = "SELECT C.Category, O.CategoryIcon, ISNULL(COUNT(O.CouponId), 0) AS RC ";
+                //strSql = strSql + " FROM ( SELECT 'Drink' AS Category UNION ALL SELECT 'Breakfast' UNION ALL SELECT 'Thali' ) C  ";
+                //strSql = strSql + " LEFT JOIN vCouponOrder O  ON O.Category = C.Category AND O.OrdStatus = 'Scanned' WHERE 1=1 ";
+                //if (!String.IsNullOrWhiteSpace(objReq.OrderTakenDate))
+                //{
+                //    strSql = strSql + " AND O.OrdTakenDate='" + objReq.OrderTakenDate + "'";
+                //}
+                //if (!String.IsNullOrWhiteSpace(objReq.EmpLocation))
+                //{
+                //    strSql = strSql + " AND O.EmpLocation='" + objReq.EmpLocation + "'";
+                //}
+                //if (objReq.CanteenId != null && objReq.CanteenId != 0)
+                //{
+                //    strSql = strSql + " AND O.CanteenId=" + objReq.CanteenId + "";
+                //}
+                //strSql = strSql + " GROUP BY  C.Category, O.CategoryIcon ";
+                SqlCommand cmd = new SqlCommand("USP_Dashboard_Category_Count", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@CanteenID", objReq.CanteenId);
+                cmd.Parameters.AddWithValue("@OrderDate", objReq.OrderTakenDate);
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
                 da.Fill(ds);
 
