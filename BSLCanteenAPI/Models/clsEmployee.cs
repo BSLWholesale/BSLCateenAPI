@@ -25,6 +25,7 @@ namespace BSLCanteenAPI.Models
         public string ModifiedOn { get; set; }
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
+        public string IPAddress { get; set; }
     }
 
 
@@ -215,6 +216,7 @@ namespace BSLCanteenAPI.Models
         public string EmpLocation { get; set; }
         public int vErrorCode { get; set; }
         public string vErrorMsg { get; set; }
+        public string QRScannedSabji { get; set; }
     }
 
 

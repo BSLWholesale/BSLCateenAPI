@@ -1302,7 +1302,7 @@ namespace BSLCanteenAPI.DAL
                         objItem.QRScannedThali = Convert.ToString(ds.Tables[0].Rows[i]["QRScannedThali"]);
                         //objItem.GeneratedCouponMiniThali = Convert.ToString(ds.Tables[0].Rows[i]["GeneratedCouponMiniThali"]);
                         objItem.QRScannedMiniThali = Convert.ToString(ds.Tables[0].Rows[i]["QRScannedMiniThali"]);
-
+                        objItem.QRScannedSabji = Convert.ToString(ds.Tables[0].Rows[i]["QRScannedSabji"]);
                         objItem.vErrorMsg = "Success";
                         objItem.vErrorCode = 200;
                         objResp.Add(objItem);

@@ -71,52 +71,32 @@ namespace BSLCanteenAPI.DAL
 
                     if (ds.Tables[0].Rows.Count > 0)
                     {
+                        objResp.IPAddress = Convert.ToString(ds.Tables[0].Rows[i]["IPAddress"]);
                         objResp.EmpId = Convert.ToInt64(ds.Tables[0].Rows[i]["EmployeeId"]);
                         objResp.EmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
                         objResp.EmpMobile = Convert.ToString(ds.Tables[0].Rows[i]["EmpMobile"]);
                         objResp.Department = Convert.ToString(ds.Tables[0].Rows[i]["Department"]);
-
-                        //if (ds.Tables[0].Rows[i]["EmpMobile"] == DBNull.Value)
-                        //{
-                        //    objResp.EmpMobile = string.Empty;
-                        //}
-                        //else
-                        //{
-                        //    objResp.EmpMobile = Convert.ToString(ds.Tables[0].Rows[i]["EmpMobile"]);
-                        //}
-
-                        //if (ds.Tables[0].Rows[i]["Department"] == DBNull.Value)
-                        //{
-                        //    objResp.Department = string.Empty;
-                        //}
-                        //else
-                        //{
-                        //    objResp.Department = Convert.ToString(ds.Tables[0].Rows[i]["Department"]);
-                        //}
-
                         objResp.EmpLocation = Convert.ToString(ds.Tables[0].Rows[i]["EmpLocation"]);
                         objResp.EmpRole = Convert.ToString(ds.Tables[0].Rows[i]["EmpRole"]);
+                        objResp.CanteenId = Convert.ToInt32(ds.Tables[0].Rows[i]["CanteenId"]);
+                        objResp.CanteenName = Convert.ToString(ds.Tables[0].Rows[i]["CanteenName"]);
+                        objResp.LoginID = Convert.ToString(ds.Tables[0].Rows[i]["LoginID"]);
+                        objResp.EmpStatus = Convert.ToBoolean(ds.Tables[0].Rows[i]["EmpStatus"]);
                         if (objResp.EmpRole != "Admin" && objResp.EmpRole != "Staff" && objResp.EmpRole != "Supervisor" && objResp.EmpRole != "Superadmin" && objResp.EmpRole != "Reco")
                         {
                             objResp.vErrorMsg = "You are not a valid employee to access the portal.";
                             return objResp;
                         }
-
-                        objResp.CanteenId = Convert.ToInt32(ds.Tables[0].Rows[i]["CanteenId"]);
-                        objResp.CanteenName = Convert.ToString(ds.Tables[0].Rows[i]["CanteenName"]);
-
-                        //if (ds.Tables[0].Rows[i]["LoginID"] == DBNull.Value)
-                        //{
-                        //    objResp.LoginID = string.Empty;
-                        //}
-                        //else
-                        //{
-                        //    objResp.LoginID = Convert.ToString(ds.Tables[0].Rows[i]["LoginID"]);
-                        //}
-                        objResp.LoginID = Convert.ToString(ds.Tables[0].Rows[i]["LoginID"]);
-                        objResp.EmpStatus = Convert.ToBoolean(ds.Tables[0].Rows[i]["EmpStatus"]);
-
-                        objResp.vErrorMsg = "Success";
+                        else if (objResp.EmpRole == "Admin" && objReq.IPAddress != objResp.IPAddress)
+                        {
+                            objResp.vErrorMsg = "You are not authorized: Invalid IP-Address" + objReq.IPAddress;
+                            Logger.InvalidIPLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Login_Employee");
+                            return objResp;
+                        }
+                        else
+                        {
+                            objResp.vErrorMsg = "Success";
+                        }
                     }
                     else
                     {

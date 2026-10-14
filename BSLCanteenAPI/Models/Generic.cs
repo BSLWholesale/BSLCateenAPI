@@ -149,6 +149,34 @@ namespace BSLCanteenAPI.Models
                 Console.WriteLine($"Error writing to log file: {exp.Message}");
             }
         }
+
+        public static void InvalidIPLog(string logMessage, string strRequestType, string strFunctionName)
+        {
+            string LogPath = ConfigurationManager.AppSettings["InvalidIPLog"] + System.DateTime.Today.ToString("dd-MM-yyyy") + "-ResponseLog." + "txt";
+            FileInfo LogFileInfo = new FileInfo(LogPath);
+            DirectoryInfo LogDirInfo = new DirectoryInfo(LogFileInfo.DirectoryName);
+            if (!LogDirInfo.Exists) LogDirInfo.Create();
+            try
+            {
+                lock (typeof(Logger))
+                {
+                    using (StreamWriter w = File.AppendText(LogPath))
+                    {
+                        w.Write("\r\nLog Entry : ");
+                        w.WriteLine("{0} {1}", DateTime.Now.ToLongTimeString(), DateTime.Now.ToLongDateString());
+                        w.WriteLine("--------------Function: " + strFunctionName + "-----------------");
+                        w.WriteLine("--------------Start " + strRequestType + "-----------------");
+                        w.WriteLine(" :{0}", logMessage);
+                        w.WriteLine("---------------End " + strRequestType + "----------------");
+                        w.Flush();
+                    }
+                }
+            }
+            catch (Exception exp)
+            {
+                Console.WriteLine($"Error writing to log file: {exp.Message}");
+            }
+        }
     }
 
 
