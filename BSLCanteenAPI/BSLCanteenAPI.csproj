@@ -158,14 +158,17 @@
     <Compile Include="Controllers\CanteenController.cs" />
     <Compile Include="Controllers\EmployeeController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="DAL\DALCanteen.cs" />
     <Compile Include="DAL\DALEmployee.cs" />
+    <Compile Include="DAL\DALReport.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\clsEmployee.cs" />
     <Compile Include="Models\Generic.cs" />
+    <Compile Include="Models\clsReport.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
