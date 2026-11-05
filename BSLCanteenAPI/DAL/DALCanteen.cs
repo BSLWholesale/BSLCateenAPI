@@ -206,7 +206,7 @@ namespace BSLCanteenAPI.DAL
         }
 
 
-        public List<clsCouponReport> Fn_Get_Coupon_Order(clsCouponReport objReq)
+        public List<clsCouponReport> Fn_Get_Coupon_Order_Old(clsCouponReport objReq)
         {
             var objResp = new List<clsCouponReport>();
             var obj = new clsCouponReport();
@@ -374,6 +374,7 @@ namespace BSLCanteenAPI.DAL
             var obj = new clsCouponReport();
             obj.CouponId = objReq.CouponId;
             obj.CanteenId = objReq.CanteenId;
+            obj.QueryType = "CheckCouponId";
             objCheck = Fn_Get_Coupon_Order(obj);
             try
             {
@@ -2480,6 +2481,103 @@ namespace BSLCanteenAPI.DAL
         // End For Emergency Purpose 07-OCT-2026 Reco Report Upper and Management level
 
 
+        #region Start 15-Oct-2026  by Ankit
+
+        public List<clsCouponReport> Fn_Get_Coupon_Order(clsCouponReport objReq)
+        {
+            var objResp = new List<clsCouponReport>();
+            var obj = new clsCouponReport();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_Coupon_Order");
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+
+                SqlCommand cmd = new SqlCommand("USP_Get_Coupon_Order", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@EmpId", objReq.EmpId);
+                cmd.Parameters.AddWithValue("@RowIndex", objReq.RowIndex);
+                cmd.Parameters.AddWithValue("@CouponId", objReq.CouponId);
+                cmd.Parameters.AddWithValue("@ItemCategory", objReq.ItemCategory);
+                cmd.Parameters.AddWithValue("@CouponIssueDate", objReq.CouponIssueDate);
+                cmd.Parameters.AddWithValue("@OrderDate", objReq.OrderTakenDate);
+                cmd.Parameters.AddWithValue("@OrderStatus", objReq.OrderStatus);
+                cmd.Parameters.AddWithValue("@ModifiedBy", objReq.ModifiedBy);
+                cmd.Parameters.AddWithValue("@EmpLocation", objReq.EmpLocation);
+                cmd.Parameters.AddWithValue("@CouponType", objReq.CouponType);
+                if(!String.IsNullOrWhiteSpace(objReq.QueryType))
+                {
+                    cmd.Parameters.AddWithValue("@QueryType", objReq.QueryType);
+                }
+                else
+                {
+                    cmd.Parameters.AddWithValue("@QueryType", "SelectCouponOrder");
+                }
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsCouponReport();
+                        obj.CouponId = Convert.ToInt64(ds.Tables[0].Rows[i]["CouponId"]);
+                        obj.Category = Convert.ToString(ds.Tables[0].Rows[i]["Category"]);
+                        obj.ItemCategory = Convert.ToString(ds.Tables[0].Rows[i]["ItemCategory"]);
+                        obj.CouponIssueDate = Convert.ToString(ds.Tables[0].Rows[i]["CoupIssueDate"]);
+                        obj.CouponIssueTime = Convert.ToString(ds.Tables[0].Rows[i]["CoupIssueTime"]);
+                        obj.OrderTakenDate = Convert.ToString(ds.Tables[0].Rows[i]["OrdTakenDate"]);
+                        obj.OrderTakenTime = Convert.ToString(ds.Tables[0].Rows[i]["OrdTakenTime"]);
+                        obj.OrderStatus = Convert.ToString(ds.Tables[0].Rows[i]["OrdStatus"]);
+                        obj.CanteenId = Convert.ToInt32(ds.Tables[0].Rows[i]["CanteenId"]);
+                        obj.CanteenName = Convert.ToString(ds.Tables[0].Rows[i]["CanteenName"]);
+                        obj.EmpId = Convert.ToInt32(ds.Tables[0].Rows[i]["EmployeeId"]);
+                        obj.EmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
+                        obj.EmpDepartment = Convert.ToString(ds.Tables[0].Rows[i]["Department"]);
+                        obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
+                        obj.Price = Convert.ToInt32(ds.Tables[0].Rows[i]["Price"]);
+                        obj.CouponType = Convert.ToString(ds.Tables[0].Rows[i]["CouponType"]);
+                        obj.CategoryIcon = Convert.ToString(ds.Tables[0].Rows[i]["CategoryIcon"]);
+                        obj.EmpStatus = Convert.ToBoolean(ds.Tables[0].Rows[i]["EmpStatus"]);
+                        obj.ItemId = Convert.ToInt32(ds.Tables[0].Rows[i]["ItemId"]);
+
+                        obj.vErrorMsg = "Success";
+                        obj.vErrorCode = 200;
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj = new clsCouponReport();
+                    obj.vErrorMsg = "No Record Found.";
+                    obj.vErrorCode = 400;
+                    objResp.Add(obj);
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Get_Coupon_Order", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj = new clsCouponReport();
+                obj.vErrorMsg = exp.Message.ToString();
+                obj.vErrorCode = 500;
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+           // Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_Coupon_Order");
+            return objResp;
+        }
+
+        #endregion End by Ankit
 
     }
 }

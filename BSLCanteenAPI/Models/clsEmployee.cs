@@ -143,6 +143,7 @@ namespace BSLCanteenAPI.Models
         public string FromDate { get; set; }
         public string ToDate { get; set; }
         public string RecoStatus { get; set; }
+        public string QueryType { get; set; }
     }
 
     public class clsMonthlyReportReq
