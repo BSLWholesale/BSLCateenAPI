@@ -1433,6 +1433,7 @@ namespace BSLCanteenAPI.DAL
                         objItem.QRScannedThali = Convert.ToString(ds.Tables[0].Rows[i]["QRScannedThali"]);
                         //objItem.GeneratedCouponMiniThali = Convert.ToString(ds.Tables[0].Rows[i]["GeneratedCouponMiniThali"]);
                         objItem.QRScannedMiniThali = Convert.ToString(ds.Tables[0].Rows[i]["QRScannedMiniThali"]);
+                        objItem.QRScannedSabji = Convert.ToString(ds.Tables[0].Rows[i]["QRScannedSabji"]);
 
                         objItem.vErrorMsg = "Success";
                         objItem.vErrorCode = 200;
@@ -2508,7 +2509,7 @@ namespace BSLCanteenAPI.DAL
                 cmd.Parameters.AddWithValue("@ModifiedBy", objReq.ModifiedBy);
                 cmd.Parameters.AddWithValue("@EmpLocation", objReq.EmpLocation);
                 cmd.Parameters.AddWithValue("@CouponType", objReq.CouponType);
-                if(!String.IsNullOrWhiteSpace(objReq.QueryType))
+                if (!String.IsNullOrWhiteSpace(objReq.QueryType))
                 {
                     cmd.Parameters.AddWithValue("@QueryType", objReq.QueryType);
                 }
@@ -2573,7 +2574,7 @@ namespace BSLCanteenAPI.DAL
             {
                 Con.Close();
             }
-           // Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_Coupon_Order");
+            // Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_Coupon_Order");
             return objResp;
         }
 
