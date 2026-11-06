@@ -66,7 +66,7 @@ namespace BSLCanteenAPI.Models
         public int vErrorCode { get; set; }
 
     }
-   
+
 
     public class clsCanteen
     {
@@ -239,6 +239,8 @@ namespace BSLCanteenAPI.Models
         public string QRScannedThali { get; set; }
         public string GeneratedCouponMiniThali { get; set; }
         public string QRScannedMiniThali { get; set; }
+        public string QRScannedSabji { get; set; }
+
         public string ItemCatgeory { get; set; }
         public string ReportType { get; set; }
         public int vErrorCode { get; set; }
@@ -395,7 +397,7 @@ namespace BSLCanteenAPI.Models
         public string TransactionID { get; set; }
         public decimal Amount { get; set; }
         public decimal Rate { get; set; }
-        public Int32 Qty { get; set;}
+        public Int32 Qty { get; set; }
         public string LocationID { get; set; }
         public int CreatedBy { get; set; }
         public string CreatedOn { get; set; }
