@@ -191,6 +191,7 @@ namespace BSLCanteenAPI.DAL
                 SqlCommand cmd = new SqlCommand("USP_Employee", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@EmpId", objReq.EmpId);
+                cmd.Parameters.AddWithValue("@EmpLocation", objReq.EmpLocation);
                 cmd.Parameters.AddWithValue("@QueryType", "FetchEmpDetails");
 
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
@@ -286,7 +287,12 @@ namespace BSLCanteenAPI.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string EncryptPassword = Generic.EncryptText(objReq.EmpPassword);
+                string EncryptPassword = null;
+
+                if (!string.IsNullOrWhiteSpace(objReq.EmpPassword))
+                {
+                    EncryptPassword = Generic.EncryptText(objReq.EmpPassword);
+                }
 
                 SqlCommand cmd = new SqlCommand("USP_Employee", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
