@@ -708,7 +708,7 @@ namespace BSLCanteenAPI.DAL
             return objResp;
         }
 
-        public List<clsMonthlyReportResp> Fn_CanteenWise_Report(clsMonthlyReportReq objReq)
+        public List<clsMonthlyReportResp> Fn_CanteenWise_Report_Old(clsMonthlyReportReq objReq)
         {
             var objResp = new List<clsMonthlyReportResp>();
             var obj = new clsMonthlyReportResp();
@@ -823,7 +823,7 @@ namespace BSLCanteenAPI.DAL
             return objResp;
         }
 
-        public List<clsMonthlyReportResp> Fn_EmployeeWise_Report(clsMonthlyReportReq objReq)
+        public List<clsMonthlyReportResp> Fn_EmployeeWise_Report_Old(clsMonthlyReportReq objReq)
         {
             var objResp = new List<clsMonthlyReportResp>();
             var obj = new clsMonthlyReportResp();
@@ -943,7 +943,7 @@ namespace BSLCanteenAPI.DAL
             return objResp;
         }
 
-        public List<clsMonthlyReportResp> Fn_CanteenWise_Summery(clsMonthlyReportReq objReq)
+        public List<clsMonthlyReportResp> Fn_CanteenWise_Summery_Old(clsMonthlyReportReq objReq)
         {
             var objResp = new List<clsMonthlyReportResp>();
             var obj = new clsMonthlyReportResp();
@@ -1037,7 +1037,7 @@ namespace BSLCanteenAPI.DAL
             return objResp;
         }
 
-        public List<clsMonthlyReportResp> Fn_EmployeeWise_Summery(clsMonthlyReportReq objReq)
+        public List<clsMonthlyReportResp> Fn_EmployeeWise_Summery_Old(clsMonthlyReportReq objReq)
         {
             var objResp = new List<clsMonthlyReportResp>();
             var obj = new clsMonthlyReportResp();
@@ -2580,5 +2580,313 @@ namespace BSLCanteenAPI.DAL
 
         #endregion End by Ankit
 
+        #region Start 06-Nov-2026 Fn_CanteenWise_Report by Ankit
+
+        public List<clsMonthlyReportResp> Fn_CanteenWise_Report(clsMonthlyReportReq objReq)
+        {
+            var objResp = new List<clsMonthlyReportResp>();
+            var obj = new clsMonthlyReportResp();
+            // Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Request", "Fn_CanteenWise_Report");
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+
+
+                SqlCommand cmd = new SqlCommand("USP_CanteenWise_Summery", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@CanteenId", objReq.CanteenId);
+                cmd.Parameters.AddWithValue("@CanteenName", objReq.CanteenName);
+                cmd.Parameters.AddWithValue("@ItemName", objReq.ItemCategory);
+                cmd.Parameters.AddWithValue("@EmpLocation", objReq.EmpLocation);
+                cmd.Parameters.AddWithValue("@OrdTakenDateFrom", objReq.FromDate);
+                cmd.Parameters.AddWithValue("@OrdTakenDateTO", objReq.ToDate);
+                cmd.Parameters.AddWithValue("@QueryType", objReq.QueryType);
+                cmd.Parameters.AddWithValue("@PageNumber", objReq.PageNumber);
+                cmd.Parameters.AddWithValue("@PageSize", objReq.PageSize);
+
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsMonthlyReportResp();
+
+                        obj.CanteenId = Convert.ToInt32(ds.Tables[0].Rows[i]["CanteenId"]);
+                        obj.CanteenName = Convert.ToString(ds.Tables[0].Rows[i]["CanteenName"]);
+                        obj.ItemCategory = Convert.ToString(ds.Tables[0].Rows[i]["ItemCategory"]);
+                        obj.OrderTakenDate = Convert.ToString(ds.Tables[0].Rows[i]["OrdTakenDate"]);
+                        obj.TotalCoupons = Convert.ToInt32(ds.Tables[0].Rows[i]["TotalCoupons"]);
+                        obj.TotalPrice = Convert.ToDecimal(ds.Tables[0].Rows[i]["TotalPrice"]);
+                        obj.CategoryIcon = Convert.ToString(ds.Tables[0].Rows[i]["CategoryIcon"]);
+                        obj.TotalRows = Convert.ToInt64(ds.Tables[0].Rows[i]["TotalRows"]);
+
+                        obj.vErrorMsg = "Success";
+                        obj.vErrorCode = 200;
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorMsg = "No Record Found.";
+                    obj.vErrorCode = 400;
+                    objResp.Add(obj);
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_CanteenWise_Report", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+
+                obj.vErrorMsg = exp.Message.ToString();
+                obj.vErrorCode = 500;
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            // Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_CanteenWise_Report");
+            return objResp;
+        }
+
+        #endregion End 06-Nov-2026 Fn_CanteenWise_Report by Ankit
+
+        public List<clsMonthlyReportResp> Fn_CanteenWise_Summery(clsMonthlyReportReq objReq)
+        {
+            var objResp = new List<clsMonthlyReportResp>();
+            var obj = new clsMonthlyReportResp();
+            // Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Request", "Fn_CanteenWise_Summery");
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+
+                SqlCommand cmd = new SqlCommand("USP_CanteenWise_Summery", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@CanteenId", objReq.CanteenId);
+                cmd.Parameters.AddWithValue("@CanteenName", objReq.CanteenName);
+                cmd.Parameters.AddWithValue("@EmpLocation", objReq.EmpLocation);
+                cmd.Parameters.AddWithValue("@OrdTakenDateFrom", objReq.FromDate);
+                cmd.Parameters.AddWithValue("@OrdTakenDateTO", objReq.ToDate);
+                cmd.Parameters.AddWithValue("@QueryType", objReq.QueryType);
+                cmd.Parameters.AddWithValue("@PageNumber", objReq.PageNumber);
+                cmd.Parameters.AddWithValue("@PageSize", objReq.PageSize);
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsMonthlyReportResp();
+                        obj.CanteenId = Convert.ToInt32(ds.Tables[0].Rows[i]["CanteenId"]);
+                        obj.CanteenName = Convert.ToString(ds.Tables[0].Rows[i]["CanteenName"]);
+                        obj.OrderTakenDate = Convert.ToString(ds.Tables[0].Rows[i]["OrdTakenDate"]);
+                        obj.TotalCoupons = Convert.ToInt32(ds.Tables[0].Rows[i]["TotalCoupons"]);
+                        obj.TotalPrice = Convert.ToDecimal(ds.Tables[0].Rows[i]["TotalPrice"]);
+                        obj.TotalRows = Convert.ToInt32(ds.Tables[0].Rows[i]["TotalRows"]);
+                        obj.vErrorMsg = "Success";
+                        obj.vErrorCode = 200;
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorMsg = "No Record Found.";
+                    obj.vErrorCode = 400;
+                    objResp.Add(obj);
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_CanteenWise_Summery", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+
+                obj.vErrorMsg = exp.Message.ToString();
+                obj.vErrorCode = 500;
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_CanteenWise_Summery");
+            return objResp;
+        }
+
+        #region Start Fn_EmployeeWise_Report by Ankit 12-Nov-2026
+
+        public List<clsMonthlyReportResp> Fn_EmployeeWise_Report(clsMonthlyReportReq objReq)
+        {
+            var objResp = new List<clsMonthlyReportResp>();
+            var obj = new clsMonthlyReportResp();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Request", "Fn_EmployeeWise_Report");
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+
+
+                SqlCommand cmd = new SqlCommand("USP_CanteenWise_Summery", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@CanteenId", objReq.CanteenId);
+                cmd.Parameters.AddWithValue("@EmpId", objReq.EmpId);
+                cmd.Parameters.AddWithValue("@CanteenName", objReq.CanteenName);
+                cmd.Parameters.AddWithValue("@ItemName", objReq.ItemCategory);
+                cmd.Parameters.AddWithValue("@EmpLocation", objReq.EmpLocation);
+                cmd.Parameters.AddWithValue("@OrdTakenDateFrom", objReq.FromDate);
+                cmd.Parameters.AddWithValue("@OrdTakenDateTO", objReq.ToDate);
+                cmd.Parameters.AddWithValue("@QueryType", objReq.QueryType);
+                cmd.Parameters.AddWithValue("@PageNumber", objReq.PageNumber);
+                cmd.Parameters.AddWithValue("@PageSize", objReq.PageSize);
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsMonthlyReportResp();
+
+                        obj.CanteenId = Convert.ToInt32(ds.Tables[0].Rows[i]["CanteenId"]);
+                        obj.CanteenName = Convert.ToString(ds.Tables[0].Rows[i]["CanteenName"]);
+                        obj.EmpId = Convert.ToInt32(ds.Tables[0].Rows[i]["EmployeeId"]);
+                        obj.EmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
+                        obj.EmpDepartment = Convert.ToString(ds.Tables[0].Rows[i]["Department"]);
+                        obj.CouponType = Convert.ToString(ds.Tables[0].Rows[i]["CouponType"]);
+                        obj.ItemCategory = Convert.ToString(ds.Tables[0].Rows[i]["ItemCategory"]);
+                        obj.OrderTakenDate = Convert.ToString(ds.Tables[0].Rows[i]["OrdTakenDate"]);
+                        obj.TotalCoupons = Convert.ToInt32(ds.Tables[0].Rows[i]["TotalCoupons"]);
+                        obj.TotalPrice = Convert.ToDecimal(ds.Tables[0].Rows[i]["TotalPrice"]);
+                        obj.CategoryIcon = Convert.ToString(ds.Tables[0].Rows[i]["CategoryIcon"]);
+                        obj.TotalRows = Convert.ToInt32(ds.Tables[0].Rows[i]["TotalRows"]);
+                        obj.vErrorMsg = "Success";
+                        obj.vErrorCode = 200;
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorMsg = "No Record Found.";
+                    obj.vErrorCode = 400;
+                    objResp.Add(obj);
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_EmployeeWise_Report", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+
+                obj.vErrorMsg = exp.Message.ToString();
+                obj.vErrorCode = 500;
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_EmployeeWise_Report");
+            return objResp;
+        }
+
+        #endregion End 12-Nov-2026
+
+        #region Start Fn_EmployeeWise_Summery by Ankit 12-Nov-2026
+
+        public List<clsMonthlyReportResp> Fn_EmployeeWise_Summery(clsMonthlyReportReq objReq)
+        {
+            var objResp = new List<clsMonthlyReportResp>();
+            var obj = new clsMonthlyReportResp();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Request", "Fn_EmployeeWise_Summery");
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+                
+
+                SqlCommand cmd = new SqlCommand("USP_CanteenWise_Summery", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@CanteenId", objReq.CanteenId);
+                cmd.Parameters.AddWithValue("@EmpId", objReq.EmpId);
+                cmd.Parameters.AddWithValue("@CanteenName", objReq.CanteenName);
+                cmd.Parameters.AddWithValue("@EmpLocation", objReq.EmpLocation);
+                cmd.Parameters.AddWithValue("@OrdTakenDateFrom", objReq.FromDate);
+                cmd.Parameters.AddWithValue("@OrdTakenDateTO", objReq.ToDate);
+                cmd.Parameters.AddWithValue("@QueryType", objReq.QueryType);
+                cmd.Parameters.AddWithValue("@PageNumber", objReq.PageNumber);
+                cmd.Parameters.AddWithValue("@PageSize", objReq.PageSize);
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsMonthlyReportResp();
+
+                        obj.CanteenId = Convert.ToInt32(ds.Tables[0].Rows[i]["CanteenId"]);
+                        obj.CanteenName = Convert.ToString(ds.Tables[0].Rows[i]["CanteenName"]);
+                        obj.EmpId = Convert.ToInt32(ds.Tables[0].Rows[i]["EmployeeId"]);
+                        obj.EmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
+                        obj.EmpDepartment = Convert.ToString(ds.Tables[0].Rows[i]["Department"]);
+                        obj.CouponType = Convert.ToString(ds.Tables[0].Rows[i]["CouponType"]);
+                        obj.TotalCoupons = Convert.ToInt32(ds.Tables[0].Rows[i]["TotalCoupons"]);
+                        obj.TotalPrice = Convert.ToDecimal(ds.Tables[0].Rows[i]["TotalPrice"]);
+                        obj.TotalRows = Convert.ToInt64(ds.Tables[0].Rows[i]["TotalRows"]);
+
+                        obj.vErrorMsg = "Success";
+                        obj.vErrorCode = 200;
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorMsg = "No Record Found.";
+                    obj.vErrorCode = 400;
+                    objResp.Add(obj);
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_EmployeeWise_Summery", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+
+                obj.vErrorMsg = exp.Message.ToString();
+                obj.vErrorCode = 500;
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_EmployeeWise_Summery");
+            return objResp;
+        }
+
+        #endregion End Fn_EmployeeWise_Summery by Ankit 12-Nov-2026
     }
 }

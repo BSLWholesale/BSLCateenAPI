@@ -160,6 +160,7 @@ namespace BSLCanteenAPI.Models
         public string EmpLocation { get; set; }
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
+        public string QueryType { get; set; }
     }
 
     public class clsMonthlyReportResp
