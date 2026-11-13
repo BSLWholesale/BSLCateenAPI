@@ -2540,6 +2540,7 @@ namespace BSLCanteenAPI.DAL
                         obj.CanteenName = Convert.ToString(ds.Tables[0].Rows[i]["CanteenName"]);
                         obj.EmpId = Convert.ToInt32(ds.Tables[0].Rows[i]["EmployeeId"]);
                         obj.EmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
+                        obj.EmpLocation = Convert.ToString(ds.Tables[0].Rows[i]["EmpLocation"]);
                         obj.EmpDepartment = Convert.ToString(ds.Tables[0].Rows[i]["Department"]);
                         obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
                         obj.Price = Convert.ToInt32(ds.Tables[0].Rows[i]["Price"]);
