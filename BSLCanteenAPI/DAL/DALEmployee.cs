@@ -566,7 +566,7 @@ namespace BSLCanteenAPI.DAL
                 cmd.Parameters.AddWithValue("@CateenId", objReq.CanteenId);
                 cmd.Parameters.AddWithValue("@EmpMobile", objReq.EmpMobile);
                 cmd.Parameters.AddWithValue("@EmpStatus", objReq.EmpStatus);
-
+                cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
                 int i = 0;
                 i = cmd.ExecuteNonQuery();
                 if (i > 0)
