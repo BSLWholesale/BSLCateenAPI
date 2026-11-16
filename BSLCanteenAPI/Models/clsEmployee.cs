@@ -489,6 +489,36 @@ namespace BSLCanteenAPI.Models
         public int vErrorCode { get; set; }
     }
 
-
+    public class clsVisitorCoupon
+    {
+        public Int64 CouponId { get; set; }
+        public int ItemId { get; set; }
+        public string ItemName { get; set; }
+        public string CategoryIcon { get; set; }
+        public decimal Price { get; set; }
+        public string CouponIssueDate { get; set; }
+        public string CouponIssueTime { get; set; }
+        public int CanteenId { get; set; }
+        public string CanteenName { get; set; }
+        public Int32 EmpId { get; set; }
+        public string EmpName { get; set; }
+        public string EmpLocation { get; set; }
+        public string EmpDepartment { get; set; }
+        public string VisitorName { get; set; }
+        public string VisitorMobile { get; set; }
+        public string VisitorType { get; set; }
+        public Int32 RowIndex { get; set; }
+        public int CreatedBy { get; set; }
+        public string CreatedOn { get; set; }
+        public int ModifiedBy { get; set; }
+        public string ModifiedOn { get; set; }
+        
+        public string vErrorMsg { get; set; }
+        public int vErrorCode { get; set; }
+        public int PageNumber { get; set; }
+        public int PageSize { get; set; }
+        public Int64 TotalRows { get; set; }        
+        public string QueryType { get; set; }
+    }
 
 }

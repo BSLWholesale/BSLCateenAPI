@@ -160,9 +160,11 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
+    <Compile Include="Controllers\VisitorController.cs" />
     <Compile Include="DAL\DALCanteen.cs" />
     <Compile Include="DAL\DALEmployee.cs" />
     <Compile Include="DAL\DALReport.cs" />
+    <Compile Include="DAL\DALVisitor.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -226,6 +228,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="Views\Canteen\" />
     <Folder Include="Views\Employee\" />
+    <Folder Include="Views\Visitor\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
