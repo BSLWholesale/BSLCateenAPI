@@ -519,6 +519,7 @@ namespace BSLCanteenAPI.Models
         public int PageSize { get; set; }
         public Int64 TotalRows { get; set; }        
         public string QueryType { get; set; }
+        public string PrintDate { get; set; }
     }
 
 }

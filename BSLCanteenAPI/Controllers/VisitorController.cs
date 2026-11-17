@@ -32,5 +32,14 @@ namespace BSLCanteenAPI.Controllers
             objResp = _DALVisitor.Fn_Get_Visitor_Coupon(objReq);
             return objResp;
         }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Visitor/Fn_Update_Visitor_Coupon_PrintDate")]
+        public clsCouponOrder Fn_Update_Visitor_Coupon_PrintDate(clsCouponOrder objReq)
+        {
+            var objResp = new clsCouponOrder();
+            objResp = _DALVisitor.Fn_Update_Visitor_Coupon_PrintDate(objReq);
+            return objResp;
+        }
     }
 }

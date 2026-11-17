@@ -245,7 +245,8 @@ namespace BSLCanteenAPI.DAL
                         obj.VisitorType = Convert.ToString(ds.Tables[0].Rows[i]["VisitorType"]);
                         obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
                         obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
-                       
+                        obj.PrintDate = Convert.ToString(ds.Tables[0].Rows[i]["PrintDate"]);
+
 
                         obj.vErrorMsg = "Success";
                         obj.vErrorCode = 200;
@@ -268,6 +269,55 @@ namespace BSLCanteenAPI.DAL
                 obj.vErrorMsg = exp.Message.ToString();
                 obj.vErrorCode = 500;
                 objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            // Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_Coupon_Order");
+            return objResp;
+        }
+
+        public clsCouponOrder Fn_Update_Visitor_Coupon_PrintDate(clsCouponOrder objReq)
+        {
+            var objResp = new clsCouponOrder();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Update_Visitor_Coupon_PrintDate");
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+
+                SqlCommand cmd = new SqlCommand("USP_VisitorCoupon", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@EmpId", objReq.EmpId);
+                cmd.Parameters.AddWithValue("@EmpLocation", objReq.EmpLocation);
+                cmd.Parameters.AddWithValue("@CanteenId", objReq.CanteenId);
+                cmd.Parameters.AddWithValue("@VisitorType", objReq.CouponType);
+                cmd.Parameters.AddWithValue("@CouponIssueDate", objReq.CouponIssueDate);
+                cmd.Parameters.AddWithValue("@RowIndex", objReq.RowIndex);
+                cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                cmd.Parameters.AddWithValue("@QueryType", "UpdatePrintDate");
+                int rows = cmd.ExecuteNonQuery();
+                if (rows > 0)
+                {
+                    objResp.vErrorMsg = "Success";
+                    objResp.RowIndex = objReq.RowIndex;
+                    objResp.vErrorCode = 200;
+                }
+                else
+                {
+                    objResp.vErrorMsg = "Print date updating failed";
+                    objResp.vErrorCode = 400;
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Update_Visitor_Coupon_PrintDate", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+                objResp.vErrorCode = 500;
             }
             finally
             {
