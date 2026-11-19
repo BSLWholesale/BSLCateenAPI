@@ -22,7 +22,7 @@ namespace BSLCanteenAPI.DAL
             Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Login_Employee");
             try
             {
-                if (objReq.EmpId == null || objReq.EmpId == 0) 
+                if (objReq.EmpId == null || objReq.EmpId == 0)
                 {
                     objResp.vErrorMsg = "Please Enter Employee ID";
                 }
@@ -102,7 +102,7 @@ namespace BSLCanteenAPI.DAL
                     {
                         objResp.vErrorMsg = "Entered Credentials has been invalid";
                     }
-                }                          
+                }
             }
             catch (Exception exp)
             {
@@ -205,7 +205,7 @@ namespace BSLCanteenAPI.DAL
                         obj = new clsEmployee();
                         obj.EmpId = Convert.ToInt64(ds.Tables[0].Rows[i]["EmployeeId"]);
                         obj.EmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
-                        
+
                         if (ds.Tables[0].Rows[i]["EmpMobile"] == DBNull.Value)
                         {
                             obj.EmpMobile = string.Empty;
@@ -227,7 +227,7 @@ namespace BSLCanteenAPI.DAL
                         obj.EmpLocation = Convert.ToString(ds.Tables[0].Rows[i]["EmpLocation"]);
                         obj.CanteenId = Convert.ToInt32(ds.Tables[0].Rows[i]["CanteenId"]);
                         obj.CanteenName = Convert.ToString(ds.Tables[0].Rows[i]["CanteenName"]);
-                        
+
                         if (ds.Tables[0].Rows[i]["EmpRole"] == DBNull.Value)
                         {
                             obj.EmpRole = string.Empty;
@@ -299,7 +299,7 @@ namespace BSLCanteenAPI.DAL
                 cmd.Parameters.AddWithValue("@EmpId", objReq.EmpId);
                 cmd.Parameters.AddWithValue("@EmpName", objReq.EmpName);
                 cmd.Parameters.AddWithValue("@Department", objReq.Department);
-                cmd.Parameters.AddWithValue("@EmpMobile", objReq.EmpMobile);                
+                cmd.Parameters.AddWithValue("@EmpMobile", objReq.EmpMobile);
                 cmd.Parameters.AddWithValue("@EmpPassword", EncryptPassword);
                 cmd.Parameters.AddWithValue("@EmpRole", objReq.EmpRole);
                 cmd.Parameters.AddWithValue("@EmpLocation", objReq.EmpLocation);
@@ -409,7 +409,7 @@ namespace BSLCanteenAPI.DAL
                         var objItem = new clsEmployee();
                         objItem.EmpId = Convert.ToInt64(ds.Tables[0].Rows[i]["EmployeeId"]);
                         objItem.EmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
-                        
+
                         if (ds.Tables[0].Rows[i]["Department"] == DBNull.Value)
                         {
                             objItem.Department = string.Empty;
@@ -417,7 +417,7 @@ namespace BSLCanteenAPI.DAL
                         else
                         {
                             objItem.Department = Convert.ToString(ds.Tables[0].Rows[i]["Department"]);
-                        }                       
+                        }
 
                         if (ds.Tables[0].Rows[i]["EmpMobile"] == DBNull.Value)
                         {
@@ -427,7 +427,7 @@ namespace BSLCanteenAPI.DAL
                         {
                             objItem.EmpMobile = Convert.ToString(ds.Tables[0].Rows[i]["EmpMobile"]);
                         }
-                        
+
                         objItem.EmpLocation = Convert.ToString(ds.Tables[0].Rows[i]["EmpLocation"]);
 
                         if (ds.Tables[0].Rows[i]["EmpRole"] == DBNull.Value)
@@ -576,7 +576,7 @@ namespace BSLCanteenAPI.DAL
                 else
                 {
                     objResp.vErrorMsg = "Failed";
-                }                
+                }
             }
             catch (Exception exp)
             {
@@ -645,7 +645,88 @@ namespace BSLCanteenAPI.DAL
             return objResp;
         }
 
+        #region Start 19-NOV-2026 Fn_Upload_BulkEmployeeExcel by Ankit
 
+        public clsEmployee Fn_Upload_BulkEmployeeExcel(List<clsEmployee> objReq)
+        {
+            var objResp = new clsEmployee();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Upload_BulkEmployeeExcel");
 
+            try
+            {
+                if (objReq == null || objReq.Count == 0)
+                {
+                    objResp.vErrorMsg = "No employee records found in list";
+                    return objResp;
+                }
+
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                foreach (var emp in objReq)
+                {
+                    if (String.IsNullOrEmpty(emp.EmpName))
+                    {
+                        objResp.vErrorMsg = "Please Enter EmpName";
+                    }
+                    else if (String.IsNullOrEmpty(emp.EmpLocation))
+                    {
+                        objResp.vErrorMsg = "Please Enter EmpLocation";
+                    }
+                    else if (String.IsNullOrEmpty(emp.Department))
+                    {
+                        objResp.vErrorMsg = "Please Enter Department";
+                    }
+                    else if (String.IsNullOrEmpty(emp.EmpRole))
+                    {
+                        objResp.vErrorMsg = "Please Enter EmpRole";
+                    }
+                    else if (emp.CanteenId == 0)
+                    {
+                        objResp.vErrorMsg = "Please Enter CanteenName";
+                    }
+                    else
+                    {
+                        SqlCommand cmd = new SqlCommand("USP_BulkEmpDataImport", Con);
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@EmployeeId", emp.EmpId);
+                        cmd.Parameters.AddWithValue("@EmpName", (object)emp.EmpName ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@EmpLocation", (object)emp.EmpLocation ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@Department", (object)emp.Department ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@EmpRole", (object)emp.EmpRole ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@CateenId", emp.CanteenId);
+                        cmd.Parameters.AddWithValue("@EmpMobile", (object)emp.EmpMobile ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@EmpStatus", (object)emp.EmpStatus ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@CreatedBy", emp.CreatedBy);
+                        int i = 0;
+                        i = cmd.ExecuteNonQuery();
+                        if (i > 0)
+                        {
+                            objResp.vErrorMsg = "Success";
+                        }
+                        else
+                        {
+                            objResp.vErrorMsg = "Failed";
+                        }
+                    }
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Upload_BulkEmployeeExcel", " Error Msg : " + exp.Message, new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message;
+            }
+            finally
+            {
+                Con.Close();
+            }
+
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Upload_BulkEmployeeExcel");
+            return objResp;
+        }
+
+        #endregion End 19-NOV-2026 Fn_Upload_BulkEmployeeExcel by Ankit
     }
 }

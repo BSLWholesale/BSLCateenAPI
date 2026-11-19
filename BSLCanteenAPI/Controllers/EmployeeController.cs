@@ -128,5 +128,17 @@ namespace BSLCanteenAPI.Controllers
         }
 
 
+        #region Start 19-NOV-2026 Fn_Upload_BulkEmployeeExcel by Ankit
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Employee/Fn_Upload_BulkEmployeeExcel")]
+        public clsEmployee Fn_Upload_BulkEmployeeExcel(List<clsEmployee> objEmpList)
+        {
+            var objResp = new clsEmployee();
+            objResp = _DALEmployee.Fn_Upload_BulkEmployeeExcel(objEmpList);
+            return objResp;
+        }
+
+        #endregion End 19-NOV-2026 Fn_Upload_BulkEmployeeExcel by Ankit
     }
 }
