@@ -410,11 +410,11 @@ namespace BSLCanteenAPI.DAL
                     objResp.vErrorMsg = "Worker not active";
                     objResp.vErrorCode = 400;
                 }
-                else if (Convert.ToDateTime(objCheck[0].CouponIssueDate) < checkVaidDays)
-                {
-                    objResp.vErrorMsg = "Expire your coupon, It's valid for " + CouponValidDays + " days.";
-                    objResp.vErrorCode = 400;
-                }
+                //else if (Convert.ToDateTime(objCheck[0].CouponIssueDate) < checkVaidDays)
+                //{
+                //    objResp.vErrorMsg = "Expire your coupon, It's valid for " + CouponValidDays + " days.";
+                //    objResp.vErrorCode = 400;
+                //}
                 else
                 {
                     if (Con.State == ConnectionState.Broken)
